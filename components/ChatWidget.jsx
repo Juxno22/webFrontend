@@ -1,53 +1,473 @@
 "use client";
 
-import { useState } from "react";
-import { Bot, Send, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  ExternalLink,
+  Loader2,
+  RotateCcw,
+  Send,
+  ShoppingBag,
+  X,
+} from "lucide-react";
+import { buscarConIA } from "../app/lib/api";
+import { addToQuoteCart } from "../app/lib/quoteCart";
+
+const SESSION_STORAGE_KEY = "andyfers_ai_session_id";
+
+const QUICK_PROMPTS = [
+  "Busco bomba de agua para Tsuru 2005",
+  "Mi auto se calienta",
+  "Necesito termostato para Chevy 2010",
+];
+
+function createId() {
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function getProductCode(product) {
+  return product.codigo_andyfers || product.codigo_importacion || "";
+}
+
+function normalizeProduct(product) {
+  return {
+    ...product,
+    id: product.id || product.producto_id,
+  };
+}
+
+function dispatchToast(message) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent("andyfers_toast", {
+      detail: { message },
+    })
+  );
+}
+
+function HorseMascot() {
+  const frames = Array.from(
+    { length: 16 },
+    (_, index) => `/img/horse-clean/horse${index + 1}.png`
+  );
+
+  const [frameIndex, setFrameIndex] = useState(0);
+
+  useEffect(() => {
+    // Preload para evitar parpadeos entre frames
+    frames.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setFrameIndex((current) => (current + 1) % frames.length);
+    }, 150);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <img
+      src={frames[frameIndex]}
+      alt=""
+      className="andy-chat-horse-img"
+      aria-hidden="true"
+      draggable="false"
+    />
+  );
+}
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      id: "welcome",
+      role: "bot",
+      text: "🤖 ¡Hola! Soy el asistente virtual de Andyfers. Estoy conectado a la base de datos de refacciones. ¿En qué te ayudo hoy?",
+      products: [],
+    },
+  ]);
+
+  const bodyRef = useRef(null);
+  const lastBotRowRef = useRef(null);
+  const loadingRowRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const stored = window.localStorage.getItem(SESSION_STORAGE_KEY);
+
+    if (stored) {
+      setSessionId(stored);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (!lastMessage || lastMessage.id === "welcome") return;
+
+    const frame = window.requestAnimationFrame(() => {
+      if (lastMessage.role === "bot" && lastBotRowRef.current) {
+        lastBotRowRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+        return;
+      }
+
+      if (bodyRef.current) {
+        bodyRef.current.scrollTo({
+          top: bodyRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages, open]);
+
+  useEffect(() => {
+    if (!open || !loading) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      if (loadingRowRef.current) {
+        loadingRowRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [loading, open]);
+
+  function saveSession(nextSessionId) {
+    if (!nextSessionId || typeof window === "undefined") return;
+
+    setSessionId(nextSessionId);
+    window.localStorage.setItem(SESSION_STORAGE_KEY, nextSessionId);
+  }
+
+  function addBotMessage(payload) {
+    setMessages((current) => [
+      ...current,
+      {
+        id: createId(),
+        role: "bot",
+        text: payload.text,
+        products: payload.products || [],
+        meta: payload.meta || null,
+      },
+    ]);
+  }
+
+  async function sendQuestion(questionText) {
+    const pregunta = String(questionText || "").trim();
+
+    if (!pregunta || loading) return;
+
+    setMessages((current) => [
+      ...current,
+      {
+        id: createId(),
+        role: "user",
+        text: pregunta,
+        products: [],
+      },
+    ]);
+
+    setInput("");
+    setLoading(true);
+
+    try {
+      const data = await buscarConIA({
+        pregunta,
+        origen: "CHAT_PUBLICO",
+        session_id: sessionId || null,
+      });
+
+      if (data.session_id) {
+        saveSession(data.session_id);
+      }
+
+      addBotMessage({
+        text:
+          data.respuesta ||
+          "No pude generar una respuesta en este momento. Intenta con más datos del vehículo o el código de la pieza.",
+        products: Array.isArray(data.productos) ? data.productos : [],
+        meta: {
+          total_candidatos: data.total_candidatos || 0,
+          total_recomendados: data.total_recomendados || 0,
+          requiere_mas_datos: Boolean(data.requiere_mas_datos),
+          modo_busqueda: data.intencion?.modo_busqueda,
+          contexto_corto: data.contexto_corto,
+        },
+      });
+    } catch (error) {
+      addBotMessage({
+        text:
+          error.message ||
+          "No pude conectarme con el asistente. Intenta nuevamente.",
+        products: [],
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    await sendQuestion(input);
+  }
+
+  async function resetSession() {
+    if (!sessionId) {
+      setMessages([
+        {
+          id: "welcome-reset",
+          role: "bot",
+          text: "Listo. Puedes iniciar una nueva búsqueda escribiendo tu vehículo o la pieza que necesitas.",
+          products: [],
+        },
+      ]);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const data = await buscarConIA({
+        pregunta: "Olvida mi carro",
+        origen: "CHAT_PUBLICO",
+        session_id: sessionId,
+      });
+
+      if (data.session_id) {
+        saveSession(data.session_id);
+      }
+
+      setMessages([
+        {
+          id: createId(),
+          role: "bot",
+          text:
+            data.respuesta ||
+            "Listo, borré el vehículo guardado para esta búsqueda.",
+          products: [],
+        },
+      ]);
+    } catch {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(SESSION_STORAGE_KEY);
+      }
+
+      setSessionId("");
+      setMessages([
+        {
+          id: createId(),
+          role: "bot",
+          text: "Listo. Puedes iniciar una nueva búsqueda.",
+          products: [],
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleAddToQuote(product) {
+    const normalized = normalizeProduct(product);
+
+    addToQuoteCart(normalized);
+    dispatchToast("Producto agregado a tu cotización");
+  }
 
   return (
-    <>
+    <div className={`andy-chat-widget ${open ? "is-open" : ""}`}>
       {open && (
-        <section className="chat-panel">
-          <div className="chat-header">
-            <div>
-              <strong>Asistente Andyfers</strong>
-              <span>Próximamente...</span>
+        <section className="andy-chat-window" aria-label="Asistente Andyfers">
+          <header className="andy-chat-header">
+            <div className="andy-chat-header-info">
+              <strong>Andy-Bot</strong>
+              <span>
+                {sessionId
+                  ? "En línea · memoria corta activa"
+                  : "En línea · busca refacciones"}
+              </span>
             </div>
 
-            <button onClick={() => setOpen(false)} aria-label="Cerrar chat">
-              <X size={18} />
-            </button>
+            <div className="andy-chat-header-actions">
+              <button
+                type="button"
+                onClick={resetSession}
+                aria-label="Reiniciar búsqueda"
+                title="Reiniciar búsqueda"
+              >
+                <RotateCcw size={16} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Cerrar chat"
+                title="Cerrar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </header>
+
+          <div className="andy-chat-body" ref={bodyRef}>
+            {messages.map((message, index) => {
+              const isLastBotMessage =
+                message.role === "bot" &&
+                index === messages.length - 1 &&
+                message.id !== "welcome";
+
+              return (
+                <div
+                  ref={isLastBotMessage ? lastBotRowRef : null}
+                  className={`andy-chat-row ${message.role === "user" ? "is-user" : "is-bot"
+                    }`}
+                  key={message.id}
+                >
+                  <div
+                    className={`andy-chat-message ${message.role === "user" ? "is-user" : "is-bot"
+                      }`}
+                  >
+                    {message.text}
+                  </div>
+
+                  {message.meta?.contexto_corto &&
+                    Object.keys(message.meta.contexto_corto).length > 0 && (
+                      <div className="andy-chat-context-chip">
+                        Contexto:{" "}
+                        {[
+                          message.meta.contexto_corto.marca_auto,
+                          message.meta.contexto_corto.modelo_auto,
+                          message.meta.contexto_corto.anio,
+                          message.meta.contexto_corto.motor,
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      </div>
+                    )}
+
+                  {message.products?.length > 0 && (
+                    <div className="andy-chat-products">
+                      {message.products.map((product) => {
+                        const code = getProductCode(product);
+
+                        return (
+                          <article
+                            className="andy-chat-product-card"
+                            key={`${product.producto_id || product.id}-${code}`}
+                          >
+                            <div className="andy-chat-product-main">
+                              <strong>{code || "Sin código"}</strong>
+                              <p>{product.descripcion}</p>
+                              <span>
+                                {product.familia ||
+                                  product.categoria ||
+                                  "Producto"}
+                              </span>
+                            </div>
+
+                            <div className="andy-chat-product-actions">
+                              {code && (
+                                <Link
+                                  href={`/producto/${encodeURIComponent(code)}`}
+                                  className="andy-chat-product-link"
+                                  title="Ver detalle"
+                                >
+                                  <ExternalLink size={15} />
+                                </Link>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => handleAddToQuote(product)}
+                              >
+                                <ShoppingBag size={15} />
+                                Agregar
+                              </button>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {loading && (
+              <div className="andy-chat-row is-bot" ref={loadingRowRef}>
+                <div className="andy-chat-message is-bot andy-chat-loading">
+                  <Loader2 size={16} className="andy-chat-spin" />
+                  Buscando en el catálogo Andyfers...
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="chat-body">
-            <div className="chat-message bot">
-              Hola. En el siguiente módulo conectaremos este asistente a la base
-              de datos para responder usando productos reales de Andyfers.
-            </div>
-
-            <div className="chat-message bot muted">
-              Ejemplo futuro: “Busco termostato para Tsuru 2010 1.6”.
-            </div>
-          </div>
-
-          <form className="chat-input" onSubmit={(e) => e.preventDefault()}>
+          <form className="andy-chat-footer" onSubmit={handleSubmit}>
             <input
               type="text"
+              className="andy-chat-input"
               placeholder="Pregunta por una refacción..."
-              disabled
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              disabled={loading}
             />
-            <button type="submit" disabled>
-              <Send size={17} />
+
+            <button
+              type="submit"
+              className="andy-chat-send-btn"
+              disabled={loading || !input.trim()}
+              aria-label="Enviar mensaje"
+            >
+              {loading ? (
+                <Loader2 size={20} className="andy-chat-spin" />
+              ) : (
+                <Send size={20} />
+              )}
             </button>
           </form>
         </section>
-      )}
+      )
+      }
 
-      <button className="chat-float" onClick={() => setOpen(true)}>
-        <Bot size={24} />
-      </button>
-    </>
+      {
+        !open && (
+          <button
+            type="button"
+            className="andy-chat-closed"
+            onClick={() => setOpen(true)}
+            aria-label="Abrir asistente Andyfers"
+          >
+            <div className="andy-chat-speech-bubble">
+              ¿Tienes dudas sobre refacciones?
+              <br />
+              ¡Habla conmigo!
+            </div>
+
+            <div className="andy-chat-horse-container">
+              <HorseMascot />
+            </div>
+          </button>
+        )
+      }
+    </div >
   );
 }

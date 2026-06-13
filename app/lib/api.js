@@ -108,3 +108,16 @@ export async function getSearchSuggestions(q) {
 
   return apiFetch(`/api/buscar/sugerencias?${query}`);
 }
+
+export async function buscarConIA(payload = {}) {
+  return apiFetch("/api/ia/buscar", {
+    method: "POST",
+    body: JSON.stringify({
+      pregunta: payload.pregunta,
+      q: payload.q,
+      message: payload.message,
+      origen: payload.origen || "CHAT_PUBLICO",
+      session_id: payload.session_id || null,
+    }),
+  });
+}
