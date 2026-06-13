@@ -1,0 +1,16 @@
+@import "./styles/variables.css";
+@import "./styles/base.css";
+@import "./styles/buttons.css";
+@import "./styles/header.css";
+@import "./styles/footer.css";
+@import "./styles/chat.css";
+@import "./styles/toast.css";
+@import "./styles/utilities.css";
+@import "./styles/home.css";
+@import "./styles/catalog.css";
+@import "./styles/product-detail.css";
+@import "./styles/quote.css";
+@import "./styles/lines.css";
+@import "./styles/contact.css";
+@import "./styles/admin.css";
+@import "./styles/responsive.css";

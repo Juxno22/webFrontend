@@ -1,0 +1,1499 @@
+/* =========================================================
+   UTILITIES
+   Archivo generado desde globals.css para modularizar estilos.
+   ========================================================= */
+
+/* SECTIONS */
+
+.section {
+  padding: 86px 0;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 44px;
+}
+
+.section-heading span {
+  color: var(--af-red);
+  text-transform: uppercase;
+  font-weight: 950;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+}
+
+.section-heading h2,
+.split-section h2 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  margin: 14px 0;
+}
+
+.section-heading p,
+.split-section p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.feature-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  min-height: 250px;
+}
+
+.feature-card svg {
+  color: var(--af-red);
+  margin-bottom: 28px;
+}
+
+.feature-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.18rem;
+}
+
+.feature-card p {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.dark-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.split-section {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 42px;
+  align-items: center;
+}
+
+/* STATUS */
+
+.status-card {
+  background: rgba(5, 5, 5, 0.38);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.status-item svg {
+  color: var(--af-red);
+}
+
+.status-item span {
+  color: #d1d5db;
+  flex: 1;
+}
+
+.status-dot {
+  font-size: 0.84rem;
+  border-radius: 999px;
+  padding: 7px 10px;
+}
+
+.status-dot.online {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.status-dot.error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.status-dot.checking {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+/* MODULO 1.5 - BALANCE VISUAL MENOS NEGRO */
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 25, 47, 0.11), transparent 28rem),
+    linear-gradient(180deg, #ffffff 0%, #f4f6f8 38%, #eef1f5 100%);
+  color: var(--text-dark);
+}
+
+/* Secciones claras */
+.section {
+  background: transparent;
+}
+
+.section-heading h2,
+.split-section h2,
+.catalog-results-header h2,
+.product-detail-basic h1 {
+  color: var(--text-dark);
+}
+
+.section-heading p,
+.split-section p,
+.catalog-results-header p,
+.empty-state p,
+.product-detail-basic p {
+  color: var(--text-soft-dark);
+}
+
+/* Cards claras */
+.feature-card,
+.filters-card,
+.product-card,
+.empty-state,
+.status-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line-light);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+.feature-card h3,
+.product-body h3,
+.empty-state h1,
+.empty-state h3 {
+  color: var(--text-dark);
+}
+
+.feature-card p {
+  color: var(--text-soft-dark);
+}
+
+/* La sección de estado queda en gris elegante, no negro absoluto */
+.dark-section {
+  background:
+    linear-gradient(135deg, rgba(255, 25, 47, 0.06), rgba(2, 46, 122, 0.06)),
+    #eef1f5;
+  border-top: 1px solid var(--line-light);
+  border-bottom: 1px solid var(--line-light);
+}
+
+/* Product cards más limpias */
+.product-media {
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.18), transparent 65%),
+    linear-gradient(135deg, #ffffff, #eef1f5);
+}
+
+.product-code {
+  background: rgba(9, 10, 15, 0.88);
+  color: var(--white);
+}
+
+.product-icon {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+}
+
+.product-meta div {
+  color: var(--text-soft-dark);
+}
+
+.product-warning {
+  color: #7c4a03;
+  background: #fff8e6;
+  border: 1px solid #f1d38a;
+}
+
+/* Status claro */
+.status-card {
+  background: #ffffff;
+}
+
+.status-item {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.status-item span {
+  color: var(--text-soft-dark);
+}
+
+/* Detalle básico claro */
+.detail-note {
+  color: #7c4a03;
+  background: #fff8e6;
+  border: 1px solid #f1d38a;
+}
+
+/* Loader */
+.catalog-loader {
+  padding: 32px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: var(--text-soft-dark);
+  border: 1px solid var(--line-light);
+  text-align: center;
+}
+
+/* ESTADOS */
+
+.alert-error {
+  border: 1px solid rgba(239, 68, 68, 0.26);
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.empty-state {
+  text-align: center;
+  border: 1px solid var(--line-light);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-lg);
+  padding: 46px 26px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+.empty-state h3,
+.empty-state h1 {
+  margin: 0 0 12px;
+  color: var(--text-dark);
+}
+
+.empty-state p {
+  color: var(--text-soft-dark);
+  margin: 0 auto 22px;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.product-skeleton {
+  height: 410px;
+  border-radius: 24px;
+  border: 1px solid var(--line-light);
+  background:
+    linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.75), transparent),
+    #e8ecf2;
+  background-size: 200% 100%;
+  animation: skeleton 1.3s infinite linear;
+}
+
+@keyframes skeleton {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* PAGINACION */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.pagination button {
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 16px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: var(--text-dark);
+  font-weight: 850;
+}
+
+.pagination button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: var(--text-soft-dark);
+}
+
+/* Layout más amplio */
+.catalog-layout {
+  grid-template-columns: 250px minmax(0, 1fr) !important;
+  gap: 34px !important;
+  align-items: start;
+}
+
+/* Sidebar más discreto */
+.filters-card {
+  border-radius: 22px !important;
+  padding: 18px !important;
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07) !important;
+}
+
+.filters-title {
+  margin-bottom: 16px !important;
+}
+
+.filters-form {
+  gap: 14px !important;
+}
+
+.filters-form label {
+  font-size: 0.82rem !important;
+}
+
+.filters-form input,
+.filters-form select,
+.search-input {
+  min-height: 42px !important;
+  border-radius: 13px !important;
+}
+
+/* Cards más grandes y menos apretadas */
+.product-grid,
+.loading-grid {
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)) !important;
+  gap: 26px !important;
+}
+
+.product-card {
+  border-radius: 28px !important;
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 25, 47, 0.22);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.13) !important;
+}
+
+.product-media {
+  height: 190px !important;
+}
+
+.product-icon {
+  width: 92px !important;
+  height: 92px !important;
+  border-radius: 28px !important;
+}
+
+.product-body {
+  padding: 22px !important;
+}
+
+.product-tags {
+  gap: 8px !important;
+  margin-bottom: 14px !important;
+}
+
+.product-tags span {
+  font-size: 0.68rem !important;
+  padding: 6px 9px !important;
+}
+
+.product-body h3 {
+  font-size: 1.05rem !important;
+  line-height: 1.48 !important;
+  min-height: 4.65em !important;
+  margin-bottom: 16px !important;
+}
+
+.product-meta {
+  gap: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.product-warning {
+  font-size: 0.78rem !important;
+  padding: 11px 12px !important;
+  border-radius: 15px !important;
+}
+
+.product-actions {
+  gap: 12px !important;
+  margin-top: 16px !important;
+}
+
+.btn-card-secondary,
+.btn-card-primary {
+  min-height: 44px !important;
+}
+
+/* Más protagonismo a productos */
+.catalog-results-header {
+  align-items: flex-end;
+}
+
+.catalog-results-header h2 {
+  font-size: clamp(2rem, 3vw, 2.8rem) !important;
+}
+
+.product-grid,
+.loading-grid {
+  grid-template-columns: repeat(auto-fill, minmax(305px, 1fr)) !important;
+  gap: 28px !important;
+}
+
+/* Results area */
+.catalog-products-area {
+  min-width: 0;
+}
+
+.catalog-results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.catalog-results-heading {
+  min-width: 0;
+}
+
+.catalog-results-heading>span {
+  color: var(--af-red);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 950;
+}
+
+.catalog-results-heading h2 {
+  color: var(--text-dark);
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  margin: 8px 0 0;
+}
+
+.catalog-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+}
+
+.catalog-toolbar-actions p {
+  margin: 0;
+  color: var(--text-soft-dark);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.filters-dropdown-wrap {
+  position: relative;
+}
+
+.filters-dropdown-button {
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  color: var(--white);
+  background: #111827;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  font-weight: 900;
+}
+
+.filters-dropdown-button:hover {
+  background: var(--af-red);
+}
+
+.filters-dropdown-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 310px;
+  z-index: 20;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 22px 70px rgba(15, 23, 42, 0.18);
+}
+
+.filters-dropdown-title {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--text-dark);
+}
+
+.filters-dropdown-title svg {
+  color: var(--af-red);
+}
+
+.filters-dropdown-panel label {
+  display: grid;
+  gap: 7px;
+  color: var(--text-dark);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.filters-dropdown-panel select {
+  min-height: 42px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  border-radius: 13px;
+  background: #f8fafc;
+  color: var(--text-dark);
+  padding: 0 12px;
+}
+
+.active-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.active-filter-chips span {
+  display: inline-flex;
+  width: fit-content;
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: #b91c1c;
+  background: rgba(255, 25, 47, 0.1);
+  border: 1px solid rgba(255, 25, 47, 0.18);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+/* En pantallas medianas/chicas, que no intente salirse del viewport */
+@media (max-width: 900px) {
+  .filters-dropdown-panel {
+    right: 0 !important;
+    left: auto !important;
+    width: min(340px, calc(100vw - 32px)) !important;
+  }
+}
+
+/* En móvil, mejor que se vuelva bloque normal debajo del botón */
+@media (max-width: 760px) {
+  .filters-dropdown-panel {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 12px !important;
+  }
+
+  .catalog-toolbar-actions {
+    flex-wrap: wrap;
+  }
+
+  .filters-dropdown-wrap {
+    width: 100%;
+  }
+
+  .filters-dropdown-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Hace que los paneles del detalle respiren un poco más */
+.detail-panel {
+  padding: 22px !important;
+}
+
+.panel-title {
+  margin-bottom: 16px !important;
+}
+
+@media (max-width: 620px) {
+  .clean-attributes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .compact-crosses-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Título con ligero brillo */
+.home-commercial-copy h1 {
+  text-shadow: 0 18px 70px rgba(255, 25, 47, 0.1);
+}
+
+.home-kicker {
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: rgba(255, 25, 47, 0.1);
+  border: 1px solid rgba(255, 25, 47, 0.16);
+  box-shadow: 0 18px 50px rgba(255, 25, 47, 0.1);
+}
+
+/* Strip de beneficios más dinámico */
+.home-benefits-strip {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-benefits-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 25, 47, 0.08), transparent),
+    radial-gradient(circle at 20% 50%, rgba(255, 25, 47, 0.12), transparent 24rem);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.home-benefit-item {
+  position: relative;
+  transition:
+    background 0.22s ease,
+    transform 0.22s ease;
+}
+
+.home-benefit-item:hover {
+  background: rgba(255, 255, 255, 0.035);
+  transform: translateY(-2px);
+}
+
+.home-benefit-icon {
+  box-shadow:
+    0 14px 32px rgba(255, 25, 47, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Por qué elegir */
+.home-why-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-why-section::before {
+  content: "";
+  position: absolute;
+  right: -180px;
+  top: -220px;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 25, 47, 0.09), transparent 65%);
+  pointer-events: none;
+}
+
+.home-why-cards div {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.home-why-cards div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 25, 47, 0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.home-why-cards div:hover {
+  transform: translateX(4px);
+  border-color: rgba(255, 25, 47, 0.16);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.09);
+}
+
+.home-why-cards div:hover::before {
+  opacity: 1;
+}
+
+/* CTA final más potente */
+.home-final-cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-final-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(110deg, rgba(255, 25, 47, 0.18), transparent 42%),
+    radial-gradient(circle at 92% 20%, rgba(248, 128, 92, 0.18), transparent 22rem);
+  pointer-events: none;
+}
+
+.home-final-cta-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Animaciones */
+@keyframes homeFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(-0.45deg);
+  }
+}
+
+@keyframes homeCardFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes homeCardFloatAlt {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  50% {
+    transform: translateY(7px) translateX(5px);
+  }
+}
+
+@keyframes slowSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulsePlay {
+
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 25, 47, 0));
+  }
+
+  50% {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 22px rgba(255, 25, 47, 0.34));
+  }
+}
+
+/* Entrada sutil de secciones al cargar */
+.home-benefit-item,
+.home-line-card,
+.home-why-cards div {
+  animation: softReveal 0.65s ease both;
+}
+
+.home-benefit-item:nth-child(2),
+.home-line-card:nth-child(2),
+.home-why-cards div:nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.home-benefit-item:nth-child(3),
+.home-line-card:nth-child(3),
+.home-why-cards div:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.home-benefit-item:nth-child(4),
+.home-line-card:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+@keyframes softReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respeta usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+
+  .home-commercial-visual,
+  .home-visual-card.main,
+  .home-visual-card.floating,
+  .home-visual-orbit,
+  .home-video-play,
+  .home-benefit-item,
+  .home-line-card,
+  .home-why-cards div {
+    animation: none !important;
+  }
+
+  .home-commercial-actions .btn-primary::before,
+  .home-final-actions .btn-primary::before,
+  .vehicle-finder-button::before {
+    display: none;
+  }
+}
+
+/* En pantallas bajas, todavía más compacto */
+@media (max-height: 760px) and (min-width: 1121px) {
+  .vehicle-finder-sidebar .vehicle-finder-heading p {
+    display: none;
+  }
+
+  .vehicle-finder-sidebar {
+    padding: 16px !important;
+  }
+
+  .vehicle-finder-sidebar select,
+  .vehicle-finder-sidebar .vehicle-free-field,
+  .vehicle-finder-sidebar .vehicle-finder-button {
+    min-height: 42px !important;
+  }
+}
+
+/* En tablet/móvil ya no debe quedarse sticky */
+@media (max-width: 1120px) {
+  .catalog-vehicle-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+/* BUSCADOR */
+
+.andy-guided-search-section {
+  padding: 68px 0 110px;
+}
+
+.andy-guided-search-section .vehicle-finder {
+  position: relative;
+  z-index: 2;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.68)) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.34),
+    0 18px 60px rgba(255, 25, 47, 0.12);
+}
+
+.andy-guided-search-section .vehicle-finder select:disabled {
+  opacity: 0.58;
+  background: rgba(226, 232, 240, 0.78) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:not(:disabled),
+.andy-guided-search-section .vehicle-finder input {
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.andy-guided-logo-bg {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: -118px;
+  transform: translateX(-50%);
+  width: min(620px, 82vw);
+  opacity: 0.26;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 0 30px rgba(255, 25, 47, 0.28)) blur(0.1px);
+}
+
+.andy-guided-logo-bg img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* BUSCADOR */
+
+.andy-guided-search-section {
+  padding: 64px 0 90px;
+}
+
+.andy-guided-search-inner {
+  position: relative;
+  display: grid;
+  gap: 38px;
+}
+
+.andy-guided-search-section .vehicle-finder {
+  position: relative;
+  z-index: 2;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.58)) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.34),
+    0 18px 60px rgba(255, 25, 47, 0.1);
+}
+
+.andy-guided-search-section .vehicle-finder select:disabled {
+  opacity: 0.48;
+  background: rgba(226, 232, 240, 0.68) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:not(:disabled),
+.andy-guided-search-section .vehicle-finder input {
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Buscador encima del logo */
+.andy-guided-search-section .vehicle-finder {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.58)
+    ) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.34),
+    0 18px 60px rgba(255, 25, 47, 0.1);
+}
+
+/* Logo debajo como marca de agua */
+.andy-guided-brand {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 58%;
+  width: min(720px, 78vw);
+  transform: translate(-50%, -50%);
+  opacity: 0.84;
+  pointer-events: none;
+  user-select: none;
+  filter:
+    drop-shadow(0 0 34px rgba(255, 25, 47, 0.28))
+    drop-shadow(0 28px 44px rgba(0, 0, 0, 0.7));
+}
+
+.andy-guided-brand::after {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.13), transparent 62%);
+  z-index: -1;
+}
+
+.andy-guided-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Estados del buscador */
+.andy-guided-search-section .vehicle-finder select:disabled {
+  opacity: 0.48;
+  background: rgba(226, 232, 240, 0.68) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:not(:disabled),
+.andy-guided-search-section .vehicle-finder input {
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+@media (max-width: 720px) {
+  .andy-guided-search-section {
+    padding: 48px 0 72px;
+  }
+
+  .andy-guided-search-inner {
+    min-height: 520px;
+    align-items: flex-start;
+  }
+
+  .andy-guided-brand {
+    top: 64%;
+    width: min(430px, 92vw);
+    opacity: 0.25;
+  }
+}
+
+/* Evita que el contenido se pegue a las letras del diseño */
+.catalog-top-image + section > .container {
+  position: relative;
+  z-index: 4;
+}
+
+/* Títulos externos sobre fondo negro */
+.catalog-top-image + section .catalog-results-title,
+.catalog-top-image + section .catalog-section-title,
+.catalog-top-image + section .products-title,
+.catalog-top-image + section h1,
+.catalog-top-image + section h2 {
+  color: #ffffff !important;
+}
+
+/* Textos secundarios externos */
+.catalog-top-image + section .catalog-results-count,
+.catalog-top-image + section .catalog-muted,
+.catalog-top-image + section .catalog-subtitle {
+  color: #d8dde6 !important;
+}
+
+/* =========================================================
+   FIX CARDS: tarjetas blancas = textos oscuros
+   ========================================================= */
+
+.catalog-top-image + section .product-card,
+.catalog-top-image + section [class*="product-card"] {
+  color: var(--text-dark) !important;
+}
+
+.catalog-top-image + section .product-card h3,
+.catalog-top-image + section .product-card p,
+.catalog-top-image + section .product-card span {
+  color: inherit;
+}
+
+.catalog-top-image + section .product-code {
+  color: #ffffff !important;
+}
+
+/* Adorno izquierdo nuevo */
+.andy-home-decor-left {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  width: min(980px, 58vw);
+  height: min(380px, 40vh);
+  pointer-events: none;
+  background-image: url("/andyfers-home/home-izquierdo.png");
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: contain;
+  opacity: 0.98;
+  filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.6));
+}
+
+/* Adorno derecho nuevo */
+.andy-home-decor-right {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  top: 0;
+  width: min(900px, 52vw);
+  height: min(340px, 36vh);
+  pointer-events: none;
+  background-image: url("/andyfers-home/home-derecho.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: contain;
+  opacity: 0.92;
+  filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.6));
+}
+
+/* Difuminado entre texto y carrusel */
+.andy-hero-center-fade {
+  position: absolute;
+  z-index: 1;
+  top: 16%;
+  bottom: 12%;
+  left: 44%;
+  width: 24%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.12), transparent 48%),
+    linear-gradient(90deg, transparent, rgba(2, 3, 4, 0.72), transparent);
+  filter: blur(22px);
+  opacity: 0.78;
+}
+
+/* Carrusel más amplio y cargado a la derecha */
+.andy-hero-carousel {
+  position: relative;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+.andy-hero-carousel-window {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(460px, 52vh, 620px);
+  display: flex;
+  align-items: center;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 25, 47, 0.1), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.016));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.38),
+    inset 0 0 80px rgba(255, 25, 47, 0.04);
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+.andy-hero-carousel-track {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  width: max-content;
+  animation: andyHeroCarouselMove 34s linear infinite;
+}
+
+.andy-hero-carousel-window:hover .andy-hero-carousel-track {
+  animation-play-state: paused;
+}
+
+.andy-hero-slide {
+  flex: 0 0 clamp(560px, 40vw, 760px);
+  display: grid;
+  place-items: center;
+}
+
+.andy-hero-slide img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 36px 76px rgba(0, 0, 0, 0.62))
+    drop-shadow(0 0 34px rgba(255, 25, 47, 0.16));
+}
+
+@keyframes andyHeroCarouselMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Texto debajo del carrusel */
+.andy-hero-power-text {
+  position: relative;
+  z-index: 2;
+  width: fit-content;
+  margin: -8px 8% 0 auto;
+  display: grid;
+  gap: 0;
+  text-align: right;
+  text-transform: uppercase;
+  font-style: italic;
+  font-weight: 950;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  text-shadow:
+    0 0 14px rgba(255, 25, 47, 0.28),
+    0 10px 22px rgba(0, 0, 0, 0.55);
+}
+
+.andy-hero-power-text strong {
+  color: #ffffff;
+  font-size: clamp(1rem, 1.5vw, 1.45rem);
+}
+
+.andy-hero-power-text span {
+  color: #ff192f;
+  font-size: clamp(1.35rem, 2.25vw, 2.2rem);
+}
+
+/* Pantallas ultra grandes */
+@media (min-width: 1800px) {
+  .andy-hero-racing-grid {
+    width: min(1760px, calc(100% - 128px));
+    grid-template-columns: minmax(500px, 0.82fr) minmax(760px, 1.18fr);
+    gap: clamp(90px, 7vw, 150px);
+  }
+
+  .andy-home-decor-left {
+    width: 1040px;
+  }
+
+  .andy-home-decor-right {
+    width: 960px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1180px) {
+  .andy-hero-racing-grid {
+    width: min(100% - 48px, 980px);
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 74px;
+    padding-bottom: 68px;
+  }
+
+  .andy-hero-carousel {
+    order: -1;
+  }
+
+  .andy-hero-carousel-window {
+    min-height: 420px;
+  }
+
+  .andy-hero-center-fade {
+    display: none;
+  }
+
+  .andy-home-decor-left {
+    width: 86vw;
+    height: 280px;
+    opacity: 0.58;
+  }
+
+  .andy-home-decor-right {
+    width: 66vw;
+    height: 230px;
+    opacity: 0.42;
+  }
+}
+
+/* Buscador encima */
+.andy-guided-search-section .vehicle-finder {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.58)
+    ) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.34),
+    0 18px 60px rgba(255, 25, 47, 0.1);
+}
+
+/* Logo grande debajo/detrás del buscador */
+.andy-guided-brand {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 58%;
+  width: min(820px, 86vw);
+  transform: translate(-50%, -50%);
+  opacity: 0.80;
+  pointer-events: none;
+  user-select: none;
+  filter:
+    drop-shadow(0 0 40px rgba(255, 25, 47, 0.3))
+    drop-shadow(0 34px 58px rgba(0, 0, 0, 0.76));
+}
+
+.andy-guided-brand::after {
+  content: "";
+  position: absolute;
+  inset: -50px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.14), transparent 64%);
+}
+
+.andy-guided-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Texto del buscador: la tarjeta es clara, así que debe seguir oscuro */
+.andy-guided-search-section .vehicle-finder,
+.andy-guided-search-section .vehicle-finder h1,
+.andy-guided-search-section .vehicle-finder h2,
+.andy-guided-search-section .vehicle-finder h3,
+.andy-guided-search-section .vehicle-finder p,
+.andy-guided-search-section .vehicle-finder label,
+.andy-guided-search-section .vehicle-finder span {
+  color: var(--text-dark) !important;
+}
+
+/* Campos bloqueados más tenues */
+.andy-guided-search-section .vehicle-finder select:disabled {
+  color: #667085 !important;
+  background: rgba(226, 232, 240, 0.72) !important;
+  opacity: 1;
+}
+
+/* Campos activos más blancos */
+.andy-guided-search-section .vehicle-finder select:not(:disabled),
+.andy-guided-search-section .vehicle-finder input {
+  color: #151923 !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* Sobrescribe el max-width normal del container para aprovechar pantallas grandes */
+.andy-guided-search-inner.container {
+  width: min(1580px, calc(100% - 72px));
+  max-width: 1580px;
+  margin: 0 auto;
+}
+
+.andy-guided-search-inner {
+  position: relative;
+  min-height: clamp(460px, 42vw, 620px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: clamp(24px, 3.4vw, 54px);
+}
+
+/* Buscador encima, centrado y más transparente */
+.andy-guided-search-section .vehicle-finder {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: min(1480px, 100%);
+  margin: 0 auto;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.58),
+      rgba(255, 255, 255, 0.34)
+    ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.34),
+    0 18px 60px rgba(255, 25, 47, 0.12);
+}
+
+/* Logo grande detrás/debajo del buscador */
+.andy-guided-brand {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 60%;
+  width: min(940px, 86vw);
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+
+  filter:
+    drop-shadow(0 0 42px rgba(255, 25, 47, 0.26))
+    drop-shadow(0 36px 62px rgba(0, 0, 0, 0.78));
+}
+
+.andy-guided-brand::after {
+  content: "";
+  position: absolute;
+  inset: -70px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.12), transparent 66%);
+}
+
+.andy-guided-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Textos del buscador: mantener legibles */
+.andy-guided-search-section .vehicle-finder,
+.andy-guided-search-section .vehicle-finder h1,
+.andy-guided-search-section .vehicle-finder h2,
+.andy-guided-search-section .vehicle-finder h3,
+.andy-guided-search-section .vehicle-finder p,
+.andy-guided-search-section .vehicle-finder label,
+.andy-guided-search-section .vehicle-finder span {
+  color: var(--text-dark) !important;
+}
+
+/* Campos bloqueados tenues */
+.andy-guided-search-section .vehicle-finder select:disabled {
+  color: #667085 !important;
+  background: rgba(226, 232, 240, 0.68) !important;
+  opacity: 1;
+}
+
+/* Campos activos más blancos */
+.andy-guided-search-section .vehicle-finder select:not(:disabled),
+.andy-guided-search-section .vehicle-finder input {
+  color: #151923 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1800px) {
+  .andy-guided-search-inner.container {
+    width: min(1700px, calc(100% - 120px));
+    max-width: 1700px;
+  }
+
+  .andy-guided-search-section .vehicle-finder {
+    max-width: 1600px;
+  }
+
+  .andy-guided-brand {
+    width: min(1080px, 76vw);
+    top: 61%;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1180px) {
+  .andy-guided-search-inner.container {
+    width: min(100% - 48px, 980px);
+  }
+
+  .andy-guided-search-inner {
+    min-height: 570px;
+    padding-top: 24px;
+  }
+
+  .andy-guided-brand {
+    width: min(680px, 92vw);
+    top: 64%;
+    opacity: 0.68;
+  }
+}

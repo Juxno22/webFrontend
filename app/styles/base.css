@@ -1,0 +1,48 @@
+/* =========================================================
+   BASE
+   Archivo generado desde globals.css para modularizar estilos.
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 25, 47, 0.16), transparent 32rem),
+    radial-gradient(circle at top right, rgba(2, 46, 122, 0.18), transparent 34rem),
+    var(--bg);
+  color: var(--text);
+  font-family:
+    Inter,
+    Montserrat,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}

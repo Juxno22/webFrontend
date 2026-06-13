@@ -1,0 +1,39 @@
+/* =========================================================
+   TOAST
+   Archivo generado desde globals.css para modularizar estilos.
+   ========================================================= */
+
+/* Toast sigue oscuro porque es flotante */
+.toast {
+  background: rgba(9, 10, 15, 0.94);
+  color: var(--white);
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 90;
+  background: rgba(9, 10, 15, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 13px 18px;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.42);
+  font-weight: 850;
+}
+
+.quote-count {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--af-red);
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.74rem;
+  font-weight: 950;
+}

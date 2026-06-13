@@ -1,0 +1,1086 @@
+/* =========================================================
+   CATALOG - ANDYFERS RACING
+   Pantalla catálogo: hero negro, buscador lateral, filtros dropdown,
+   cards simples y responsive.
+   ========================================================= */
+
+/* =========================================================
+   HERO CATALOGO
+   ========================================================= */
+
+.catalog-racing-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(220px, 19vw, 300px);
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 25, 47, 0.13), transparent 28rem),
+    linear-gradient(180deg, #020304 0%, #050608 100%);
+  color: #ffffff;
+}
+
+.catalog-racing-decor {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.98;
+  filter: drop-shadow(0 24px 44px rgba(0, 0, 0, 0.68));
+}
+
+.catalog-racing-decor-left {
+  left: 0;
+  width: min(620px, 42vw);
+  height: min(330px, 30vw);
+  background-image: url("/andyfers-catalog/catalogo-izquierdo.png");
+  background-position: top left;
+}
+
+.catalog-racing-decor-right {
+  right: 0;
+  width: min(620px, 42vw);
+  height: min(330px, 30vw);
+  background-image: url("/andyfers-catalog/catalogo-derecho.png");
+  background-position: top right;
+}
+
+.catalog-racing-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 86px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 3, 4, 0) 0%,
+    rgba(2, 3, 4, 0.74) 64%,
+    #020304 100%
+  );
+}
+
+.catalog-racing-inner {
+  position: relative;
+  z-index: 2;
+  padding: clamp(52px, 5vw, 76px) 0 clamp(58px, 5vw, 82px);
+  text-align: center;
+}
+
+.catalog-racing-inner span {
+  display: none;
+}
+
+.catalog-racing-inner h1 {
+  max-width: none;
+  margin: 0 auto;
+  color: #ffffff;
+  font-size: clamp(2.35rem, 4.5vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow:
+    0 0 24px rgba(0, 0, 0, 0.78),
+    0 22px 46px rgba(0, 0, 0, 0.62);
+}
+
+/* =========================================================
+   BASE CATALOGO
+   ========================================================= */
+
+.catalog-workspace-section,
+.catalog-section,
+.catalog-racing-hero + section {
+  background:
+    radial-gradient(circle at 88% 4%, rgba(255, 25, 47, 0.08), transparent 28rem),
+    linear-gradient(180deg, #020304 0%, #050608 100%) !important;
+  color: #ffffff;
+}
+
+.catalog-workspace-section {
+  padding: clamp(34px, 4vw, 58px) 0 clamp(86px, 8vw, 130px);
+}
+
+.catalog-workspace {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: clamp(34px, 3vw, 48px);
+  align-items: start;
+}
+
+/* =========================================================
+   BUSCADOR GUIADO LATERAL
+   ========================================================= */
+
+.catalog-vehicle-sidebar {
+  position: sticky;
+  top: 96px;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 25, 47, 0.45) transparent;
+}
+
+.catalog-vehicle-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.catalog-vehicle-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.catalog-vehicle-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 25, 47, 0.42);
+  border-radius: 999px;
+}
+
+.vehicle-finder-sidebar {
+  padding: 18px !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.vehicle-finder-sidebar,
+.vehicle-finder-sidebar h1,
+.vehicle-finder-sidebar h2,
+.vehicle-finder-sidebar h3,
+.vehicle-finder-sidebar p,
+.vehicle-finder-sidebar label,
+.vehicle-finder-sidebar span {
+  color: var(--text-dark) !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading {
+  display: block !important;
+  margin-bottom: 6px;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading span {
+  color: var(--af-red) !important;
+  font-size: 0.72rem;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading h2 {
+  font-size: 1.38rem !important;
+  line-height: 1.05;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading p {
+  max-width: 100%;
+  color: var(--text-soft-dark) !important;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-grid {
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+.vehicle-finder-sidebar label {
+  gap: 6px;
+}
+
+.vehicle-finder-sidebar label > span {
+  font-size: 0.72rem;
+  color: #8a94a6 !important;
+}
+
+.vehicle-finder-sidebar select {
+  min-height: 46px !important;
+  border-radius: 15px !important;
+  font-size: 0.9rem;
+  color: #151923 !important;
+  background: #ffffff !important;
+}
+
+.vehicle-finder-sidebar select:disabled {
+  color: #667085 !important;
+  background: #e5e7eb !important;
+  opacity: 1;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-bottom {
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-free-field {
+  min-height: 46px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-free-field input {
+  min-height: 44px !important;
+  font-size: 0.88rem;
+  color: #151923 !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-button {
+  width: 100%;
+  min-height: 46px !important;
+}
+
+/* =========================================================
+   TOOLBAR RESULTADOS
+   ========================================================= */
+
+.catalog-results {
+  min-width: 0;
+}
+
+.catalog-results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: clamp(30px, 3vw, 44px);
+}
+
+.catalog-results-heading {
+  min-width: 0;
+}
+
+.catalog-results-heading > span {
+  display: inline-flex;
+  color: var(--af-red) !important;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+
+.catalog-results-heading h2 {
+  margin: 0;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-size: clamp(2.25rem, 4vw, 4.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.072em;
+  text-shadow:
+    0 0 22px rgba(0, 0, 0, 0.72),
+    0 16px 36px rgba(0, 0, 0, 0.52);
+}
+
+.catalog-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  flex: 0 0 auto;
+}
+
+.catalog-toolbar-actions p {
+  margin: 0;
+  color: #ffffff !important;
+  opacity: 0.92;
+  font-size: 1rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.active-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.active-filter-chips span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: #fecaca !important;
+  background: rgba(255, 25, 47, 0.13);
+  border: 1px solid rgba(255, 25, 47, 0.26);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   FILTROS DROPDOWN
+   ========================================================= */
+
+.filters-dropdown-wrap {
+  position: relative;
+}
+
+.filters-dropdown-button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 999px;
+  padding: 0 20px;
+  color: #ffffff;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 950;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26);
+}
+
+.filters-dropdown-button svg {
+  color: #ffffff;
+}
+
+.filters-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  z-index: 30;
+  width: 320px !important;
+  max-width: min(320px, calc(100vw - 32px)) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.filters-dropdown-panel * {
+  box-sizing: border-box;
+}
+
+.filters-dropdown-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dark);
+  margin-bottom: 18px;
+}
+
+.filters-dropdown-title svg {
+  color: var(--af-red);
+}
+
+.filters-dropdown-panel label {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.filters-dropdown-panel select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 46px;
+  border-radius: 15px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  background: #f8fafc;
+  color: var(--text-dark);
+  padding: 0 13px;
+  outline: none;
+}
+
+.filters-dropdown-panel .btn-primary,
+.filters-dropdown-panel .btn-clear {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.btn-clear {
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: var(--text-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 850;
+  margin-top: 10px;
+}
+
+/* =========================================================
+   GRID CARDS CATALOGO
+   ========================================================= */
+
+.catalog-product-grid,
+.loading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(26px, 2.4vw, 38px);
+  align-items: stretch;
+}
+
+@media (min-width: 1700px) {
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+.catalog-product-card {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow:
+    0 26px 76px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    border-color 0.24s ease;
+}
+
+.catalog-product-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(255, 25, 47, 0.25);
+  box-shadow:
+    0 36px 96px rgba(0, 0, 0, 0.32),
+    0 18px 50px rgba(255, 25, 47, 0.1);
+}
+
+.catalog-product-media {
+  position: relative;
+  min-height: 218px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.17), transparent 9rem),
+    linear-gradient(135deg, #ffffff, #eef1f5);
+}
+
+.catalog-product-code {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  max-width: calc(100% - 32px);
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: #ffffff;
+  background: #111827;
+  font-size: 0.76rem;
+  font-weight: 950;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.catalog-product-image-placeholder {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  border-radius: 30px;
+  color: var(--af-red);
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(255, 25, 47, 0.16);
+}
+
+.catalog-product-body {
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  flex: 1;
+}
+
+.catalog-product-body h3 {
+  color: var(--text-dark);
+  font-size: 1.08rem;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 4.2em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: normal;
+}
+
+.catalog-product-crosses {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft-dark);
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.catalog-product-crosses svg {
+  color: var(--af-red);
+}
+
+.catalog-product-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.catalog-product-actions .btn-card-secondary,
+.catalog-product-actions .btn-card-primary {
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.catalog-product-actions .btn-card-primary {
+  box-shadow: 0 14px 32px rgba(255, 25, 47, 0.18);
+}
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+.alert-error {
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  border-radius: 28px;
+  padding: 42px;
+  color: var(--text-dark);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 26px 76px rgba(0, 0, 0, 0.2);
+}
+
+.empty-state h3 {
+  margin-top: 0;
+  color: var(--text-dark);
+}
+
+.empty-state p {
+  color: var(--text-soft-dark);
+}
+
+.pagination {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pagination span {
+  color: #ffffff;
+  font-weight: 850;
+}
+
+.pagination button {
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pagination button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   DESACTIVAR ESTILOS VIEJOS DEL CATALOGO
+   ========================================================= */
+
+.catalog-hero,
+.catalog-hero-compact,
+.catalog-hero-with-finder,
+.catalog-hero-minimal,
+.catalog-top-image,
+.filters-card,
+.catalog-results-header {
+  display: none !important;
+}
+
+.catalog-layout {
+  display: block !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .catalog-workspace {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 26px;
+  }
+
+  .catalog-results-heading h2 {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+  }
+}
+
+@media (max-width: 920px) {
+  .catalog-racing-hero {
+    min-height: 240px;
+  }
+
+  .catalog-racing-inner h1 {
+    white-space: normal;
+    font-size: 3rem;
+  }
+
+  .catalog-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-vehicle-sidebar {
+    position: relative;
+    top: auto;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .catalog-results-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .catalog-toolbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filters-dropdown-panel {
+    left: 0;
+    right: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .catalog-racing-hero {
+    min-height: 220px;
+  }
+
+  .catalog-racing-decor-left {
+    width: 92vw;
+    height: 230px;
+    opacity: 0.74;
+  }
+
+  .catalog-racing-decor-right {
+    display: none;
+  }
+
+  .catalog-racing-inner {
+    text-align: left;
+  }
+
+  .catalog-racing-inner h1 {
+    font-size: 2.65rem;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-product-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-toolbar-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters-dropdown-button {
+    width: 100%;
+  }
+
+  .filters-dropdown-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+/* =========================================================
+   FIX CATALOGO - ANCHO, GRID, SIDEBAR Y BOTONES
+   ========================================================= */
+
+/* Más ancho útil para que quepan más cards */
+.catalog-workspace-section > .container,
+.catalog-workspace.container {
+  width: min(1540px, calc(100% - 64px)) !important;
+  max-width: 1540px !important;
+}
+
+/* Layout principal */
+.catalog-workspace {
+  display: grid !important;
+  grid-template-columns: 310px minmax(0, 1fr) !important;
+  gap: clamp(30px, 3vw, 44px) !important;
+  align-items: start !important;
+}
+
+/* =========================================================
+   SIDEBAR BUSCADOR - MAS COMPACTO
+   ========================================================= */
+
+.catalog-vehicle-sidebar {
+  position: sticky;
+  top: 92px;
+  max-height: calc(100dvh - 104px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.vehicle-finder-sidebar {
+  padding: 16px !important;
+  border-radius: 24px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading {
+  margin-bottom: 10px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading span {
+  font-size: 0.68rem !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-heading h2 {
+  font-size: 1.18rem !important;
+  line-height: 1.08 !important;
+  margin: 8px 0 6px !important;
+}
+
+/* En catálogo quitamos/parchamos el texto largo para ganar altura */
+.vehicle-finder-sidebar .vehicle-finder-heading p {
+  display: none !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-grid {
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+}
+
+.vehicle-finder-sidebar label {
+  gap: 5px !important;
+}
+
+.vehicle-finder-sidebar label > span {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
+}
+
+.vehicle-finder-sidebar select {
+  min-height: 41px !important;
+  height: 41px !important;
+  border-radius: 14px !important;
+  font-size: 0.86rem !important;
+  padding: 0 14px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-bottom {
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-free-field {
+  min-height: 42px !important;
+  border-radius: 14px !important;
+}
+
+.vehicle-finder-sidebar .vehicle-free-field input {
+  min-height: 40px !important;
+  font-size: 0.84rem !important;
+}
+
+.vehicle-finder-sidebar .vehicle-finder-button {
+  min-height: 42px !important;
+  height: 42px !important;
+  border-radius: 14px !important;
+  font-size: 0.88rem !important;
+}
+
+/* =========================================================
+   TOOLBAR - TITULOS Y CONTADORES VISIBLES
+   ========================================================= */
+
+.catalog-results-toolbar {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  margin-bottom: 28px !important;
+}
+
+.catalog-results-heading > span {
+  color: var(--af-red) !important;
+}
+
+.catalog-results-heading h2 {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-size: clamp(2rem, 3.7vw, 4rem) !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.072em !important;
+}
+
+.catalog-toolbar-actions p {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 900 !important;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+}
+
+/* =========================================================
+   GRID - CANTIDAD DE CARDS POR TAMAÑO
+   ========================================================= */
+
+/* Desktop amplio: 4 cards junto al buscador */
+.catalog-product-grid,
+.loading-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(20px, 1.8vw, 28px) !important;
+  align-items: stretch !important;
+}
+
+/* Pantallas muy grandes: 5 cards */
+@media (min-width: 1820px) {
+  .catalog-workspace-section > .container,
+  .catalog-workspace.container {
+    width: min(1720px, calc(100% - 96px)) !important;
+    max-width: 1720px !important;
+  }
+
+  .catalog-workspace {
+    grid-template-columns: 320px minmax(0, 1fr) !important;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Laptop media: 3 cards */
+@media (max-width: 1450px) {
+  .catalog-workspace-section > .container,
+  .catalog-workspace.container {
+    width: min(1360px, calc(100% - 48px)) !important;
+  }
+
+  .catalog-workspace {
+    grid-template-columns: 300px minmax(0, 1fr) !important;
+    gap: 30px !important;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Tablet: buscador arriba, 2 cards */
+@media (max-width: 1080px) {
+  .catalog-workspace-section > .container,
+  .catalog-workspace.container {
+    width: min(100% - 40px, 980px) !important;
+  }
+
+  .catalog-workspace {
+    grid-template-columns: 1fr !important;
+  }
+
+  .catalog-vehicle-sidebar {
+    position: relative !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0 !important;
+  }
+
+  .vehicle-finder-sidebar .vehicle-finder-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .vehicle-finder-sidebar .vehicle-finder-bottom {
+    grid-template-columns: minmax(0, 1fr) 160px !important;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Mobile: 1 card */
+@media (max-width: 640px) {
+  .catalog-workspace-section > .container,
+  .catalog-workspace.container {
+    width: min(100% - 24px, 520px) !important;
+  }
+
+  .vehicle-finder-sidebar .vehicle-finder-grid,
+  .vehicle-finder-sidebar .vehicle-finder-bottom {
+    grid-template-columns: 1fr !important;
+  }
+
+  .catalog-results-toolbar {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .catalog-toolbar-actions {
+    width: 100% !important;
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .filters-dropdown-button {
+    width: 100% !important;
+  }
+
+  .catalog-product-grid,
+  .loading-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =========================================================
+   CARDS - MAS AIRE Y BOTONES VISIBLES
+   ========================================================= */
+
+.catalog-product-card {
+  border-radius: 28px !important;
+  min-height: 455px !important;
+}
+
+.catalog-product-media {
+  min-height: 180px !important;
+}
+
+.catalog-product-image-placeholder {
+  width: 82px !important;
+  height: 82px !important;
+  border-radius: 24px !important;
+}
+
+.catalog-product-body {
+  padding: 20px !important;
+  gap: 14px !important;
+}
+
+.catalog-product-body h3 {
+  color: var(--text-dark) !important;
+  font-size: 0.98rem !important;
+  line-height: 1.36 !important;
+  min-height: 4.1em !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+.catalog-product-crosses {
+  color: var(--text-soft-dark) !important;
+  font-size: 0.9rem !important;
+}
+
+/* Botones de catálogo, sin heredar blanco invisible */
+.catalog-product-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  margin-top: auto !important;
+}
+
+.catalog-product-actions .btn-card-secondary,
+.catalog-product-actions .btn-card-primary {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 0.82rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.catalog-product-actions .btn-card-secondary {
+  color: #111827 !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(17, 24, 39, 0.18) !important;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08) !important;
+}
+
+.catalog-product-actions .btn-card-secondary:hover {
+  color: var(--af-red) !important;
+  border-color: rgba(255, 25, 47, 0.28) !important;
+}
+
+.catalog-product-actions .btn-card-secondary:disabled {
+  color: #8a94a6 !important;
+  background: #f3f4f6 !important;
+  opacity: 0.75 !important;
+}
+
+.catalog-product-actions .btn-card-primary {
+  color: #ffffff !important;
+  border: none !important;
+  background: linear-gradient(135deg, var(--af-red), var(--af-orange)) !important;
+  box-shadow: 0 14px 32px rgba(255, 25, 47, 0.2) !important;
+}
+
+@media (max-width: 640px) {
+  .catalog-product-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* =========================================================
+   CATALOGO - NEGRO OFICIAL ANDYFERS
+   ========================================================= */
+
+.catalog-racing-hero,
+.catalog-workspace-section,
+.catalog-section,
+.catalog-racing-hero + section {
+  background:
+    radial-gradient(circle at 88% 4%, rgba(255, 25, 47, 0.08), transparent 28rem),
+    linear-gradient(180deg, var(--andy-black) 0%, var(--andy-black-soft) 48%, var(--andy-black) 100%) !important;
+}
+
+.catalog-racing-hero::after {
+  background: linear-gradient(
+    180deg,
+    rgba(13, 13, 13, 0) 0%,
+    rgba(13, 13, 13, 0.78) 64%,
+    var(--andy-black) 100%
+  ) !important;
+}

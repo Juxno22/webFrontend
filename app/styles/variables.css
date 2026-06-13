@@ -1,0 +1,38 @@
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+  --andy-black: #0D0D0D;
+  --andy-black-soft: #121212;
+  --af-red: #ff192f;
+  --af-red-dark: #c90019;
+  --af-orange: #f8805c;
+  --af-yellow: #eee56e;
+  --af-blue: #022e7a;
+  --af-pink: #d20772;
+
+  --bg: #08090d;
+  --bg-soft: #11131a;
+  --bg-card: #161924;
+  --text: #f8fafc;
+  --muted: #9ca3af;
+  --line: rgba(255, 255, 255, 0.1);
+
+  --white: #ffffff;
+  --black: #050505;
+
+  --shadow-red: 0 24px 80px rgba(255, 25, 47, 0.22);
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+}
+
+:root {
+  --page-light: #f4f6f8;
+  --page-light-2: #ffffff;
+  --page-light-3: #eef1f5;
+  --text-dark: #161922;
+  --text-soft-dark: #5b6472;
+  --line-light: rgba(17, 24, 39, 0.1);
+}

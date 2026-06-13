@@ -1,0 +1,150 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+const TOKEN_KEY = "andyfers_admin_token";
+const USER_KEY = "andyfers_admin_user";
+
+export function getAdminToken() {
+  if (typeof window === "undefined") return null;
+
+  return window.localStorage.getItem(TOKEN_KEY);
+}
+
+export function getAdminUser() {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveAdminSession(token, user) {
+  window.localStorage.setItem(TOKEN_KEY, token);
+  window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
+export function clearAdminSession() {
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(USER_KEY);
+}
+
+export async function adminFetch(path, options = {}) {
+  const token = getAdminToken();
+
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    },
+    cache: "no-store",
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.error || "Error en petición admin.");
+  }
+
+  return data;
+}
+
+export async function adminLogin(payload) {
+  const response = await fetch(`${API_URL}/api/admin/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.error || "No se pudo iniciar sesión.");
+  }
+
+  saveAdminSession(data.token, data.user);
+
+  return data;
+}
+
+export async function getAdminCotizaciones(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/cotizaciones${query ? `?${query}` : ""}`);
+}
+
+export async function getAdminCotizacion(folio) {
+  return adminFetch(`/api/admin/cotizaciones/${encodeURIComponent(folio)}`);
+}
+
+export async function updateCotizacionEstado(folio, payload) {
+  return adminFetch(`/api/admin/cotizaciones/${encodeURIComponent(folio)}/estado`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function addCotizacionEvento(folio, payload) {
+  return adminFetch(`/api/admin/cotizaciones/${encodeURIComponent(folio)}/eventos`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getAdminCotizacionesResumen(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(
+    `/api/admin/cotizaciones/resumen${query ? `?${query}` : ""}`
+  );
+}
+
+export async function getAdminProductosResumen() {
+  return adminFetch("/api/admin/productos/resumen");
+}
+
+export async function getAdminProductos(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/productos${query ? `?${query}` : ""}`);
+}
+
+export async function getAdminProducto(id) {
+  return adminFetch(`/api/admin/productos/${encodeURIComponent(id)}`);
+}
+
+export async function updateAdminProducto(id, payload) {
+  return adminFetch(`/api/admin/productos/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
