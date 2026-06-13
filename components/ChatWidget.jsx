@@ -15,12 +15,6 @@ import { addToQuoteCart } from "../app/lib/quoteCart";
 
 const SESSION_STORAGE_KEY = "andyfers_ai_session_id";
 
-const QUICK_PROMPTS = [
-  "Busco bomba de agua para Tsuru 2005",
-  "Mi auto se calienta",
-  "Necesito termostato para Chevy 2010",
-];
-
 function createId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
@@ -65,7 +59,7 @@ function HorseMascot() {
   useEffect(() => {
     const interval = window.setInterval(() => {
       setFrameIndex((current) => (current + 1) % frames.length);
-    }, 150);
+    }, 180);
 
     return () => window.clearInterval(interval);
   }, []);
@@ -90,7 +84,7 @@ export default function ChatWidget() {
     {
       id: "welcome",
       role: "bot",
-      text: "🤖 ¡Hola! Soy el asistente virtual de Andyfers. Estoy conectado a la base de datos de refacciones. ¿En qué te ayudo hoy?",
+      text: "🐴 ¡Hola! Soy el asistente virtual de Andyfers. Estoy conectado a la base de datos de refacciones. ¿En qué te ayudo hoy?",
       products: [],
     },
   ]);
