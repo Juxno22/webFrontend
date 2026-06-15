@@ -305,16 +305,21 @@ export default function ChatWidget() {
   }
 
   function buildBotMessageFromAiResponse(data = {}) {
+    const products = Array.isArray(data.productos) ? data.productos : [];
+    const hasProducts = products.length > 0;
+
     return {
       id: createId(),
       role: "bot",
       text:
         data.respuesta ||
         "No pude generar una respuesta en este momento. Intenta con más datos del vehículo o el código de la pieza.",
-      products: Array.isArray(data.productos) ? data.productos : [],
+      products,
       intent: data.intencion || null,
       context: data.contexto_corto || null,
-      followup: normalizeFollowup(data.seguimiento),
+      // Si ya hay productos, las acciones viven en la tarjeta del producto.
+      // No mandamos respuestas rápidas como mensaje nuevo para evitar respuestas genéricas.
+      followup: hasProducts ? null : normalizeFollowup(data.seguimiento),
       service: data.servicio_ia || null,
       requiresMoreData: Boolean(data.requiere_mas_datos),
       meta: {
@@ -407,7 +412,7 @@ export default function ChatWidget() {
                     </div>
                   )}
 
-                  {message.role === "bot" && message.followup && (
+                  {message.role === "bot" && message.followup && !(message.products?.length > 0) && (
                     <div className="andy-chat-followup">
                       {message.followup.preguntas.length > 0 && (
                         <div className="andy-chat-followup-questions">
