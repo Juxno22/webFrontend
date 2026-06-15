@@ -162,6 +162,12 @@ export default function ChatWidget() {
         text: payload.text,
         products: payload.products || [],
         meta: payload.meta || null,
+        intent: payload.intent || null,
+        context: payload.context || payload.meta?.contexto_corto || null,
+        followup: payload.followup || null,
+        service: payload.service || null,
+        requiresMoreData: Boolean(payload.requiresMoreData),
+        createdAt: new Date().toISOString(),
       },
     ]);
   }
@@ -195,19 +201,10 @@ export default function ChatWidget() {
         saveSession(data.session_id);
       }
 
-      addBotMessage({
-        text:
-          data.respuesta ||
-          "No pude generar una respuesta en este momento. Intenta con más datos del vehículo o el código de la pieza.",
-        products: Array.isArray(data.productos) ? data.productos : [],
-        meta: {
-          total_candidatos: data.total_candidatos || 0,
-          total_recomendados: data.total_recomendados || 0,
-          requiere_mas_datos: Boolean(data.requiere_mas_datos),
-          modo_busqueda: data.intencion?.modo_busqueda,
-          contexto_corto: data.contexto_corto,
-        },
-      });
+      setMessages((current) => [
+        ...current,
+        buildBotMessageFromAiResponse(data),
+      ]);
     } catch (error) {
       addBotMessage({
         text:
@@ -251,16 +248,7 @@ export default function ChatWidget() {
         saveSession(data.session_id);
       }
 
-      setMessages([
-        {
-          id: createId(),
-          role: "bot",
-          text:
-            data.respuesta ||
-            "Listo, borré el vehículo guardado para esta búsqueda.",
-          products: [],
-        },
-      ]);
+      setMessages([buildBotMessageFromAiResponse(data)]);
     } catch {
       if (typeof window !== "undefined") {
         window.localStorage.removeItem(SESSION_STORAGE_KEY);
@@ -285,6 +273,67 @@ export default function ChatWidget() {
 
     addToQuoteCart(normalized);
     dispatchToast("Producto agregado a tu cotización");
+  }
+
+  function normalizeFollowup(followup) {
+    if (!followup || typeof followup !== "object") {
+      return null;
+    }
+
+    const questions = Array.isArray(followup.preguntas_seguimiento)
+      ? followup.preguntas_seguimiento.filter(Boolean)
+      : [];
+
+    const quickReplies = Array.isArray(followup.respuestas_rapidas)
+      ? followup.respuestas_rapidas.filter(Boolean)
+      : [];
+
+    if (!questions.length && !quickReplies.length) {
+      return null;
+    }
+
+    return {
+      requiereSeguimiento: Boolean(followup.requiere_seguimiento),
+      bloqueante: Boolean(followup.bloqueante),
+      siguienteAccion: followup.siguiente_accion || "NONE",
+      datosFaltantes: Array.isArray(followup.datos_faltantes)
+        ? followup.datos_faltantes
+        : [],
+      preguntas: questions.slice(0, 3),
+      respuestasRapidas: quickReplies.slice(0, 6),
+    };
+  }
+
+  function buildBotMessageFromAiResponse(data = {}) {
+    return {
+      id: createId(),
+      role: "bot",
+      text:
+        data.respuesta ||
+        "No pude generar una respuesta en este momento. Intenta con más datos del vehículo o el código de la pieza.",
+      products: Array.isArray(data.productos) ? data.productos : [],
+      intent: data.intencion || null,
+      context: data.contexto_corto || null,
+      followup: normalizeFollowup(data.seguimiento),
+      service: data.servicio_ia || null,
+      requiresMoreData: Boolean(data.requiere_mas_datos),
+      meta: {
+        total_candidatos: data.total_candidatos || 0,
+        total_recomendados: data.total_recomendados || 0,
+        requiere_mas_datos: Boolean(data.requiere_mas_datos),
+        modo_busqueda: data.intencion?.modo_busqueda,
+        contexto_corto: data.contexto_corto,
+      },
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  async function handleQuickReply(reply) {
+    const value = String(reply || "").trim();
+
+    if (!value || loading) return;
+
+    await sendQuestion(value);
   }
 
   return (
@@ -328,6 +377,7 @@ export default function ChatWidget() {
                 message.role === "bot" &&
                 index === messages.length - 1 &&
                 message.id !== "welcome";
+              const messageContext = message.context || message.meta?.contexto_corto || null;
 
               return (
                 <div
@@ -343,20 +393,52 @@ export default function ChatWidget() {
                     {message.text}
                   </div>
 
-                  {message.meta?.contexto_corto &&
-                    Object.keys(message.meta.contexto_corto).length > 0 && (
-                      <div className="andy-chat-context-chip">
-                        Contexto:{" "}
-                        {[
-                          message.meta.contexto_corto.marca_auto,
-                          message.meta.contexto_corto.modelo_auto,
-                          message.meta.contexto_corto.anio,
-                          message.meta.contexto_corto.motor,
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      </div>
-                    )}
+                  {messageContext && Object.keys(messageContext).length > 0 && (
+                    <div className="andy-chat-context-chip">
+                      Contexto:{" "}
+                      {[
+                        messageContext.marca_auto,
+                        messageContext.modelo_auto,
+                        messageContext.anio,
+                        messageContext.motor,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </div>
+                  )}
+
+                  {message.role === "bot" && message.followup && (
+                    <div className="andy-chat-followup">
+                      {message.followup.preguntas.length > 0 && (
+                        <div className="andy-chat-followup-questions">
+                          {message.followup.preguntas.map((question, questionIndex) => (
+                            <div
+                              className="andy-chat-followup-question"
+                              key={`${message.id}-q-${questionIndex}`}
+                            >
+                              {question}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {message.followup.respuestasRapidas.length > 0 && (
+                        <div className="andy-chat-followup-actions">
+                          {message.followup.respuestasRapidas.map((reply, replyIndex) => (
+                            <button
+                              type="button"
+                              className="andy-chat-followup-btn"
+                              key={`${message.id}-r-${replyIndex}`}
+                              onClick={() => handleQuickReply(reply)}
+                              disabled={loading}
+                            >
+                              {reply}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {message.products?.length > 0 && (
                     <div className="andy-chat-products">

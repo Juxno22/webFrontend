@@ -5,9 +5,9 @@ import { ClipboardList } from 'lucide-react';
 
 const heroImages = [
   "/andyfers-home/reel1.jfif",
-  "/andyfers-home/reel2.jfif",
   "/andyfers-home/reel3.jfif",
-  "/andyfers-home/product-collage.png",
+  "/andyfers-home/reel3.jfif",
+  "/andyfers-home/reel3.jfif",
 ];
 
 export default function HomeHeroCarousel() {
