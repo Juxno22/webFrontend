@@ -14,3 +14,47 @@
 @import "./styles/contact.css";
 @import "./styles/admin.css";
 @import "./styles/responsive.css";
+
+/* =========================================================
+TIPOGRAFIA TITULOS PUBLICOS + BOTONES SOLIDOS
+========================================================= */
+@font-face {
+  font-family: "Airstrike";
+  src: url("/fonts/airstrike/airstrikebold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+.public-shell h1,
+.public-shell h2,
+.public-shell .hero-title,
+.public-shell .section-title,
+.public-shell .vehicle-finder-heading h2,
+.public-shell .lineas-hero h1,
+.public-shell .catalog-hero h1,
+.public-shell .product-detail-title,
+.public-shell .quote-page h1 {
+  font-family: "Airstrike", var(--font-heading, system-ui, sans-serif);
+  letter-spacing: 0.035em;
+}
+/* Quita degradados rojos en botones públicos */
+.public-shell .btn-primary,
+.public-shell .vehicle-finder-button,
+.public-shell .quote-submit-button,
+.public-shell .quote-send-button,
+.public-shell .catalog-filter-button,
+.public-shell .product-action-primary,
+.public-shell button[type="submit"] {
+  background: var(--andyfers-action-red, var(--af-red, #ff192f)) !important;
+  background-image: none !important;
+  box-shadow: 0 14px 34px rgba(255, 25, 47, 0.22);
+}
+.public-shell .btn-primary:hover,
+.public-shell .vehicle-finder-button:hover,
+.public-shell .quote-submit-button:hover,
+.public-shell .quote-send-button:hover,
+.public-shell .catalog-filter-button:hover,
+.public-shell .product-action-primary:hover,
+.public-shell button[type="submit"]:hover {
+  filter: brightness(1.04);
+}

@@ -1,10 +1,5 @@
 /* =========================================================
    ADMIN
-   Archivo generado desde globals.css para modularizar estilos.
-   ========================================================= */
-
-/* =========================================================
-   MODULO 5 - PANEL ADMIN VENTAS
    ========================================================= */
 
 .admin-login-page,
@@ -1360,4 +1355,13 @@
   .admin-item-card {
     flex-direction: column;
   }
+}
+
+.admin-shell .admin-login-page,
+.admin-shell .admin-page {
+  min-height: 100vh;
+}
+
+.admin-shell .admin-login-page {
+  padding-top: 54px;
 }

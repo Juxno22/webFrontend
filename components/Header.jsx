@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, ShoppingBag } from "lucide-react";
 import { getQuoteCartCount } from "../app/lib/quoteCart";
 
@@ -50,9 +51,16 @@ const lineasMenu = [
 ];
 
 export default function Header() {
+  const pathname = usePathname();
   const [count, setCount] = useState(0);
   const [lineasOpen, setLineasOpen] = useState(false);
   const closeTimerRef = useRef(null);
+
+  const isHome = pathname === "/";
+  const isLineas = pathname?.startsWith("/lineas");
+  const isCatalog = pathname?.startsWith("/catalogo") || pathname?.startsWith("/producto");
+  const isQuote = pathname?.startsWith("/cotizacion");
+  const isContact = pathname?.startsWith("/contacto");
 
   useEffect(() => {
     function refreshCount() {
@@ -69,6 +77,10 @@ export default function Header() {
       window.removeEventListener("storage", refreshCount);
     };
   }, []);
+
+  function navClass(active) {
+    return active ? "is-active" : "";
+  }
 
   function openLineasDropdown() {
     if (closeTimerRef.current) {
@@ -104,7 +116,7 @@ export default function Header() {
         </Link>
 
         <nav className="desktop-nav">
-          <Link href="/" onClick={closeNow}>
+          <Link href="/" className={navClass(isHome)} onClick={closeNow}>
             Inicio
           </Link>
 
@@ -115,7 +127,7 @@ export default function Header() {
           >
             <button
               type="button"
-              className="lineas-nav-trigger"
+              className={`lineas-nav-trigger ${navClass(isLineas || lineasOpen)}`}
               onClick={() => setLineasOpen((current) => !current)}
               aria-expanded={lineasOpen}
             >
@@ -132,8 +144,7 @@ export default function Header() {
                 {lineasMenu.map((item) => (
                   <Link
                     href={item.href}
-                    className={`lineas-nav-item ${item.featured ? "featured" : ""
-                      }`}
+                    className={`lineas-nav-item ${item.featured ? "featured" : ""}`}
                     key={item.title}
                     onClick={closeNow}
                   >
@@ -145,15 +156,15 @@ export default function Header() {
             )}
           </div>
 
-          <Link href="/catalogo" onClick={closeNow}>
+          <Link href="/catalogo" className={navClass(isCatalog)} onClick={closeNow}>
             Catálogo
           </Link>
 
-          <Link href="/cotizacion" onClick={closeNow}>
+          <Link href="/cotizacion" className={navClass(isQuote)} onClick={closeNow}>
             Cotización
           </Link>
 
-          <Link href="/contacto" onClick={closeNow}>
+          <Link href="/contacto" className={navClass(isContact)} onClick={closeNow}>
             Contacto
           </Link>
         </nav>

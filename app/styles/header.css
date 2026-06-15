@@ -1,8 +1,6 @@
 /* =========================================================
    HEADER
-   Archivo generado desde globals.css para modularizar estilos.
    ========================================================= */
-
 /* HEADER */
 
 .site-header {
@@ -789,4 +787,119 @@
     height: 40px;
     max-width: 132px;
   }
+}
+/* =========================================================
+   MODULO 4A - HEADER ANIMADO + LINEAS EN NEGRO
+   ========================================================= */
+
+:root {
+  --andyfers-action-red: var(--af-red, #ff192f);
+  --andyfers-black: #0d0d0d;
+}
+
+.desktop-nav > a,
+.lineas-nav-trigger {
+  position: relative;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  color: #d1d5db;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.desktop-nav > a::after,
+.lineas-nav-trigger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--andyfers-action-red);
+  box-shadow: 0 0 18px rgba(255, 25, 47, 0.55);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.24s ease;
+}
+
+.desktop-nav > a:hover,
+.desktop-nav > a.is-active,
+.lineas-nav-trigger:hover,
+.lineas-nav-trigger.is-active {
+  color: #ffffff;
+  transform: translateY(-1px);
+  text-shadow: 0 0 18px rgba(255, 25, 47, 0.22);
+}
+
+.desktop-nav > a:hover::after,
+.desktop-nav > a.is-active::after,
+.lineas-nav-trigger:hover::after,
+.lineas-nav-trigger.is-active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.quote-action {
+  background: var(--andyfers-action-red) !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 14px 34px rgba(255, 25, 47, 0.24);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.quote-action:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 18px 42px rgba(255, 25, 47, 0.32);
+}
+
+/* Dropdown de líneas en negro */
+.lineas-nav-menu {
+  background: rgba(13, 13, 13, 0.98) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.42),
+    0 12px 40px rgba(255, 25, 47, 0.08) !important;
+}
+
+.lineas-nav-menu::before {
+  background: rgba(13, 13, 13, 0.98) !important;
+  border-left-color: rgba(255, 255, 255, 0.1) !important;
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.lineas-nav-item,
+.lineas-nav-item.featured {
+  background: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.01);
+}
+
+.lineas-nav-item strong {
+  color: #ffffff !important;
+}
+
+.lineas-nav-item span {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+
+.lineas-nav-item:hover {
+  transform: translateY(-2px);
+  background: #171717 !important;
+  border-color: rgba(255, 25, 47, 0.34) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+}
+
+.lineas-nav-item.featured {
+  background:
+    radial-gradient(circle at top right, rgba(255, 25, 47, 0.16), transparent 13rem),
+    #0d0d0d !important;
 }
