@@ -383,6 +383,16 @@ export default function ChatWidget() {
                 index === messages.length - 1 &&
                 message.id !== "welcome";
               const messageContext = message.context || message.meta?.contexto_corto || null;
+              const contextLabel = messageContext
+                ? [
+                  messageContext.marca_auto,
+                  messageContext.modelo_auto,
+                  messageContext.anio,
+                  messageContext.motor,
+                ]
+                  .filter(Boolean)
+                  .join(" ")
+                : "";
 
               return (
                 <div
@@ -398,17 +408,9 @@ export default function ChatWidget() {
                     {message.text}
                   </div>
 
-                  {messageContext && Object.keys(messageContext).length > 0 && (
+                  {contextLabel && (
                     <div className="andy-chat-context-chip">
-                      Contexto:{" "}
-                      {[
-                        messageContext.marca_auto,
-                        messageContext.modelo_auto,
-                        messageContext.anio,
-                        messageContext.motor,
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
+                      Contexto: {contextLabel}
                     </div>
                   )}
 
