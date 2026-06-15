@@ -30,6 +30,52 @@ function normalizeProduct(product) {
   };
 }
 
+function isApproximateProduct(product = {}) {
+  return Boolean(
+    product.busqueda_relajada_medidas ||
+    product.coincidencia_aproximada ||
+    product.es_aproximado
+  );
+}
+
+function getRelaxedSearchInfo(message = {}) {
+  const relaxed =
+    message.intent?.busqueda_medidas_relajada ||
+    message.meta?.busqueda_medidas_relajada ||
+    null;
+
+  if (!relaxed?.activa) return null;
+
+  return {
+    active: true,
+    motivo: relaxed.motivo || "",
+    etiqueta: relaxed.etiqueta || "",
+    vehiculoRelajado: Boolean(relaxed.vehiculo_relajado),
+    medidaFiltrada: relaxed.medida_filtrada || null,
+  };
+}
+
+function buildRelaxedSearchNotice(relaxedSearch = null) {
+  if (!relaxedSearch?.active) return "";
+
+  if (relaxedSearch.motivo === "PRODUCT_ONLY_WITHOUT_MEASUREMENT_FILTERS") {
+    return "No encontré coincidencia exacta con todas las medidas. Te muestro opciones por pieza y vehículo para validar con ventas.";
+  }
+
+  if (
+    relaxedSearch.motivo ===
+    "PRODUCT_ONLY_WITHOUT_MEASUREMENTS_OR_VEHICLE_FILTER"
+  ) {
+    return "No encontré coincidencia exacta con medidas ni aplicación vehicular. Te muestro opciones orientativas del catálogo para validar físicamente.";
+  }
+
+  if (relaxedSearch.vehiculoRelajado) {
+    return "No encontré coincidencia exacta con todas las medidas y el vehículo. Te muestro opciones aproximadas por medida principal.";
+  }
+
+  return "No encontré coincidencia exacta con todas las medidas. Te muestro opciones aproximadas por medida principal.";
+}
+
 function dispatchToast(message) {
   if (typeof window === "undefined") return;
 
@@ -272,7 +318,12 @@ export default function ChatWidget() {
     const normalized = normalizeProduct(product);
 
     addToQuoteCart(normalized);
-    dispatchToast("Producto agregado a tu cotización");
+
+    dispatchToast(
+      isApproximateProduct(product)
+        ? "Producto agregado para validar medidas en cotización"
+        : "Producto agregado a tu cotización"
+    );
   }
 
   function normalizeFollowup(followup) {
@@ -328,6 +379,7 @@ export default function ChatWidget() {
         requiere_mas_datos: Boolean(data.requiere_mas_datos),
         modo_busqueda: data.intencion?.modo_busqueda,
         contexto_corto: data.contexto_corto,
+        busqueda_medidas_relajada: data.intencion?.busqueda_medidas_relajada || null,
       },
       createdAt: new Date().toISOString(),
     };
@@ -382,7 +434,10 @@ export default function ChatWidget() {
                 message.role === "bot" &&
                 index === messages.length - 1 &&
                 message.id !== "welcome";
-              const messageContext = message.context || message.meta?.contexto_corto || null;
+
+              const messageContext =
+                message.context || message.meta?.contexto_corto || null;
+
               const contextLabel = messageContext
                 ? [
                   messageContext.marca_auto,
@@ -393,6 +448,9 @@ export default function ChatWidget() {
                   .filter(Boolean)
                   .join(" ")
                 : "";
+
+              const relaxedSearch = getRelaxedSearchInfo(message);
+              const relaxedSearchNotice = buildRelaxedSearchNotice(relaxedSearch);
 
               return (
                 <div
@@ -447,14 +505,31 @@ export default function ChatWidget() {
                     </div>
                   )}
 
+                  {message.role === "bot" &&
+                    message.products?.length > 0 &&
+                    relaxedSearchNotice && (
+                      <div className="andy-chat-approx-alert">
+                        <strong>Opciones aproximadas</strong>
+                        <span>{relaxedSearchNotice}</span>
+                      </div>
+                    )}
+
                   {message.products?.length > 0 && (
                     <div className="andy-chat-products">
                       {message.products.map((product) => {
                         const code = getProductCode(product);
+                        const approximateProduct =
+                          isApproximateProduct(product) || Boolean(relaxedSearch?.active);
+
+                        const productForQuote = {
+                          ...product,
+                          busqueda_relajada_medidas: approximateProduct,
+                        };
 
                         return (
                           <article
-                            className="andy-chat-product-card"
+                            className={`andy-chat-product-card ${approximateProduct ? "is-approximate" : ""
+                              }`}
                             key={`${product.producto_id || product.id}-${code}`}
                           >
                             <div className="andy-chat-product-main">
@@ -465,6 +540,13 @@ export default function ChatWidget() {
                                   product.categoria ||
                                   "Producto"}
                               </span>
+
+                              {approximateProduct && (
+                                <div className="andy-chat-product-badges">
+                                  <em>Coincidencia aproximada</em>
+                                  <em>Validar medidas</em>
+                                </div>
+                              )}
                             </div>
 
                             <div className="andy-chat-product-actions">
@@ -480,10 +562,10 @@ export default function ChatWidget() {
 
                               <button
                                 type="button"
-                                onClick={() => handleAddToQuote(product)}
+                                onClick={() => handleAddToQuote(productForQuote)}
                               >
                                 <ShoppingBag size={15} />
-                                Agregar
+                                {approximateProduct ? "Agregar para validar" : "Agregar"}
                               </button>
                             </div>
                           </article>
