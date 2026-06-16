@@ -15,12 +15,9 @@
 @import "./styles/admin.css";
 @import "./styles/responsive.css";
 
-/* =========================================================
-TIPOGRAFIA TITULOS PUBLICOS + BOTONES SOLIDOS
-========================================================= */
 @font-face {
   font-family: "Airstrike";
-  src: url("/fonts/airstrike/airstrikebold.ttf") format("truetype");
+  src: url("/fonts/bebas/bebasNeue-Regular.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -57,4 +54,65 @@ TIPOGRAFIA TITULOS PUBLICOS + BOTONES SOLIDOS
 .public-shell .product-action-primary:hover,
 .public-shell button[type="submit"]:hover {
   filter: brightness(1.04);
+}
+/* =========================================================
+BOTONES ROJO SOLIDO ANDYFERS
+========================================================= */
+:root {
+  --andyfers-action-red: var(--af-red, #ff192f);
+}
+/* Header */
+.quote-action,
+/* Botones generales */
+.btn-primary,
+button.btn-primary,
+a.btn-primary,
+/* Buscador por vehículo */
+.vehicle-finder-button,
+/* Home */
+.andy-hero-btn.catalogo,
+.andy-video-play-button,
+.andy-new-product-actions .btn-card-primary,
+/* Catálogo */
+.catalog-product-actions .btn-card-primary,
+/* Cotización */
+.quote-related-actions button,
+/* Admin - acciones tipo botón que tenían degradado */
+.admin-module-nav a.active,
+.admin-quote-card-expanded:hover .admin-quote-view {
+  background: var(--andyfers-action-red) !important;
+  background-image: none !important;
+  border-color: transparent;
+  color: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(255, 25, 47, 0.22);
+}
+/* Hover unificado */
+.quote-action:hover,
+.btn-primary:hover,
+button.btn-primary:hover,
+a.btn-primary:hover,
+.vehicle-finder-button:hover,
+.andy-hero-btn.catalogo:hover,
+.andy-video-play-button:hover,
+.andy-new-product-actions .btn-card-primary:hover,
+.catalog-product-actions .btn-card-primary:hover,
+.quote-related-actions button:hover,
+.admin-module-nav a.active:hover,
+.admin-quote-card-expanded:hover .admin-quote-view {
+  background: var(--andyfers-action-red) !important;
+  background-image: none !important;
+  filter: brightness(1.04);
+  box-shadow: 0 18px 42px rgba(255, 25, 47, 0.3);
+}
+/* Estados deshabilitados */
+.btn-primary:disabled,
+button.btn-primary:disabled,
+.vehicle-finder-button:disabled,
+.quote-related-actions button:disabled {
+  background: var(--andyfers-action-red) !important;
+  background-image: none !important;
+  opacity: 0.62;
+  filter: none;
+  box-shadow: none;
+  cursor: not-allowed;
 }
