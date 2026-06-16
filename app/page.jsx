@@ -59,12 +59,6 @@ export default async function HomePage() {
             <p>
               Porque un motor frío también calienta corazones.
             </p>
-
-            <div className="andy-about-signature">
-              <span>Catálogo inteligente</span>
-              <strong>validación por asesor</strong>
-              <span>respuesta comercial</span>
-            </div>
           </div>
         </section>
 

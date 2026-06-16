@@ -756,3 +756,233 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+/* =========================================================
+ AJUSTE TAMAÑO CHATWIDGET Desktop + Mobile
+========================================================= */
+
+:root {
+  --andy-chat-desktop-width: 460px;
+  --andy-chat-desktop-height: 640px;
+  --andy-chat-mobile-height: 78dvh;
+  --andy-chat-mobile-max-height: 680px;
+}
+
+/* Desktop cerrado */
+.andy-chat-widget {
+  right: 26px;
+  bottom: 26px;
+}
+
+.andy-chat-closed {
+  gap: 16px;
+}
+
+.andy-chat-speech-bubble {
+  padding: 14px 22px;
+  border-radius: 20px;
+  font-size: 15px;
+}
+
+.andy-chat-horse-container {
+  width: 112px !important;
+  height: 112px !important;
+  border-width: 4px;
+}
+
+.andy-chat-horse-img {
+  width: 96px !important;
+  height: 96px !important;
+}
+
+/* Desktop abierto */
+.andy-chat-window {
+  width: min(var(--andy-chat-desktop-width), calc(100vw - 28px));
+  height: min(var(--andy-chat-desktop-height), calc(100vh - 44px));
+  border-radius: 20px;
+}
+
+.andy-chat-header {
+  padding: 16px 18px;
+}
+
+.andy-chat-header-info strong {
+  font-size: 17px;
+}
+
+.andy-chat-header-info span {
+  font-size: 12px;
+}
+
+.andy-chat-body {
+  padding: 18px;
+  gap: 14px;
+}
+
+.andy-chat-message {
+  max-width: 92%;
+  padding: 13px 15px;
+  font-size: 14.5px;
+  line-height: 1.46;
+}
+
+.andy-chat-product-card {
+  padding: 12px;
+  gap: 12px;
+}
+
+.andy-chat-footer {
+  padding: 14px;
+  gap: 10px;
+}
+
+.andy-chat-input {
+  min-height: 44px;
+  padding: 12px 15px;
+  font-size: 14px;
+}
+
+.andy-chat-send-btn {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .andy-chat-widget {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .andy-chat-closed {
+    gap: 0;
+  }
+
+  .andy-chat-speech-bubble {
+    display: none;
+  }
+
+  .andy-chat-horse-container {
+    width: 82px !important;
+    height: 82px !important;
+    border-width: 3px;
+  }
+
+  .andy-chat-horse-img {
+    width: 72px !important;
+    height: 72px !important;
+    transform: translateY(1px);
+  }
+
+  .andy-chat-window {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    height: min(var(--andy-chat-mobile-height), var(--andy-chat-mobile-max-height));
+    max-height: calc(100dvh - 20px);
+    border-radius: 18px;
+  }
+
+  .andy-chat-header {
+    padding: 14px 15px;
+  }
+
+  .andy-chat-header-info strong {
+    font-size: 15.5px;
+  }
+
+  .andy-chat-header-info span {
+    font-size: 11.5px;
+  }
+
+  .andy-chat-header-actions button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .andy-chat-body {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .andy-chat-message {
+    max-width: 96%;
+    padding: 12px 13px;
+    font-size: 13.8px;
+    line-height: 1.44;
+  }
+
+  .andy-chat-context-chip,
+  .andy-chat-followup {
+    max-width: 96%;
+  }
+
+  .andy-chat-product-card {
+    grid-template-columns: 1fr;
+    padding: 11px;
+  }
+
+  .andy-chat-product-actions {
+    flex-direction: row;
+  }
+
+  .andy-chat-product-actions button {
+    flex: 1;
+    min-height: 36px;
+  }
+
+  .andy-chat-product-link {
+    width: 42px;
+    min-width: 42px;
+  }
+
+  .andy-chat-footer {
+    padding: 12px;
+    gap: 9px;
+  }
+
+  .andy-chat-input {
+    min-height: 42px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+  }
+
+  .andy-chat-send-btn {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+  }
+}
+
+/* Mobile chico */
+@media (max-width: 420px) {
+  .andy-chat-window {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    height: 76dvh;
+    max-height: calc(100dvh - 16px);
+    border-radius: 16px;
+  }
+
+  .andy-chat-horse-container {
+    width: 74px !important;
+    height: 74px !important;
+  }
+
+  .andy-chat-horse-img {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .andy-chat-body {
+    padding: 12px;
+  }
+
+  .andy-chat-message {
+    font-size: 13.4px;
+  }
+}
