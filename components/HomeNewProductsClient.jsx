@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Boxes, Gauge, Plus } from "lucide-react";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import ProductMediaImage from "@/components/ProductMediaImage";
 
 function isValidCode(value) {
   if (!value) return false;

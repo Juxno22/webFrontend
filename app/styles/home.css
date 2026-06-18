@@ -1,5 +1,4 @@
 /* HERO */
-
 .hero {
   min-height: calc(100vh - 76px);
   display: flex;
@@ -5633,29 +5632,1177 @@ html.andy-video-modal-open {
   color: #111827 !important;
   background: #ffffff !important;
 }
+
 /* =========================================================
-   MODULO 5 - IMAGENES EN PRODUCTOS NUEVOS HOME
+   MODULO 5 - REFACTORIZACION CLOUDINARY HOME
+   Imagen limpia en productos nuevos
    ========================================================= */
 
+.andy-new-product-media {
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+
 .andy-new-product-image {
-  width: 100%;
-  height: 210px;
-  object-fit: contain;
-  padding: 38px 22px 18px;
-  box-sizing: border-box;
-  display: block;
+  width: 100% !important;
+  height: 210px !important;
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+  mix-blend-mode: normal !important;
+
   filter:
-    drop-shadow(0 20px 42px rgba(15, 23, 42, 0.14))
-    drop-shadow(0 0 20px rgba(255, 25, 47, 0.08));
+    drop-shadow(0 18px 36px rgba(15, 23, 42, 0.10)) !important;
+
   transition:
     transform 0.24s ease,
-    filter 0.24s ease;
+    filter 0.24s ease !important;
 }
 
 .andy-new-product-card:hover .andy-new-product-image,
 .andy-new-product-card:focus-within .andy-new-product-image {
-  transform: scale(1.045);
+  transform: scale(1.035) !important;
+
   filter:
-    drop-shadow(0 24px 52px rgba(15, 23, 42, 0.2))
-    drop-shadow(0 0 26px rgba(255, 25, 47, 0.12));
+    drop-shadow(0 22px 46px rgba(15, 23, 42, 0.14)) !important;
+}
+
+.andy-new-product-icon {
+  width: 82px !important;
+  height: 82px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 24px !important;
+
+  color: var(--af-red) !important;
+  background: #ffffff !important;
+
+  box-shadow: 0 20px 60px rgba(255, 25, 47, 0.18) !important;
+}
+
+@media (max-width: 760px) {
+  .andy-new-product-image {
+    height: 196px !important;
+  }
+
+  .andy-new-product-icon {
+    width: 74px !important;
+    height: 74px !important;
+    border-radius: 22px !important;
+  }
+}
+/* =========================================================
+   FIX FINAL MODULO 5 - HOME PRODUCTOS NUEVOS
+   Cards limpias con imagen real Cloudinary
+   ========================================================= */
+
+/* Sección blanca limpia */
+.andy-new-products-section {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 25, 47, 0.045), transparent 26rem),
+    linear-gradient(180deg, #ffffff 0%, #f4f6f8 100%) !important;
+}
+
+/* Marquee estable */
+.andy-products-track {
+  gap: 22px !important;
+  animation-duration: 95s !important;
+}
+
+/* Card rectangular, no ovalada */
+.andy-new-product-card {
+  width: 320px !important;
+  flex: 0 0 320px !important;
+
+  min-height: 470px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  overflow: hidden !important;
+
+  border-radius: 28px !important;
+
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+
+  transform: none !important;
+}
+
+.andy-new-product-card:hover,
+.andy-new-product-card:focus-within {
+  min-height: 470px !important;
+  border-radius: 28px !important;
+  transform: translateY(-4px) !important;
+
+  box-shadow:
+    0 30px 86px rgba(15, 23, 42, 0.16),
+    0 16px 40px rgba(255, 25, 47, 0.08) !important;
+}
+
+.andy-new-product-card::before,
+.andy-new-product-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Área visual blanca */
+.andy-new-product-media {
+  position: relative !important;
+
+  min-height: 220px !important;
+  height: 220px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 0 !important;
+
+  overflow: hidden !important;
+
+  background: #ffffff !important;
+  border-radius: 0 !important;
+}
+
+/* En hover no cambia forma ni altura */
+.andy-new-product-card:hover .andy-new-product-media,
+.andy-new-product-card:focus-within .andy-new-product-media {
+  min-height: 220px !important;
+  height: 220px !important;
+}
+
+/* Código vuelve a esquina superior */
+.andy-new-product-media > span {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: none !important;
+
+  max-width: calc(100% - 28px) !important;
+  min-height: 30px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 11px !important;
+
+  color: #ffffff !important;
+  background: #111827 !important;
+
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+
+  font-size: 0.76rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+
+  box-shadow: none !important;
+
+  z-index: 4 !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.andy-new-product-card:hover .andy-new-product-media > span,
+.andy-new-product-card:focus-within .andy-new-product-media > span {
+  top: 14px !important;
+  left: 14px !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+/* Imagen real */
+.andy-new-product-image {
+  width: 100% !important;
+  height: 220px !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+
+  filter: none !important;
+  transform: none !important;
+  mix-blend-mode: normal !important;
+}
+
+.andy-new-product-card:hover .andy-new-product-image,
+.andy-new-product-card:focus-within .andy-new-product-image {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Fallback limpio */
+.andy-new-product-icon,
+.andy-new-product-media > div {
+  width: 82px !important;
+  height: 82px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 24px !important;
+
+  color: var(--af-red) !important;
+  background: #ffffff !important;
+
+  box-shadow: 0 20px 60px rgba(255, 25, 47, 0.14) !important;
+}
+
+/* Cuerpo visible y ordenado */
+.andy-new-product-body {
+  padding: 22px !important;
+  gap: 12px !important;
+
+  display: grid !important;
+
+  color: #111827 !important;
+  background: #ffffff !important;
+
+  text-align: left !important;
+}
+
+.andy-new-product-body h3 {
+  display: -webkit-box !important;
+
+  margin: 0 !important;
+
+  color: #111827 !important;
+
+  font-size: 1rem !important;
+  line-height: 1.32 !important;
+
+  min-height: 3.9em !important;
+
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+
+  overflow: hidden !important;
+}
+
+/* Tags visibles, no flotantes */
+.andy-new-product-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+
+  opacity: 1 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  transform: none !important;
+
+  margin: 0 !important;
+}
+
+.andy-new-product-tags span {
+  width: fit-content !important;
+
+  color: #b91c1c !important;
+  background: rgba(255, 25, 47, 0.1) !important;
+  border: 1px solid rgba(255, 25, 47, 0.18) !important;
+
+  border-radius: 999px !important;
+  padding: 6px 9px !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+.andy-new-product-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px 16px !important;
+
+  justify-content: flex-start !important;
+
+  color: #667085 !important;
+
+  font-size: 0.86rem !important;
+}
+
+.andy-new-product-meta span {
+  color: #667085 !important;
+}
+
+.andy-new-product-meta svg {
+  color: var(--af-red) !important;
+}
+
+.andy-new-product-card .product-warning {
+  color: #9a6400 !important;
+  background: #fff7e6 !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+}
+
+/* Botones visibles, sin hover raro */
+.andy-new-product-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  margin-top: auto !important;
+}
+
+.andy-new-product-actions .btn-card-primary {
+  opacity: 1 !important;
+  transform: none !important;
+  max-height: none !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 720px), (hover: none) {
+  .andy-new-product-card {
+    width: 286px !important;
+    flex-basis: 286px !important;
+    min-height: 455px !important;
+  }
+
+  .andy-new-product-media,
+  .andy-new-product-card:hover .andy-new-product-media,
+  .andy-new-product-card:focus-within .andy-new-product-media,
+  .andy-new-product-image {
+    height: 202px !important;
+    min-height: 202px !important;
+  }
+
+  .andy-new-product-body {
+    padding: 20px !important;
+    text-align: left !important;
+  }
+
+  .andy-new-product-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* =========================================================
+   HOME - PRODUCTOS NUEVOS FINAL CORREGIDO
+   Reposo: óvalo limpio con contenido seguro
+   Hover: rectangular, muestra descripción, warning y cotizar
+   ========================================================= */
+
+/* Carrusel */
+.andy-home-page .andy-new-products-section .andy-products-marquee {
+  padding: 12px 0 58px !important;
+  overflow: hidden !important;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  ) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-products-track {
+  display: flex !important;
+  width: max-content !important;
+  gap: 28px !important;
+  animation: andyProductsMove 76s linear infinite !important;
+  will-change: transform !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-products-marquee:hover .andy-products-track,
+.andy-home-page .andy-new-products-section .andy-products-marquee:focus-within .andy-products-track {
+  animation-play-state: paused !important;
+}
+
+/* Card base: óvalo completo */
+.andy-home-page .andy-new-products-section .andy-new-product-card {
+  width: 310px !important;
+  flex: 0 0 310px !important;
+  height: 455px !important;
+  min-height: 455px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  overflow: hidden !important;
+
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-radius: 999px !important;
+
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+
+  transform: none !important;
+
+  transition:
+    border-radius 0.32s ease,
+    transform 0.28s ease,
+    box-shadow 0.28s ease !important;
+}
+
+/* Hover: se abre rectangular */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within {
+  border-radius: 30px !important;
+  transform: translateY(-6px) !important;
+
+  box-shadow:
+    0 30px 86px rgba(15, 23, 42, 0.16),
+    0 16px 40px rgba(255, 25, 47, 0.08) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card::before,
+.andy-home-page .andy-new-products-section .andy-new-product-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Zona visual */
+.andy-home-page .andy-new-products-section .andy-new-product-media {
+  position: relative !important;
+
+  height: 178px !important;
+  min-height: 178px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 28px 44px 0 !important;
+
+  overflow: visible !important;
+
+  background: #ffffff !important;
+  border-radius: 0 !important;
+
+  transition:
+    height 0.28s ease,
+    min-height 0.28s ease,
+    padding 0.28s ease !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-media,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-media {
+  height: 168px !important;
+  min-height: 168px !important;
+  padding: 18px 22px 0 !important;
+}
+
+/* Imagen real */
+.andy-home-page .andy-new-products-section .andy-new-product-image {
+  width: 100% !important;
+  height: 145px !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  transform: none !important;
+
+  transition:
+    height 0.28s ease,
+    transform 0.28s ease !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-image,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-image {
+  height: 150px !important;
+  transform: scale(1.025) !important;
+}
+
+/* Fallback */
+.andy-home-page .andy-new-products-section .andy-new-product-icon,
+.andy-home-page .andy-new-products-section .andy-new-product-media > div {
+  width: 74px !important;
+  height: 74px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 24px !important;
+
+  color: var(--af-red) !important;
+  background: #ffffff !important;
+
+  box-shadow: 0 20px 60px rgba(255, 25, 47, 0.14) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-media > div svg {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+/* Código centrado */
+.andy-home-page .andy-new-products-section .andy-new-product-media > span {
+  position: absolute !important;
+
+  top: auto !important;
+  right: auto !important;
+  left: 50% !important;
+  bottom: -19px !important;
+
+  transform: translateX(-50%) !important;
+
+  min-height: 38px !important;
+  max-width: 184px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 16px !important;
+
+  color: #ffffff !important;
+  background: #111827 !important;
+
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+
+  font-size: 0.86rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.16),
+    0 0 0 5px rgba(255, 255, 255, 0.72) !important;
+
+  z-index: 5 !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-media > span,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-media > span {
+  left: 50% !important;
+  bottom: -19px !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Cuerpo en reposo: zona segura central */
+.andy-home-page .andy-new-products-section .andy-new-product-body {
+  width: 218px !important;
+  max-width: 218px !important;
+
+  margin: 0 auto !important;
+  padding: 40px 0 24px !important;
+
+  display: grid !important;
+  gap: 13px !important;
+
+  color: #111827 !important;
+  background: #ffffff !important;
+
+  text-align: center !important;
+}
+
+/* Hover: usa todo el ancho */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-body,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-body {
+  width: auto !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+  padding: 40px 22px 22px !important;
+}
+
+/* Descripción: oculta en óvalo, visible en hover */
+.andy-home-page .andy-new-products-section .andy-new-product-body h3 {
+  display: none !important;
+
+  margin: 0 !important;
+
+  color: #111827 !important;
+
+  font-size: 0.98rem !important;
+  line-height: 1.28 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-body h3,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-body h3 {
+  display: -webkit-box !important;
+
+  min-height: 3.8em !important;
+
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+
+  overflow: hidden !important;
+}
+
+/* Tags */
+.andy-home-page .andy-new-products-section .andy-new-product-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 7px !important;
+
+  opacity: 1 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  transform: none !important;
+
+  margin: 0 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-tags span {
+  width: fit-content !important;
+
+  color: var(--af-red) !important;
+  background: rgba(255, 25, 47, 0.08) !important;
+  border: 1px solid rgba(255, 25, 47, 0.16) !important;
+
+  border-radius: 999px !important;
+  padding: 6px 9px !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Meta */
+.andy-home-page .andy-new-products-section .andy-new-product-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 8px 12px !important;
+
+  color: #667085 !important;
+
+  font-size: 0.82rem !important;
+  line-height: 1.2 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-meta span {
+  color: #667085 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-meta svg {
+  color: var(--af-red) !important;
+  flex: 0 0 auto !important;
+}
+
+/* Warning solo en hover */
+.andy-home-page .andy-new-products-section .andy-new-product-card .product-warning {
+  display: none !important;
+
+  color: #9a6400 !important;
+  background: #fff7e6 !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .product-warning,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .product-warning {
+  display: block !important;
+}
+
+/* Acciones */
+.andy-home-page .andy-new-products-section .andy-new-product-actions {
+  width: 100% !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+
+  margin-top: auto !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-secondary {
+  width: 100% !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-primary {
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-actions,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-actions {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .btn-card-primary,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .btn-card-primary {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  max-height: 46px !important;
+  pointer-events: auto !important;
+}
+
+/* Responsive */
+@media (max-width: 720px), (hover: none) {
+  .andy-home-page .andy-new-products-section .andy-new-product-card {
+    width: 286px !important;
+    flex-basis: 286px !important;
+    height: 435px !important;
+    min-height: 435px !important;
+    border-radius: 999px !important;
+    transform: none !important;
+  }
+
+  .andy-home-page .andy-new-products-section .andy-new-product-body {
+    width: 206px !important;
+    max-width: 206px !important;
+    margin: 0 auto !important;
+    padding-top: 40px !important;
+    text-align: center !important;
+  }
+
+  .andy-home-page .andy-new-products-section .andy-new-product-body h3,
+  .andy-home-page .andy-new-products-section .andy-new-product-card .product-warning {
+    display: none !important;
+  }
+
+  .andy-home-page .andy-new-products-section .andy-new-product-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-primary {
+    opacity: 1 !important;
+    transform: none !important;
+    max-height: 46px !important;
+    pointer-events: auto !important;
+  }
+}
+/* =========================================================
+   HOME CARRUSEL - CORRECCION DEFINITIVA
+   Misma altura siempre: ovalada en reposo / rectangular en hover
+   ========================================================= */
+
+/* El carrusel se mantiene animado */
+.andy-home-page .andy-new-products-section .andy-products-track {
+  display: flex !important;
+  width: max-content !important;
+  gap: 28px !important;
+  animation: andyProductsMove 76s linear infinite !important;
+  will-change: transform !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-products-marquee:hover .andy-products-track {
+  animation-play-state: paused !important;
+}
+
+/* IMPORTANTE: ya no crece en hover */
+.andy-home-page .andy-new-products-section .andy-new-product-card,
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within {
+  width: 310px !important;
+  flex: 0 0 310px !important;
+
+  height: 455px !important;
+  min-height: 455px !important;
+  max-height: 455px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  overflow: hidden !important;
+
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+
+  transition:
+    border-radius 0.28s ease,
+    transform 0.24s ease,
+    box-shadow 0.24s ease !important;
+}
+
+/* Reposo: óvalo completo */
+.andy-home-page .andy-new-products-section .andy-new-product-card {
+  border-radius: 999px !important;
+  transform: none !important;
+}
+
+/* Hover: rectangular, pero MISMA ALTURA */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within {
+  border-radius: 30px !important;
+  transform: translateY(-4px) !important;
+}
+
+/* Fuera pseudos que deforman */
+.andy-home-page .andy-new-products-section .andy-new-product-card::before,
+.andy-home-page .andy-new-products-section .andy-new-product-card::after,
+.andy-home-page .andy-new-products-section .andy-new-product-media::before,
+.andy-home-page .andy-new-products-section .andy-new-product-media::after,
+.andy-home-page .andy-new-products-section .andy-new-product-body::before,
+.andy-home-page .andy-new-products-section .andy-new-product-body::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Zona superior */
+.andy-home-page .andy-new-products-section .andy-new-product-media,
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-media,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-media {
+  position: relative !important;
+
+  height: 145px !important;
+  min-height: 145px !important;
+  max-height: 145px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 20px 42px 0 !important;
+
+  overflow: visible !important;
+
+  background: #ffffff !important;
+  border-radius: 0 !important;
+}
+
+/* Imagen/fallback */
+.andy-home-page .andy-new-products-section .andy-new-product-image,
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-image,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-image {
+  width: 100% !important;
+  height: 120px !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 0 !important;
+
+  background: #ffffff !important;
+
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-icon,
+.andy-home-page .andy-new-products-section .andy-new-product-media > div {
+  width: 66px !important;
+  height: 66px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 22px !important;
+
+  color: var(--af-red) !important;
+  background: #ffffff !important;
+
+  box-shadow: 0 18px 48px rgba(255, 25, 47, 0.12) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-media > div svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+/* Código centrado */
+.andy-home-page .andy-new-products-section .andy-new-product-media > span,
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-media > span,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-media > span {
+  position: absolute !important;
+
+  left: 50% !important;
+  bottom: -18px !important;
+  top: auto !important;
+  right: auto !important;
+
+  transform: translateX(-50%) !important;
+
+  min-height: 36px !important;
+  max-width: 178px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 15px !important;
+
+  color: #ffffff !important;
+  background: #111827 !important;
+
+  border-radius: 999px !important;
+
+  font-size: 0.84rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+
+  z-index: 5 !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+
+  box-shadow:
+    0 12px 26px rgba(15, 23, 42, 0.14),
+    0 0 0 5px rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Cuerpo: siempre cabe dentro de la misma altura */
+.andy-home-page .andy-new-products-section .andy-new-product-body {
+  flex: 1 !important;
+
+  width: 218px !important;
+  max-width: 218px !important;
+
+  margin: 0 auto !important;
+  padding: 38px 0 24px !important;
+
+  display: grid !important;
+  align-content: start !important;
+  gap: 11px !important;
+
+  color: #111827 !important;
+  background: #ffffff !important;
+
+  text-align: center !important;
+}
+
+/* En hover usa más ancho, no más alto */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-body,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-body {
+  width: auto !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+  padding: 38px 22px 22px !important;
+}
+
+/* Reposo: sin descripción ni warning */
+.andy-home-page .andy-new-products-section .andy-new-product-body h3,
+.andy-home-page .andy-new-products-section .andy-new-product-card .product-warning {
+  display: none !important;
+}
+
+/* Hover: descripción corta */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-body h3,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-body h3 {
+  display: -webkit-box !important;
+
+  margin: 0 !important;
+
+  color: #111827 !important;
+
+  font-size: 0.91rem !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+
+  max-height: 3.6em !important;
+
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+
+  overflow: hidden !important;
+}
+
+/* Tags */
+.andy-home-page .andy-new-products-section .andy-new-product-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 7px !important;
+
+  margin: 0 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-tags span {
+  width: fit-content !important;
+
+  color: var(--af-red) !important;
+  background: rgba(255, 25, 47, 0.08) !important;
+  border: 1px solid rgba(255, 25, 47, 0.16) !important;
+
+  border-radius: 999px !important;
+  padding: 6px 9px !important;
+
+  font-size: 0.7rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+/* Meta */
+.andy-home-page .andy-new-products-section .andy-new-product-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 8px 12px !important;
+
+  color: #667085 !important;
+
+  font-size: 0.8rem !important;
+  line-height: 1.2 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-meta span {
+  color: #667085 !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-meta svg {
+  color: var(--af-red) !important;
+}
+
+/* Warning compacto solo en hover */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .product-warning,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .product-warning {
+  display: block !important;
+
+  padding: 8px 10px !important;
+
+  color: #9a6400 !important;
+  background: #fff7e6 !important;
+  border: 1px solid rgba(245, 158, 11, 0.28) !important;
+  border-radius: 14px !important;
+
+  font-size: 0.74rem !important;
+  line-height: 1.22 !important;
+}
+
+/* Acciones */
+.andy-home-page .andy-new-products-section .andy-new-product-actions {
+  width: 100% !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 9px !important;
+
+  margin-top: auto !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-secondary,
+.andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-primary {
+  min-height: 42px !important;
+}
+
+/* Cotizar oculto en reposo */
+.andy-home-page .andy-new-products-section .andy-new-product-actions .btn-card-primary {
+  opacity: 0 !important;
+  transform: translateY(6px) !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hover: dos botones, dentro de la misma altura */
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .andy-new-product-actions,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .andy-new-product-actions {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:hover .btn-card-primary,
+.andy-home-page .andy-new-products-section .andy-new-product-card:focus-within .btn-card-primary {
+  opacity: 1 !important;
+  transform: none !important;
+  max-height: 42px !important;
+  pointer-events: auto !important;
+}
+/* =========================================================
+   HOME CARRUSEL - AJUSTE SOLO ESTADO NORMAL
+   No toca el hover rectangular
+   ========================================================= */
+
+/* Reposo: baja y centra mejor el contenido dentro del óvalo */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-media {
+  height: 176px !important;
+  min-height: 176px !important;
+  max-height: 176px !important;
+
+  padding: 34px 42px 0 !important;
+}
+
+/* Reposo: imagen/fallback con tamaño controlado */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-image {
+  height: 126px !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-icon,
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-media > div {
+  width: 68px !important;
+  height: 68px !important;
+}
+
+/* Reposo: código un poco más abajo junto con el bloque */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-media > span {
+  bottom: -19px !important;
+}
+
+/* Reposo: cuerpo más compacto y mejor centrado verticalmente */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-body {
+  width: 218px !important;
+  max-width: 218px !important;
+
+  margin: 0 auto !important;
+  padding: 42px 0 0 !important;
+
+  display: grid !important;
+  align-content: start !important;
+  gap: 13px !important;
+
+  text-align: center !important;
+}
+
+/* Reposo: no mostrar descripción ni warning */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-body h3,
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .product-warning {
+  display: none !important;
+}
+
+/* Reposo: tags y meta dentro de zona segura */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-tags {
+  justify-content: center !important;
+  gap: 7px !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-meta {
+  justify-content: center !important;
+  gap: 8px 12px !important;
+}
+
+/* Reposo: botón Ver detalle más abajo y centrado */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-actions {
+  margin-top: 6px !important;
+  grid-template-columns: 1fr !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-actions .btn-card-secondary {
+  width: 100% !important;
+  min-height: 42px !important;
+}
+
+/* Reposo: cotizar oculto */
+.andy-home-page .andy-new-products-section .andy-new-product-card:not(:hover):not(:focus-within) .andy-new-product-actions .btn-card-primary {
+  opacity: 0 !important;
+  transform: translateY(6px) !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }

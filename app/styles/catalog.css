@@ -1,13 +1,3 @@
-/* =========================================================
-   CATALOG - ANDYFERS RACING
-   Pantalla catálogo: hero negro, buscador lateral, filtros dropdown,
-   cards simples y responsive.
-   ========================================================= */
-
-/* =========================================================
-   HERO CATALOGO
-   ========================================================= */
-
 .catalog-racing-hero {
   position: relative;
   overflow: hidden;
@@ -1084,33 +1074,290 @@
     var(--andy-black) 100%
   ) !important;
 }
+
 /* =========================================================
-   MODULO 5 - IMAGENES EN CARDS CATALOGO
+   MODULO 5 - REFACTORIZACION CLOUDINARY CATALOGO
+   Fondo negro sólido + filtros utilizables + imagen limpia
    ========================================================= */
 
-.catalog-product-code {
-  z-index: 3;
+/* Base negra sin pseudo-capas que rompan el dropdown */
+.catalog-workspace-section,
+.catalog-section,
+.catalog-racing-hero + section {
+  background:
+    radial-gradient(circle at 88% 4%, rgba(255, 25, 47, 0.08), transparent 28rem),
+    #020304 !important;
+  color: #ffffff !important;
+}
+
+.catalog-results {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  background: transparent !important;
+}
+
+/* El toolbar debe quedar por encima del grid para que el dropdown sea usable */
+.catalog-results-toolbar {
+  position: relative;
+  z-index: 50;
+}
+
+.filters-dropdown-wrap {
+  position: relative;
+  z-index: 60;
+}
+
+.filters-dropdown-panel {
+  z-index: 999 !important;
+  overflow: visible !important;
+  background: #ffffff !important;
+}
+
+.catalog-product-grid,
+.loading-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Imagen: respetar el fondo blanco real de la imagen.
+   Sin mix-blend-mode, sin overlays que hagan que parezca pegada encima. */
+.catalog-product-media {
+  min-height: 218px !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
 }
 
 .catalog-product-image {
-  width: 100%;
-  height: 218px;
-  object-fit: contain;
-  padding: 34px 24px 24px;
-  box-sizing: border-box;
-  display: block;
+  width: 100% !important;
+  height: 218px !important;
+  display: block !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  mix-blend-mode: normal !important;
+
   filter:
-    drop-shadow(0 20px 42px rgba(15, 23, 42, 0.16))
-    drop-shadow(0 0 22px rgba(255, 25, 47, 0.08));
-  transform: scale(1);
+    drop-shadow(0 18px 36px rgba(15, 23, 42, 0.10)) !important;
+
   transition:
     transform 0.24s ease,
-    filter 0.24s ease;
+    filter 0.24s ease !important;
 }
 
 .catalog-product-card:hover .catalog-product-image {
-  transform: scale(1.045);
+  transform: scale(1.035) !important;
+  mix-blend-mode: normal !important;
+
   filter:
-    drop-shadow(0 24px 52px rgba(15, 23, 42, 0.22))
-    drop-shadow(0 0 26px rgba(255, 25, 47, 0.12));
+    drop-shadow(0 22px 46px rgba(15, 23, 42, 0.14)) !important;
+}
+
+.catalog-product-image-placeholder {
+  width: 96px !important;
+  height: 96px !important;
+  min-height: 96px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 30px !important;
+
+  color: var(--af-red) !important;
+  background: #ffffff !important;
+
+  box-shadow: 0 20px 60px rgba(255, 25, 47, 0.16) !important;
+}
+
+/* Por si ProductCard se usa dentro de catálogo o se importa este CSS */
+.product-card-image {
+  width: 100% !important;
+  height: 230px !important;
+  display: block !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  mix-blend-mode: normal !important;
+
+  filter:
+    drop-shadow(0 18px 36px rgba(15, 23, 42, 0.10)) !important;
+
+  transition:
+    transform 0.24s ease,
+    filter 0.24s ease !important;
+}
+
+.product-card:hover .product-card-image {
+  transform: scale(1.035) !important;
+  filter:
+    drop-shadow(0 22px 46px rgba(15, 23, 42, 0.14)) !important;
+}
+
+.product-icon {
+  display: grid !important;
+  place-items: center !important;
+}
+
+@media (max-width: 760px) {
+  .catalog-product-media {
+    min-height: 204px !important;
+  }
+
+  .catalog-product-image {
+    height: 204px !important;
+  }
+
+  .product-card-image {
+    height: 210px !important;
+  }
+}
+/* =========================================================
+   FIX FINAL MODULO 5 - CATALOGO LIMPIO
+   Fondo negro parejo + cards legibles + filtros funcionales
+   ========================================================= */
+
+/* Fondo negro parejo */
+.catalog-racing-hero,
+.catalog-workspace-section,
+.catalog-section,
+.catalog-racing-hero + section,
+.catalog-results {
+  background: #020304 !important;
+  background-color: #020304 !important;
+}
+
+/* Mantiene adornos, pero sin que cambien el color general */
+.catalog-racing-decor {
+  opacity: 0.58 !important;
+}
+
+.catalog-racing-hero::after {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 3, 4, 0) 0%,
+      rgba(2, 3, 4, 0.72) 62%,
+      #020304 100%
+    ) !important;
+}
+
+/* Quita overlay fijo que estaba ensuciando el fondo y capas */
+.catalog-results::before {
+  display: none !important;
+  content: none !important;
+}
+
+.catalog-results > * {
+  position: relative;
+  z-index: auto !important;
+}
+
+/* Filtros siempre arriba y utilizables */
+.filters-dropdown-wrap {
+  position: relative !important;
+  z-index: 200 !important;
+}
+
+.filters-dropdown-panel {
+  z-index: 999 !important;
+  overflow: visible !important;
+}
+
+/* Cards limpias */
+.catalog-product-card {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.catalog-product-card::before,
+.catalog-product-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Área de imagen blanca, sin glow ni blend */
+.catalog-product-media {
+  min-height: 230px !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+
+.catalog-product-image {
+  width: 100% !important;
+  height: 230px !important;
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.catalog-product-card:hover .catalog-product-image {
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Datos de card en oscuro, no texto blanco fantasma */
+.catalog-product-body {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.catalog-product-tags {
+  position: static !important;
+
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+
+  opacity: 1 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  transform: none !important;
+
+  margin: 0 !important;
+}
+
+.catalog-product-tags span {
+  width: fit-content !important;
+
+  color: #b91c1c !important;
+  background: rgba(255, 25, 47, 0.1) !important;
+  border: 1px solid rgba(255, 25, 47, 0.18) !important;
+
+  border-radius: 999px !important;
+  padding: 6px 9px !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+.catalog-product-body h3 {
+  color: #111827 !important;
+}
+
+.catalog-product-crosses,
+.catalog-product-crosses span {
+  color: #667085 !important;
+}
+
+.catalog-product-crosses svg {
+  color: var(--af-red) !important;
+}
+
+.catalog-product-card .product-warning {
+  color: #9a6400 !important;
+  background: #fff7e6 !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
 }
