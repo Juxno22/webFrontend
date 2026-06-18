@@ -4077,3 +4077,1243 @@ body.theme-home-wipe-light .andy-white-home-area > section {
     pointer-events: auto !important;
   }
 }
+/* =========================================================
+   MODULO 4D - VIDEO SOLO, SCROLL A COLOR Y FULLSCREEN
+   ========================================================= */
+
+.andy-video-scroll-section {
+  --video-scroll-progress: 0;
+  --video-scroll-scale: 0.86;
+  position: relative;
+  min-height: 132vh;
+  display: grid;
+  align-items: center;
+  padding: 18vh 0;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 25, 47, calc(0.04 + (var(--video-scroll-progress) * 0.12))), transparent 34rem),
+    linear-gradient(180deg, #050608 0%, #0d0d0d 50%, #050608 100%);
+}
+
+.andy-video-scroll-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(0.1 + (var(--video-scroll-progress) * 0.18));
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 72%);
+}
+
+.andy-video-scroll-stage {
+  position: sticky;
+  top: 92px;
+  width: min(1420px, calc(100% - 40px));
+  height: min(78vh, 820px);
+  margin: 0 auto;
+  border-radius: clamp(22px, 3vw, 46px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  transform: scale(var(--video-scroll-scale));
+  transform-origin: center;
+  border: 1px solid rgba(255, 255, 255, calc(0.1 + (var(--video-scroll-progress) * 0.08)));
+  box-shadow:
+    0 38px 120px rgba(0, 0, 0, 0.46),
+    0 0 calc(24px + (var(--video-scroll-progress) * 58px)) rgba(255, 25, 47, calc(0.08 + (var(--video-scroll-progress) * 0.18)));
+  transition:
+    border-radius 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.andy-video-scroll-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12), transparent 34%, rgba(0, 0, 0, 0.34)),
+    radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, calc(0.28 - (var(--video-scroll-progress) * 0.2))) 100%);
+}
+
+.andy-video-scroll-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter:
+    grayscale(calc((1 - var(--video-scroll-progress)) * 1))
+    saturate(calc(0.72 + (var(--video-scroll-progress) * 0.78)))
+    contrast(calc(1.04 + (var(--video-scroll-progress) * 0.08)))
+    brightness(calc(0.72 + (var(--video-scroll-progress) * 0.22)));
+  transform: scale(calc(1.08 - (var(--video-scroll-progress) * 0.04)));
+  transition: filter 0.16s linear, transform 0.16s linear;
+}
+
+.andy-video-fullscreen-button {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 50%;
+  width: clamp(76px, 7vw, 104px);
+  height: clamp(76px, 7vw, 104px);
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff192f 0%, #ff3e4f 48%, #f8805c 100%) !important;
+  box-shadow:
+    0 0 0 14px rgba(255, 25, 47, 0.14),
+    0 24px 76px rgba(255, 25, 47, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transform: translate(-50%, -50%) scale(calc(0.94 + (var(--video-scroll-progress) * 0.06)));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.andy-video-fullscreen-button:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  filter: brightness(1.08);
+}
+
+.andy-video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 2vw, 30px);
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(14px);
+}
+
+.andy-video-modal-player {
+  width: min(100%, 1500px);
+  height: min(100%, 86vh);
+  object-fit: contain;
+  border-radius: clamp(14px, 2vw, 28px);
+  background: #000000;
+  box-shadow: 0 30px 120px rgba(0, 0, 0, 0.68);
+}
+
+.andy-video-modal-close {
+  position: fixed;
+  top: clamp(14px, 2vw, 28px);
+  right: clamp(14px, 2vw, 28px);
+  z-index: 1001;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .andy-video-scroll-section {
+    min-height: 112vh;
+    padding: 12vh 0;
+  }
+
+  .andy-video-scroll-stage {
+    top: 86px;
+    width: calc(100% - 24px);
+    height: 64vh;
+    border-radius: 24px;
+  }
+}
+/* =========================================================
+   MODULO 4D - VIDEO ESTILO FLUID.GLASS / FONDO BLANCO
+   ========================================================= */
+
+.andy-video-scroll-section {
+  --video-scroll-progress: 0;
+  --video-scroll-scale: 0.78;
+  --video-scroll-radius: 46px;
+
+  position: relative !important;
+  min-height: 180vh !important;
+  display: grid !important;
+  align-items: center !important;
+  padding: 22vh 0 26vh !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(
+      circle at 50% 22%,
+      rgba(255, 25, 47, calc(0.035 + (var(--video-scroll-progress) * 0.085))),
+      transparent 34rem
+    ),
+    radial-gradient(circle at 14% 48%, rgba(15, 23, 42, 0.045), transparent 28rem),
+    radial-gradient(circle at 86% 52%, rgba(15, 23, 42, 0.04), transparent 28rem),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 46%, #ffffff 100%) !important;
+}
+
+.andy-video-scroll-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(0.16 + (var(--video-scroll-progress) * 0.12));
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 44%, black 0%, transparent 72%);
+}
+
+.andy-video-scroll-section::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(980px, 78vw);
+  height: min(980px, 78vw);
+  pointer-events: none;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 25, 47, 0.1), transparent 62%);
+  filter: blur(24px);
+  opacity: calc(0.22 + (var(--video-scroll-progress) * 0.28));
+  transform: translate(-50%, -50%);
+}
+
+.andy-video-scroll-stage {
+  position: sticky !important;
+  top: clamp(74px, 8vh, 96px) !important;
+  z-index: 1 !important;
+
+  width: min(1540px, calc(100% - clamp(24px, 5vw, 96px))) !important;
+  height: min(86vh, 920px) !important;
+  margin: 0 auto !important;
+
+  border-radius: var(--video-scroll-radius) !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+  isolation: isolate !important;
+
+  transform: scale(var(--video-scroll-scale)) !important;
+  transform-origin: center !important;
+
+  background: rgba(255, 255, 255, 0.62) !important;
+  border: 1px solid rgba(15, 23, 42, calc(0.1 - (var(--video-scroll-progress) * 0.035))) !important;
+
+  box-shadow:
+    0 44px 120px rgba(15, 23, 42, calc(0.13 + (var(--video-scroll-progress) * 0.1))),
+    0 18px 48px rgba(255, 25, 47, calc(0.05 + (var(--video-scroll-progress) * 0.09))),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+
+  transition:
+    border-radius 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.andy-video-scroll-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 24%, rgba(0, 0, 0, 0.14)),
+    radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(15, 23, 42, calc(0.18 - (var(--video-scroll-progress) * 0.12))) 100%
+    );
+}
+
+.andy-video-scroll-stage::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: calc(var(--video-scroll-radius) - 10px);
+  border: 1px solid rgba(255, 255, 255, calc(0.36 - (var(--video-scroll-progress) * 0.1)));
+  box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.12);
+}
+
+.andy-video-scroll-player {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+
+  filter:
+    grayscale(calc((1 - var(--video-scroll-progress)) * 1))
+    saturate(calc(0.78 + (var(--video-scroll-progress) * 0.82)))
+    contrast(calc(1.02 + (var(--video-scroll-progress) * 0.08)))
+    brightness(calc(0.86 + (var(--video-scroll-progress) * 0.12))) !important;
+
+  transform: scale(calc(1.09 - (var(--video-scroll-progress) * 0.04))) !important;
+  transition: filter 0.16s linear, transform 0.16s linear !important;
+}
+
+.andy-video-fullscreen-button {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: clamp(78px, 7vw, 106px) !important;
+  height: clamp(78px, 7vw, 106px) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, #ff192f 0%, #ff3e4f 48%, #f8805c 100%) !important;
+
+  box-shadow:
+    0 0 0 14px rgba(255, 25, 47, 0.14),
+    0 24px 76px rgba(255, 25, 47, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+
+  cursor: pointer !important;
+  transform:
+    translate(-50%, -50%)
+    scale(calc(0.94 + (var(--video-scroll-progress) * 0.08))) !important;
+
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.andy-video-fullscreen-button:hover {
+  transform: translate(-50%, -50%) scale(1.06) !important;
+  filter: brightness(1.08) !important;
+  box-shadow:
+    0 0 0 16px rgba(255, 25, 47, 0.16),
+    0 30px 90px rgba(255, 25, 47, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+}
+
+.andy-video-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: clamp(12px, 2vw, 30px) !important;
+  background: rgba(0, 0, 0, 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.andy-video-modal-player {
+  width: min(100%, 1500px) !important;
+  height: min(100%, 86vh) !important;
+  object-fit: contain !important;
+  border-radius: clamp(14px, 2vw, 28px) !important;
+  background: #000000 !important;
+  box-shadow: 0 30px 120px rgba(0, 0, 0, 0.68) !important;
+}
+
+.andy-video-modal-close {
+  position: fixed !important;
+  top: clamp(14px, 2vw, 28px) !important;
+  right: clamp(14px, 2vw, 28px) !important;
+  z-index: 1001 !important;
+
+  width: 46px !important;
+  height: 46px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  cursor: pointer !important;
+}
+
+@media (max-width: 760px) {
+  .andy-video-scroll-section {
+    min-height: 140vh !important;
+    padding: 14vh 0 18vh !important;
+  }
+
+  .andy-video-scroll-stage {
+    top: 86px !important;
+    width: calc(100% - 24px) !important;
+    height: 68vh !important;
+    border-radius: 26px !important;
+  }
+
+  .andy-video-scroll-stage::after {
+    inset: 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .andy-video-fullscreen-button {
+    width: 74px !important;
+    height: 74px !important;
+  }
+}
+/* =========================================================
+   MODULO 4D - VIDEO CINEMATIC REVEAL
+   Corrección:
+   - Menos espacio vacío
+   - Animación más fluida
+   - Video como protagonista
+   - Modal tapa y oculta header
+   ========================================================= */
+
+.andy-video-scroll-section {
+  --video-progress: 0;
+
+  position: relative !important;
+  min-height: 118vh !important;
+  padding: clamp(34px, 5vw, 72px) 0 clamp(28px, 4vw, 58px) !important;
+  display: grid !important;
+  align-items: start !important;
+  overflow: visible !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 24%,
+      rgba(255, 25, 47, calc(0.035 + (var(--video-progress) * 0.07))),
+      transparent 34rem
+    ),
+    linear-gradient(180deg, #f4f6f8 0%, #ffffff 42%, #f4f6f8 100%) !important;
+}
+
+/* Quitamos grid pesado anterior para que no ensucie el video */
+.andy-video-scroll-section::before {
+  display: none !important;
+  content: none !important;
+}
+
+.andy-video-scroll-section::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(960px, 78vw);
+  height: min(960px, 78vw);
+  pointer-events: none;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 25, 47, calc(0.08 + (var(--video-progress) * 0.08))),
+    transparent 64%
+  );
+  filter: blur(28px);
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+}
+
+.andy-video-scroll-stage {
+  position: sticky !important;
+  top: clamp(74px, 8vh, 92px) !important;
+  z-index: 2 !important;
+
+  width: min(1480px, calc(100% - clamp(22px, 5vw, 88px))) !important;
+  height: min(82vh, 820px) !important;
+  margin: 0 auto !important;
+
+  border-radius: calc(34px - (var(--video-progress) * 12px)) !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  transform:
+    translateY(calc(18px - (var(--video-progress) * 18px)))
+    scale(calc(0.94 + (var(--video-progress) * 0.06))) !important;
+
+  background: #000000 !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+
+  box-shadow:
+    0 34px 100px rgba(15, 23, 42, calc(0.12 + (var(--video-progress) * 0.1))),
+    0 16px 54px rgba(255, 25, 47, calc(0.06 + (var(--video-progress) * 0.1))) !important;
+
+  will-change: transform, border-radius, box-shadow !important;
+}
+
+/* Quita overlays viejos que oscurecían demasiado */
+.andy-video-scroll-stage::before,
+.andy-video-scroll-stage::after {
+  display: none !important;
+  content: none !important;
+}
+
+.andy-video-scroll-player {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+
+  filter:
+    saturate(calc(0.98 + (var(--video-progress) * 0.2)))
+    contrast(calc(1.01 + (var(--video-progress) * 0.04)))
+    brightness(calc(0.92 + (var(--video-progress) * 0.08))) !important;
+
+  transform: scale(calc(1.035 - (var(--video-progress) * 0.025))) !important;
+
+  transition: none !important;
+  will-change: transform, filter !important;
+}
+
+/*
+  En vez de animar grayscale pesado en el video,
+  ponemos una capa encima. Esto se siente mucho más fluido.
+*/
+.andy-video-scroll-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, calc(0.16 - (var(--video-progress) * 0.08))) 0%,
+      rgba(15, 23, 42, calc(0.2 - (var(--video-progress) * 0.14))) 100%
+    ),
+    rgba(244, 246, 248, calc(0.34 - (var(--video-progress) * 0.34)));
+
+  mix-blend-mode: normal;
+  opacity: calc(1 - (var(--video-progress) * 0.82));
+  transition: opacity 0.12s linear;
+}
+
+.andy-video-fullscreen-button {
+  position: absolute !important;
+  z-index: 5 !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: clamp(78px, 7vw, 108px) !important;
+  height: clamp(78px, 7vw, 108px) !important;
+
+  border: 0 !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, #ff192f 0%, #ff3e4f 48%, #f8805c 100%) !important;
+
+  box-shadow:
+    0 0 0 13px rgba(255, 25, 47, 0.13),
+    0 24px 76px rgba(255, 25, 47, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+
+  cursor: pointer !important;
+
+  transform:
+    translate(-50%, -50%)
+    scale(calc(0.96 + (var(--video-progress) * 0.04))) !important;
+
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.andy-video-fullscreen-button:hover {
+  transform: translate(-50%, -50%) scale(1.07) !important;
+  filter: brightness(1.08) !important;
+  box-shadow:
+    0 0 0 16px rgba(255, 25, 47, 0.16),
+    0 30px 92px rgba(255, 25, 47, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+}
+
+/* Fullscreen real de la experiencia */
+.andy-video-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 0 !important;
+  background: #000000 !important;
+  backdrop-filter: none !important;
+}
+
+/* Oculta header mientras el video está abierto */
+body.andy-video-modal-open .site-header {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-110%) !important;
+}
+
+body.andy-video-modal-open {
+  overflow: hidden !important;
+}
+
+.andy-video-modal-player {
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+
+  object-fit: contain !important;
+
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+.andy-video-modal-close {
+  position: fixed !important;
+  top: clamp(14px, 2vw, 24px) !important;
+  right: clamp(14px, 2vw, 24px) !important;
+  z-index: 2147483001 !important;
+
+  width: 48px !important;
+  height: 48px !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+  backdrop-filter: blur(12px) !important;
+
+  cursor: pointer !important;
+}
+
+.andy-video-modal-close:hover {
+  background: rgba(255, 25, 47, 0.86) !important;
+}
+
+/* Reduce el hueco entre video y "Quiénes somos" */
+.andy-video-scroll-section + .andy-about-section,
+.andy-white-home-area .andy-about-section {
+  padding-top: clamp(38px, 5vw, 72px) !important;
+}
+
+/* Ajuste general para que la zona blanca no se sienta inflada */
+.andy-white-home-area {
+  background:
+    radial-gradient(circle at 86% 8%, rgba(255, 25, 47, 0.055), transparent 30rem),
+    linear-gradient(180deg, #f4f6f8 0%, #ffffff 52%, #f4f6f8 100%) !important;
+}
+
+@media (max-width: 760px) {
+  .andy-video-scroll-section {
+    min-height: 104vh !important;
+    padding: 28px 0 38px !important;
+  }
+
+  .andy-video-scroll-stage {
+    top: 82px !important;
+    width: calc(100% - 22px) !important;
+    height: 66vh !important;
+    border-radius: 24px !important;
+  }
+
+  .andy-video-fullscreen-button {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .andy-video-scroll-section + .andy-about-section,
+  .andy-white-home-area .andy-about-section {
+    padding-top: 34px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .andy-video-scroll-stage,
+  .andy-video-scroll-player,
+  .andy-video-scroll-dim,
+  .andy-video-fullscreen-button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* =========================================================
+   MODULO 4D - VIDEO CON TRANSICION BLANCO -> NEGRO POR SCROLL
+   ========================================================= */
+
+.andy-video-scroll-section {
+  --video-progress: 0;
+  --video-bg-progress: 0;
+
+  position: relative !important;
+  min-height: 118vh !important;
+  padding: clamp(34px, 5vw, 72px) 0 clamp(30px, 4vw, 58px) !important;
+  display: grid !important;
+  align-items: start !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 28%,
+      rgba(255, 25, 47, calc(0.04 + (var(--video-bg-progress) * 0.14))),
+      transparent 34rem
+    ),
+    linear-gradient(
+      180deg,
+      rgb(
+        calc(244 - (var(--video-bg-progress) * 242))
+        calc(246 - (var(--video-bg-progress) * 243))
+        calc(248 - (var(--video-bg-progress) * 244))
+      ) 0%,
+      rgb(
+        calc(255 - (var(--video-bg-progress) * 250))
+        calc(255 - (var(--video-bg-progress) * 249))
+        calc(255 - (var(--video-bg-progress) * 247))
+      ) 48%,
+      rgb(
+        calc(244 - (var(--video-bg-progress) * 242))
+        calc(246 - (var(--video-bg-progress) * 243))
+        calc(248 - (var(--video-bg-progress) * 244))
+      ) 100%
+    ) !important;
+}
+
+/* Capa negra progresiva: más estable que animar todo el fondo */
+.andy-video-scroll-section::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -2 !important;
+  pointer-events: none !important;
+
+  background:
+    radial-gradient(circle at 50% 36%, rgba(255, 25, 47, 0.22), transparent 32rem),
+    radial-gradient(circle at 18% 62%, rgba(255, 25, 47, 0.08), transparent 24rem),
+    radial-gradient(circle at 82% 62%, rgba(248, 128, 92, 0.08), transparent 24rem),
+    linear-gradient(180deg, #f4f6f8 0%, #050608 42%, #020304 100%) !important;
+
+  opacity: var(--video-bg-progress) !important;
+  transition: opacity 0.08s linear !important;
+}
+
+/* Grid sutil que solo aparece cuando el fondo se oscurece */
+.andy-video-scroll-section::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+
+  opacity: calc(var(--video-bg-progress) * 0.34) !important;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(circle at 50% 42%, black 0%, transparent 72%);
+}
+
+/* El escenario del video se vuelve más premium al entrar al negro */
+.andy-video-scroll-stage {
+  position: sticky !important;
+  top: clamp(74px, 8vh, 92px) !important;
+  z-index: 2 !important;
+
+  width: min(1480px, calc(100% - clamp(22px, 5vw, 88px))) !important;
+  height: min(82vh, 820px) !important;
+  margin: 0 auto !important;
+
+  border-radius: calc(34px - (var(--video-progress) * 12px)) !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  transform:
+    translateY(calc(18px - (var(--video-progress) * 18px)))
+    scale(calc(0.94 + (var(--video-progress) * 0.06))) !important;
+
+  background: #000000 !important;
+
+  border: 1px solid
+    rgba(
+      calc(15 + (var(--video-bg-progress) * 240)),
+      calc(23 + (var(--video-bg-progress) * 232)),
+      calc(42 + (var(--video-bg-progress) * 213)),
+      calc(0.1 + (var(--video-bg-progress) * 0.08))
+    ) !important;
+
+  box-shadow:
+    0 34px 100px rgba(15, 23, 42, calc(0.12 + (var(--video-bg-progress) * 0.28))),
+    0 16px 70px rgba(255, 25, 47, calc(0.06 + (var(--video-bg-progress) * 0.16))) !important;
+
+  will-change: transform, border-radius, box-shadow !important;
+}
+
+/* Quitamos pseudo-elementos viejos del stage */
+.andy-video-scroll-stage::before,
+.andy-video-scroll-stage::after {
+  display: none !important;
+  content: none !important;
+}
+
+.andy-video-scroll-player {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+
+  filter:
+    saturate(calc(0.94 + (var(--video-progress) * 0.26)))
+    contrast(calc(1.01 + (var(--video-progress) * 0.05)))
+    brightness(calc(0.92 + (var(--video-progress) * 0.1))) !important;
+
+  transform: scale(calc(1.035 - (var(--video-progress) * 0.025))) !important;
+  transition: none !important;
+
+  will-change: transform, filter !important;
+}
+
+/* Capa que revela el color del video sin trabar el scroll */
+.andy-video-scroll-dim {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, calc(0.18 - (var(--video-progress) * 0.12))) 0%,
+      rgba(2, 3, 4, calc(0.22 - (var(--video-progress) * 0.08))) 100%
+    ),
+    rgba(244, 246, 248, calc(0.36 - (var(--video-progress) * 0.36))) !important;
+
+  opacity: calc(1 - (var(--video-progress) * 0.82)) !important;
+  transition: opacity 0.08s linear !important;
+}
+
+/* Botón más visible cuando el fondo ya se volvió negro */
+.andy-video-fullscreen-button {
+  position: absolute !important;
+  z-index: 5 !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: clamp(78px, 7vw, 108px) !important;
+  height: clamp(78px, 7vw, 108px) !important;
+
+  border: 0 !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, #ff192f 0%, #ff3e4f 48%, #f8805c 100%) !important;
+
+  box-shadow:
+    0 0 0 calc(11px + (var(--video-bg-progress) * 5px)) rgba(255, 25, 47, 0.14),
+    0 24px 82px rgba(255, 25, 47, calc(0.34 + (var(--video-bg-progress) * 0.12))),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+
+  cursor: pointer !important;
+
+  transform:
+    translate(-50%, -50%)
+    scale(calc(0.96 + (var(--video-progress) * 0.04))) !important;
+
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.andy-video-fullscreen-button:hover {
+  transform: translate(-50%, -50%) scale(1.07) !important;
+  filter: brightness(1.08) !important;
+}
+
+/* El video se une mejor con la siguiente sección */
+.andy-video-scroll-section + .andy-about-section,
+.andy-white-home-area .andy-about-section {
+  padding-top: clamp(42px, 5vw, 76px) !important;
+}
+
+/* Cuando el body esté en modo claro, la zona blanca no debe aplastar la animación del video */
+body.theme-home-light .andy-white-home-area {
+  background: transparent !important;
+}
+
+/* Después del video, ahora sí vuelve el fondo claro para Quiénes Somos */
+.andy-about-section {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 25, 47, 0.065), transparent 28rem),
+    linear-gradient(180deg, #f4f6f8 0%, #ffffff 48%, #f4f6f8 100%) !important;
+}
+
+/* Fullscreen: tapa todo y desaparece header */
+.andy-video-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 0 !important;
+  background: #000000 !important;
+}
+
+body.andy-video-modal-open .site-header {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-110%) !important;
+}
+
+body.andy-video-modal-open {
+  overflow: hidden !important;
+}
+
+.andy-video-modal-player {
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+.andy-video-modal-close {
+  position: fixed !important;
+  top: clamp(14px, 2vw, 24px) !important;
+  right: clamp(14px, 2vw, 24px) !important;
+  z-index: 2147483001 !important;
+
+  width: 48px !important;
+  height: 48px !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+  backdrop-filter: blur(12px) !important;
+
+  cursor: pointer !important;
+}
+
+.andy-video-modal-close:hover {
+  background: rgba(255, 25, 47, 0.86) !important;
+}
+
+@media (max-width: 760px) {
+  .andy-video-scroll-section {
+    min-height: 106vh !important;
+    padding: 28px 0 38px !important;
+  }
+
+  .andy-video-scroll-stage {
+    top: 82px !important;
+    width: calc(100% - 22px) !important;
+    height: 66vh !important;
+    border-radius: 24px !important;
+  }
+
+  .andy-video-fullscreen-button {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .andy-video-scroll-section + .andy-about-section,
+  .andy-white-home-area .andy-about-section {
+    padding-top: 36px !important;
+  }
+}
+/* =========================================================
+   MODULO 4D - FIXES VIDEO FULLSCREEN + PLAY SUTIL + CORTE LIMPIO
+   ========================================================= */
+
+/* 1. Quitar línea rara entre cambio de tema / sección */
+.home-theme-trigger {
+  height: 1px !important;
+  min-height: 1px !important;
+  margin: -1px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+}
+
+.andy-guided-search-section {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.andy-white-home-area {
+  margin-top: -1px !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+/* El video cubre el cambio para que no se vea una línea horizontal */
+.andy-video-scroll-section {
+  margin-top: -1px !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+}
+
+.andy-video-scroll-section::before {
+  inset: -2px 0 !important;
+}
+
+.andy-video-scroll-section::after {
+  inset: -2px 0 !important;
+}
+
+/* 2. Video protagonista: el escenario queda limpio */
+.andy-video-scroll-stage {
+  z-index: 2 !important;
+  cursor: pointer !important;
+}
+
+/* Quitamos cualquier overlay viejo que meta líneas internas */
+.andy-video-scroll-stage::before,
+.andy-video-scroll-stage::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 3. Botón de play: invisible normal, sutil en hover */
+.andy-video-fullscreen-button {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 6 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  border: 0 !important;
+  border-radius: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: #ffffff !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  cursor: pointer !important;
+
+  transform: none !important;
+  transition: none !important;
+}
+
+.andy-video-fullscreen-button:hover,
+.andy-video-fullscreen-button:focus-visible {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+.andy-video-play-glyph {
+  width: 44px !important;
+  height: 44px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 999px !important;
+
+  color: #ffffff !important;
+  background: rgba(255, 25, 47, 0.84) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+
+  box-shadow:
+    0 14px 42px rgba(255, 25, 47, 0.32),
+    0 0 0 8px rgba(255, 25, 47, 0.08) !important;
+
+  opacity: 0 !important;
+  transform: scale(0.82) translateY(4px) !important;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.andy-video-scroll-stage:hover .andy-video-play-glyph,
+.andy-video-scroll-stage:focus-within .andy-video-play-glyph {
+  opacity: 1 !important;
+  transform: scale(1) translateY(0) !important;
+}
+
+.andy-video-play-glyph svg {
+  display: block !important;
+  width: 17px !important;
+  height: 17px !important;
+  margin-left: 2px !important;
+}
+
+/* En touch no hay hover; dejamos el icono mínimo visible */
+@media (hover: none) {
+  .andy-video-play-glyph {
+    opacity: 0.72 !important;
+    transform: scale(0.94) !important;
+  }
+}
+
+/* 4. Fullscreen real: arriba de todo */
+.andy-video-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+
+  width: 100vw !important;
+  height: 100dvh !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: #000000 !important;
+  backdrop-filter: none !important;
+  overflow: hidden !important;
+}
+
+/* Ocultar header */
+body.andy-video-modal-open .site-header,
+html.andy-video-modal-open .site-header {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-120%) !important;
+}
+
+/* Ocultar chatbot completo */
+body.andy-video-modal-open .andy-chat-widget,
+html.andy-video-modal-open .andy-chat-widget,
+body.andy-video-modal-open .andy-chat-closed,
+html.andy-video-modal-open .andy-chat-closed,
+body.andy-video-modal-open .andy-chat-window,
+html.andy-video-modal-open .andy-chat-window,
+body.andy-video-modal-open [class*="chat"],
+html.andy-video-modal-open [class*="chat"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Evita scroll detrás del video */
+body.andy-video-modal-open,
+html.andy-video-modal-open {
+  overflow: hidden !important;
+}
+
+/* Video modal ocupa pantalla */
+.andy-video-modal-player {
+  width: 100vw !important;
+  height: 100dvh !important;
+
+  max-width: none !important;
+  max-height: none !important;
+
+  object-fit: contain !important;
+
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+/* 5. Cerrar visible y completo */
+.andy-video-modal-close {
+  position: fixed !important;
+  top: max(18px, env(safe-area-inset-top)) !important;
+  right: max(18px, env(safe-area-inset-right)) !important;
+  z-index: 2147483001 !important;
+
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 999px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(14px) !important;
+
+  line-height: 1 !important;
+  cursor: pointer !important;
+
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42) !important;
+}
+
+.andy-video-modal-close svg {
+  display: block !important;
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 auto !important;
+  stroke-width: 2.2 !important;
+}
+
+.andy-video-modal-close:hover {
+  background: rgba(255, 25, 47, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .andy-video-play-glyph {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .andy-video-modal-close {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    top: max(12px, env(safe-area-inset-top)) !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
+  }
+
+  .andy-video-modal-close svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}

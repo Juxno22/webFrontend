@@ -46,6 +46,7 @@ export default async function HomePage() {
       <div id="home-theme-trigger" className="home-theme-trigger" aria-hidden="true" />
 
       <div className="andy-white-home-area">
+        <HomeVideoSection />
         <section className="andy-about-section">
           <div className="container andy-about-inner">
             <span className="andy-section-kicker">¿Quiénes somos?</span>
@@ -61,9 +62,6 @@ export default async function HomePage() {
             </p>
           </div>
         </section>
-
-        <HomeVideoSection />
-
         <HomeNewProductsClient productos={productosNuevos} />
       </div>
     </main>

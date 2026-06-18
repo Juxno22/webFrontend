@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, ShoppingBag } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { ChevronDown, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { getQuoteCartCount } from "../app/lib/quoteCart";
 
 const lineasMenu = [
@@ -52,8 +52,11 @@ const lineasMenu = [
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [count, setCount] = useState(0);
   const [lineasOpen, setLineasOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const closeTimerRef = useRef(null);
 
   const isHome = pathname === "/";
@@ -77,6 +80,11 @@ export default function Header() {
       window.removeEventListener("storage", refreshCount);
     };
   }, []);
+
+  useEffect(() => {
+    setMobileSearchOpen(false);
+    setLineasOpen(false);
+  }, [pathname]);
 
   function navClass(active) {
     return active ? "is-active" : "";
@@ -103,6 +111,34 @@ export default function Header() {
 
     setLineasOpen(false);
   }
+
+  function submitHeaderSearch(event) {
+    event.preventDefault();
+
+    const term = searchQuery.trim();
+    const nextUrl = term ? `/catalogo?q=${encodeURIComponent(term)}` : "/catalogo";
+
+    closeNow();
+    setMobileSearchOpen(false);
+    router.push(nextUrl);
+  }
+
+  const searchForm = (className, inputId) => (
+    <form className={className} onSubmit={submitHeaderSearch} role="search">
+      <Search size={17} />
+      <input
+        id={inputId}
+        type="search"
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value)}
+        placeholder="Buscar código, pieza o cruce"
+        aria-label="Buscar en catálogo"
+      />
+      <button type="submit" aria-label="Buscar en catálogo">
+        🔍
+      </button>
+    </form>
+  );
 
   return (
     <header className="site-header">
@@ -169,6 +205,8 @@ export default function Header() {
           </Link>
         </nav>
 
+        {searchForm("header-search", "header-search-input")}
+
         <div className="header-actions">
           <Link
             href="/cotizacion"
@@ -182,11 +220,27 @@ export default function Header() {
             {count > 0 && <strong className="quote-count">{count}</strong>}
           </Link>
 
-          <button className="mobile-menu-button" aria-label="Abrir menú">
+          <button
+            type="button"
+            className="mobile-search-trigger icon-action"
+            aria-label={mobileSearchOpen ? "Cerrar buscador" : "Abrir buscador"}
+            aria-expanded={mobileSearchOpen}
+            onClick={() => setMobileSearchOpen((current) => !current)}
+          >
+            {mobileSearchOpen ? <X size={19} /> : <Search size={19} />}
+          </button>
+
+          <button className="mobile-menu-button" aria-label="Abrir menú" type="button">
             <Menu size={22} />
           </button>
         </div>
       </div>
+
+      {mobileSearchOpen && (
+        <div className="mobile-search-layer">
+          {searchForm("mobile-search-box", "mobile-header-search-input")}
+        </div>
+      )}
     </header>
   );
 }
