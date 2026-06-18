@@ -49,9 +49,18 @@ export default function ProductCard({ producto }) {
     <article className="product-card">
       <div className="product-media">
         <div className="product-code">{codigoVisible}</div>
-        <div className="product-icon">
-          <Wrench size={42} />
-        </div>
+        {producto.imagen_thumbnail_url || producto.imagen_url ? (
+          <img
+            className="product-card-image"
+            src={producto.imagen_thumbnail_url || producto.imagen_url}
+            alt={producto.descripcion || codigoVisible}
+            loading="lazy"
+          />
+        ) : (
+          <div className="product-icon">
+            <Wrench size={42} />
+          </div>
+        )}
       </div>
 
       <div className="product-body">

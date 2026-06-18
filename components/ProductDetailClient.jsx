@@ -221,6 +221,20 @@ export default function ProductDetailClient({ producto }) {
                             )}
                         </div>
 
+                        {producto.galeria?.length > 0 && (
+                            <div className="product-detail-gallery-strip">
+                                {producto.galeria.slice(0, 5).map((item) => (
+                                    <div className="product-detail-gallery-thumb" key={item.id}>
+                                        <img
+                                            src={item.thumbnail_url || item.secure_url}
+                                            alt={item.nombre_archivo_original || producto.descripcion}
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         <div className="visual-stat top">
                             <strong>{producto.cruces?.length || 0}</strong>
                             <span>Cruces</span>

@@ -69,6 +69,7 @@ export default function HomeNewProductsClient({ productos = [] }) {
             {[...productos, ...productos].map((producto, index) => {
               const codigoDetalle = getProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
+              const imagenProducto = producto.imagen_thumbnail_url || producto.imagen_url;
 
               return (
                 <article
@@ -78,9 +79,18 @@ export default function HomeNewProductsClient({ productos = [] }) {
                   <div className="andy-new-product-media">
                     <span>{codigoVisible}</span>
 
-                    <div>
-                      <Wrench size={42} />
-                    </div>
+                    {imagenProducto ? (
+                      <img
+                        className="andy-new-product-image"
+                        src={imagenProducto}
+                        alt={producto.descripcion || codigoVisible}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div>
+                        <Wrench size={42} />
+                      </div>
+                    )}
                   </div>
 
                   <div className="andy-new-product-body">

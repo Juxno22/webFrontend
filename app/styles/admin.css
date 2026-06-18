@@ -1365,3 +1365,73 @@
 .admin-shell .admin-login-page {
   padding-top: 54px;
 }
+/* =========================================================
+   MODULO 5 - ADMIN MULTIMEDIA PRODUCTO
+   ========================================================= */
+
+.admin-multimedia-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-multimedia-item {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 12px;
+  align-items: center;
+
+  padding: 10px;
+
+  border-radius: 18px;
+
+  background: rgba(248, 250, 252, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-multimedia-item.is-inactive {
+  opacity: 0.48;
+}
+
+.admin-multimedia-item img,
+.admin-multimedia-video {
+  width: 74px;
+  height: 74px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  object-fit: contain;
+
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-multimedia-video {
+  color: #ffffff;
+  background: #111827;
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.admin-multimedia-item strong {
+  display: block;
+  color: #111827;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+}
+
+.admin-multimedia-item span {
+  display: block;
+  color: #475569;
+  font-size: 0.78rem;
+  word-break: break-word;
+}
+
+.admin-multimedia-item small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+}

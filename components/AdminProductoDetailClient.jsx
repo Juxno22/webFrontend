@@ -270,6 +270,41 @@ export default function AdminProductoDetailClient({ id }) {
 
                     <aside className="admin-detail-side">
                         <article className="admin-panel">
+                            <h2>Multimedia</h2>
+
+                            {producto.multimedia?.length > 0 ? (
+                                <div className="admin-multimedia-grid">
+                                    {producto.multimedia.map((item) => (
+                                        <div
+                                            className={`admin-multimedia-item ${Number(item.activo) === 1 ? "is-active" : "is-inactive"
+                                                }`}
+                                            key={item.id}
+                                        >
+                                            {item.tipo === "IMAGEN" ? (
+                                                <img
+                                                    src={item.thumbnail_url || item.secure_url}
+                                                    alt={item.nombre_archivo_original || "Imagen de producto"}
+                                                    loading="lazy"
+                                                />
+                                            ) : (
+                                                <div className="admin-multimedia-video">VIDEO</div>
+                                            )}
+
+                                            <div>
+                                                <strong>{item.rol}</strong>
+                                                <span>{item.nombre_archivo_original}</span>
+                                                <small>Orden {item.orden}</small>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="admin-empty-mini">
+                                    Sin multimedia cargada.
+                                </div>
+                            )}
+                        </article>
+                        <article className="admin-panel">
                             <h2>Atributos</h2>
 
                             {producto.atributos?.length > 0 ? (

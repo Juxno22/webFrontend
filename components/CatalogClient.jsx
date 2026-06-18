@@ -361,15 +361,25 @@ export default function CatalogClient() {
             {productos.map((producto) => {
               const codigoDetalle = getProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
+              const imagenProducto = producto.imagen_thumbnail_url || producto.imagen_url;
 
               return (
                 <article className="catalog-product-card" key={producto.id}>
                   <div className="catalog-product-media">
                     <span className="catalog-product-code">{codigoVisible}</span>
 
-                    <div className="catalog-product-image-placeholder">
-                      <Wrench size={46} />
-                    </div>
+                    {imagenProducto ? (
+                      <img
+                        className="catalog-product-image"
+                        src={imagenProducto}
+                        alt={producto.descripcion || codigoVisible}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="catalog-product-image-placeholder">
+                        <Wrench size={46} />
+                      </div>
+                    )}
                   </div>
 
                   <div className="catalog-product-body">
