@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Plus, Wrench, Gauge, Boxes } from "lucide-react";
+import { Plus, Gauge, Boxes } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
+import ProductMediaImage from "@/components/ProductMediaImage";
 
 function isValidCode(value) {
   if (!value) return false;
@@ -49,18 +50,12 @@ export default function ProductCard({ producto }) {
     <article className="product-card">
       <div className="product-media">
         <div className="product-code">{codigoVisible}</div>
-        {producto.imagen_thumbnail_url || producto.imagen_url ? (
-          <img
-            className="product-card-image"
-            src={producto.imagen_thumbnail_url || producto.imagen_url}
-            alt={producto.descripcion || codigoVisible}
-            loading="lazy"
-          />
-        ) : (
-          <div className="product-icon">
-            <Wrench size={42} />
-          </div>
-        )}
+        <ProductMediaImage
+          producto={producto}
+          className="product-card-image"
+          fallbackClassName="product-icon"
+          iconSize={42}
+        />
       </div>
 
       <div className="product-body">

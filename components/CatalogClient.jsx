@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Boxes, Filter, Plus, Wrench, X, SlidersHorizontal } from "lucide-react";
+import { Boxes, Filter, Plus, X, SlidersHorizontal } from "lucide-react";
 import {
   getArmadoras,
   getCategorias,
@@ -11,6 +11,7 @@ import {
 } from "../app/lib/api";
 import Link from "next/link";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import ProductMediaImage from "@/components/ProductMediaImage";
 
 const defaultFilters = {
   q: "",
@@ -361,25 +362,17 @@ export default function CatalogClient() {
             {productos.map((producto) => {
               const codigoDetalle = getProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
-              const imagenProducto = producto.imagen_thumbnail_url || producto.imagen_url;
 
               return (
                 <article className="catalog-product-card" key={producto.id}>
                   <div className="catalog-product-media">
                     <span className="catalog-product-code">{codigoVisible}</span>
-
-                    {imagenProducto ? (
-                      <img
-                        className="catalog-product-image"
-                        src={imagenProducto}
-                        alt={producto.descripcion || codigoVisible}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="catalog-product-image-placeholder">
-                        <Wrench size={46} />
-                      </div>
-                    )}
+                    <ProductMediaImage
+                      producto={producto}
+                      className="catalog-product-image"
+                      fallbackClassName="catalog-product-image-placeholder"
+                      iconSize={46}
+                    />
                   </div>
 
                   <div className="catalog-product-body">

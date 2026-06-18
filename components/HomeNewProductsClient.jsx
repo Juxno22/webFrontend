@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Boxes, Gauge, Plus, Wrench } from "lucide-react";
+import { Boxes, Gauge, Plus } from "lucide-react";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
 
 function isValidCode(value) {
@@ -69,7 +69,6 @@ export default function HomeNewProductsClient({ productos = [] }) {
             {[...productos, ...productos].map((producto, index) => {
               const codigoDetalle = getProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
-              const imagenProducto = producto.imagen_thumbnail_url || producto.imagen_url;
 
               return (
                 <article
@@ -78,19 +77,12 @@ export default function HomeNewProductsClient({ productos = [] }) {
                 >
                   <div className="andy-new-product-media">
                     <span>{codigoVisible}</span>
-
-                    {imagenProducto ? (
-                      <img
-                        className="andy-new-product-image"
-                        src={imagenProducto}
-                        alt={producto.descripcion || codigoVisible}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div>
-                        <Wrench size={42} />
-                      </div>
-                    )}
+                    <ProductMediaImage
+                      producto={producto}
+                      className="andy-new-product-image"
+                      fallbackClassName="andy-new-product-icon"
+                      iconSize={42}
+                    />
                   </div>
 
                   <div className="andy-new-product-body">

@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect } from "react";
 import Link from "next/link";
 import {
@@ -16,6 +15,7 @@ import {
     Wrench,
 } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
+import ProductMediaImage, { getProductGallery } from "@/components/ProductMediaImage";
 
 function groupCrucesByMarca(cruces = []) {
     return cruces.reduce((acc, cruce) => {
@@ -52,6 +52,7 @@ function formatAplicacion(aplicacion) {
 export default function ProductDetailClient({ producto }) {
     const codigoVisible = producto.codigo_andyfers || `ID-${producto.id}`;
     const crucesAgrupados = groupCrucesByMarca(producto.cruces || []);
+    const galeriaProducto = getProductGallery(producto);
 
     const inventarioDisponible = (producto.inventario || []).filter(
         (item) => Number(item.disponible_web) === 1
@@ -212,18 +213,20 @@ export default function ProductDetailClient({ producto }) {
 
                     <div className="product-detail-visual product-detail-hero-visual">
                         <div className="product-detail-code">{codigoVisible}</div>
-
                         <div className="product-detail-icon product-detail-image-stage">
-                            {producto.imagen_url ? (
-                                <img src={producto.imagen_url} alt={producto.descripcion} />
-                            ) : (
-                                <Wrench size={86} />
-                            )}
+                            <ProductMediaImage
+                                producto={producto}
+                                mode="full"
+                                className="product-detail-main-image"
+                                fallbackClassName="product-detail-image-fallback"
+                                iconSize={86}
+                                loading="eager"
+                            />
                         </div>
 
-                        {producto.galeria?.length > 0 && (
+                        {galeriaProducto.length > 0 && (
                             <div className="product-detail-gallery-strip">
-                                {producto.galeria.slice(0, 5).map((item) => (
+                                {galeriaProducto.slice(0, 5).map((item) => (
                                     <div className="product-detail-gallery-thumb" key={item.id}>
                                         <img
                                             src={item.thumbnail_url || item.secure_url}
@@ -234,7 +237,6 @@ export default function ProductDetailClient({ producto }) {
                                 ))}
                             </div>
                         )}
-
                         <div className="visual-stat top">
                             <strong>{producto.cruces?.length || 0}</strong>
                             <span>Cruces</span>
