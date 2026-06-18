@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { ClipboardList } from 'lucide-react';
+import {
+  ClipboardList,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Timer,
+} from "lucide-react";
 
 const heroImages = [
   "/andyfers-home/reel1.jfif",
+  "/andyfers-home/reel2.jfif",
   "/andyfers-home/reel3.jfif",
-  "/andyfers-home/reel3.jfif",
-  "/andyfers-home/reel3.jfif",
+  "/andyfers-home/image4.jpeg",
 ];
 
 export default function HomeHeroCarousel() {
@@ -19,22 +25,25 @@ export default function HomeHeroCarousel() {
 
       <div className="container andy-hero-racing-grid">
         <div className="andy-hero-copy">
-          <span className="andy-hero-eyebrow">Catálogo inteligente</span>
+          <span className="andy-hero-eyebrow">
+            <Sparkles size={15} />
+            Catálogo inteligente
+          </span>
 
           <h1>
-            El poder de <span>avanzar.</span>
+            El poder<div></div><span>de avanzar.</span>
           </h1>
 
           <p>
-            Encuentra refacciones por vehículo, código, cruce o descripción.
-            Solicita tu cotización y un asesor validará disponibilidad,
-            compatibilidad y precio final.
+            Busca piezas para sistema de enfriamiento por vehículo, código,
+            cruce o descripción. Agrega productos a tu cotización y nuestro
+            equipo valida compatibilidad, disponibilidad y precio final.
           </p>
 
           <div className="andy-hero-actions">
             <Link href="/catalogo" className="andy-hero-btn catalogo">
-              Ver catálogo
-              <span>→</span>
+              Buscar en catálogo
+              <Search size={18} />
             </Link>
 
             <Link href="/cotizacion" className="andy-hero-btn cotizacion">
@@ -49,7 +58,7 @@ export default function HomeHeroCarousel() {
             <div className="andy-hero-carousel-track">
               {[...heroImages, ...heroImages].map((image, index) => (
                 <div className="andy-hero-slide" key={`${image}-${index}`}>
-                  <img src={image} alt="Productos Andyfers" />
+                  <img src={image} alt="Andyfers Autopartes" />
                 </div>
               ))}
             </div>

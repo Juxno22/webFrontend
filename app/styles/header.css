@@ -1141,3 +1141,120 @@
     place-items: center;
   }
 }
+/* =========================================================
+   MODULO 4E - HEADER MOVIL PUBLICO
+   ========================================================= */
+
+.mobile-nav-layer {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .site-header {
+    z-index: 900 !important;
+  }
+
+  .clean-header {
+    height: 72px !important;
+    gap: 10px !important;
+  }
+
+  .mobile-menu-button {
+    display: inline-flex !important;
+  }
+
+  .mobile-menu-button.is-open {
+    border-color: rgba(255, 25, 47, 0.46) !important;
+    background: rgba(255, 25, 47, 0.14) !important;
+    color: #ffffff !important;
+  }
+
+  .mobile-nav-layer {
+    display: block;
+    padding: 0 14px 16px;
+    background:
+      radial-gradient(circle at top right, rgba(255, 25, 47, 0.16), transparent 18rem),
+      rgba(9, 10, 15, 0.985);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.38);
+  }
+
+  .mobile-nav-panel {
+    width: min(100%, 520px);
+    margin: 0 auto;
+    display: grid;
+    gap: 9px;
+    padding-top: 14px;
+  }
+
+  .mobile-nav-panel > a {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-radius: 16px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    font-weight: 900;
+  }
+
+  .mobile-nav-panel > a:hover {
+    border-color: rgba(255, 25, 47, 0.35);
+    background: rgba(255, 25, 47, 0.11);
+  }
+
+  .mobile-nav-quick-lines {
+    margin-top: 6px;
+    padding: 14px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-nav-quick-lines > span {
+    grid-column: 1 / -1;
+    color: #ff3e4f;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 950;
+  }
+
+  .mobile-nav-quick-lines a {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 11px;
+    border-radius: 13px;
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 0.84rem;
+    font-weight: 850;
+  }
+
+  .mobile-nav-quick-lines a:hover {
+    color: #ffffff;
+    background: rgba(255, 25, 47, 0.13);
+  }
+}
+
+@media (max-width: 520px) {
+  .mobile-nav-quick-lines {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-action {
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .icon-action,
+  .mobile-menu-button {
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+}

@@ -219,11 +219,7 @@ export default function CatalogClient() {
   }
 
   function addProduct(producto) {
-    const codigoVisible =
-      producto.codigo_andyfers ||
-      producto.codigo_importacion ||
-      producto.codigo ||
-      "Producto";
+    const codigoVisible = getProductCode(producto) || "Producto";
 
     addToQuoteCart(producto);
 
@@ -377,11 +373,20 @@ export default function CatalogClient() {
                   </div>
 
                   <div className="catalog-product-body">
+                    <div className="catalog-product-tags">
+                      {producto.familia && <span>{producto.familia}</span>}
+                      {producto.categoria && <span>{producto.categoria}</span>}
+                    </div>
+
                     <h3>{producto.descripcion}</h3>
 
                     <div className="catalog-product-crosses">
                       <Boxes size={16} />
                       <span>{Number(producto.total_cruces || 0)} cruces</span>
+                    </div>
+
+                    <div className="product-warning">
+                      Compatibilidad y disponibilidad sujetas a validación.
                     </div>
 
                     <div className="catalog-product-actions">

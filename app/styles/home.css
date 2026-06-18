@@ -5317,3 +5317,319 @@ html.andy-video-modal-open {
     height: 22px !important;
   }
 }
+/* =========================================================
+   MODULO 4E - BUSCADOR GUIADO HOME
+   ========================================================= */
+
+.andy-guided-search-section {
+  position: relative !important;
+  padding: clamp(54px, 6vw, 88px) 0 clamp(92px, 8vw, 132px) !important;
+  overflow: hidden !important;
+
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 25, 47, 0.14), transparent 34rem),
+    linear-gradient(180deg, #020304 0%, #050608 54%, #020304 100%) !important;
+}
+
+/* Difuminado inferior negro -> blanco */
+.andy-guided-search-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: clamp(120px, 13vw, 210px);
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 3, 4, 0) 0%,
+      rgba(2, 3, 4, 0.74) 28%,
+      rgba(244, 246, 248, 0.72) 72%,
+      #f4f6f8 100%
+    );
+}
+
+.andy-guided-search-inner.container {
+  position: relative !important;
+  z-index: 2 !important;
+
+  width: min(1500px, calc(100% - 72px)) !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+}
+
+.andy-guided-search-inner {
+  min-height: clamp(460px, 42vw, 620px) !important;
+
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+
+  padding-top: clamp(24px, 3.4vw, 54px) !important;
+}
+
+.andy-guided-search-section .vehicle-finder {
+  position: relative !important;
+  z-index: 2 !important;
+
+  width: min(1120px, 100%) !important;
+
+  color: #111827 !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+
+  border: 1px solid rgba(255, 25, 47, 0.14) !important;
+
+  box-shadow:
+    0 34px 100px rgba(0, 0, 0, 0.34),
+    0 20px 70px rgba(255, 25, 47, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+
+  backdrop-filter: blur(18px) !important;
+}
+
+.andy-guided-search-section .vehicle-finder h1,
+.andy-guided-search-section .vehicle-finder h2,
+.andy-guided-search-section .vehicle-finder h3,
+.andy-guided-search-section .vehicle-finder p,
+.andy-guided-search-section .vehicle-finder label,
+.andy-guided-search-section .vehicle-finder span {
+  color: #111827 !important;
+}
+
+.andy-guided-search-section .vehicle-finder select,
+.andy-guided-search-section .vehicle-finder input {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:disabled,
+.andy-guided-search-section .vehicle-finder input:disabled {
+  color: #667085 !important;
+  background: #e5e7eb !important;
+  opacity: 1 !important;
+}
+
+.andy-guided-search-section .vehicle-finder-button {
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, #ff192f 0%, #ff3e4f 48%, #f8805c 100%) !important;
+
+  box-shadow:
+    0 18px 46px rgba(255, 25, 47, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+@media (max-width: 760px) {
+  .andy-guided-search-section {
+    padding: 38px 0 78px !important;
+  }
+
+  .andy-guided-search-inner.container {
+    width: min(100% - 24px, 620px) !important;
+  }
+
+  .andy-guided-search-inner {
+    min-height: auto !important;
+    padding-top: 18px !important;
+  }
+
+  .andy-guided-brand {
+    width: 110vw !important;
+    opacity: 0.065 !important;
+  }
+}
+/* =========================================================
+   MODULO 4E - CTA FINAL PUBLICA
+   ========================================================= */
+
+.andy-final-public-cta {
+  position: relative;
+  overflow: hidden;
+
+  padding: clamp(54px, 6vw, 86px) 0;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 25, 47, 0.22), transparent 28rem),
+    radial-gradient(circle at 12% 76%, rgba(248, 128, 92, 0.11), transparent 24rem),
+    linear-gradient(135deg, #020304 0%, #101217 54%, #050608 100%);
+}
+
+.andy-final-public-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  opacity: 0.22;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 68px 68px;
+
+  mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 74%);
+}
+
+.andy-final-public-cta::after {
+  content: "";
+  position: absolute;
+  right: -180px;
+  bottom: -220px;
+
+  width: 520px;
+  height: 520px;
+
+  border-radius: 999px;
+
+  background:
+    radial-gradient(circle, rgba(255, 25, 47, 0.2), transparent 66%);
+
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.andy-final-public-cta-inner {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 34px;
+}
+
+.andy-final-public-cta span {
+  display: inline-flex;
+
+  margin-bottom: 12px;
+
+  color: #ff3e4f;
+
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.andy-final-public-cta h2 {
+  max-width: 880px;
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: clamp(2.2rem, 4.4vw, 4.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+}
+
+.andy-final-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.andy-final-public-actions .andy-hero-btn {
+  min-height: 50px;
+}
+
+@media (max-width: 1180px) {
+  .andy-final-public-cta-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 760px) {
+  .andy-final-public-cta {
+    padding: 48px 0 58px;
+  }
+
+  .andy-final-public-cta h2 {
+    font-size: clamp(2rem, 12vw, 3.5rem);
+  }
+
+  .andy-final-public-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .andy-final-public-actions .andy-hero-btn {
+    width: 100%;
+  }
+}
+/* CORRECCION EXACTA - BUSCADOR GUIADO MAS TRANSPARENTE */
+
+.andy-guided-search-section .vehicle-finder {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.07)
+    ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+
+  box-shadow:
+    0 34px 100px rgba(0, 0, 0, 0.38),
+    0 18px 64px rgba(255, 25, 47, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+
+  backdrop-filter: blur(22px) saturate(1.18) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1.18) !important;
+}
+
+.andy-guided-search-section .vehicle-finder h1,
+.andy-guided-search-section .vehicle-finder h2,
+.andy-guided-search-section .vehicle-finder h3,
+.andy-guided-search-section .vehicle-finder p,
+.andy-guided-search-section .vehicle-finder label,
+.andy-guided-search-section .vehicle-finder span {
+  color: #ffffff !important;
+}
+
+.andy-guided-search-section .vehicle-finder p,
+.andy-guided-search-section .vehicle-finder .vehicle-finder-help,
+.andy-guided-search-section .vehicle-finder .vehicle-finder-subtitle {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select,
+.andy-guided-search-section .vehicle-finder input {
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.07)
+    ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:focus,
+.andy-guided-search-section .vehicle-finder input:focus {
+  border-color: rgba(255, 25, 47, 0.55) !important;
+  box-shadow:
+    0 0 0 4px rgba(255, 25, 47, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.andy-guided-search-section .vehicle-finder select:disabled,
+.andy-guided-search-section .vehicle-finder input:disabled {
+  color: rgba(255, 255, 255, 0.46) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  opacity: 1 !important;
+}
+
+.andy-guided-search-section .vehicle-finder option {
+  color: #111827 !important;
+  background: #ffffff !important;
+}

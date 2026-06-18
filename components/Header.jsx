@@ -57,6 +57,7 @@ export default function Header() {
   const [lineasOpen, setLineasOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimerRef = useRef(null);
 
   const isHome = pathname === "/";
@@ -83,6 +84,7 @@ export default function Header() {
 
   useEffect(() => {
     setMobileSearchOpen(false);
+    setMobileMenuOpen(false);
     setLineasOpen(false);
   }, [pathname]);
 
@@ -110,6 +112,8 @@ export default function Header() {
     }
 
     setLineasOpen(false);
+    setMobileMenuOpen(false);
+    setMobileSearchOpen(false);
   }
 
   function submitHeaderSearch(event) {
@@ -230,8 +234,14 @@ export default function Header() {
             {mobileSearchOpen ? <X size={19} /> : <Search size={19} />}
           </button>
 
-          <button className="mobile-menu-button" aria-label="Abrir menú" type="button">
-            <Menu size={22} />
+          <button
+            className={`mobile-menu-button ${mobileMenuOpen ? "is-open" : ""}`}
+            aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={mobileMenuOpen}
+            type="button"
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
@@ -239,6 +249,52 @@ export default function Header() {
       {mobileSearchOpen && (
         <div className="mobile-search-layer">
           {searchForm("mobile-search-box", "mobile-header-search-input")}
+        </div>
+      )}
+
+      {mobileMenuOpen && (
+        <div className="mobile-nav-layer">
+          <nav className="mobile-nav-panel" aria-label="Menú móvil">
+            <Link href="/" onClick={closeNow}>
+              Inicio
+            </Link>
+
+            <Link href="/lineas" onClick={closeNow}>
+              Líneas comerciales
+            </Link>
+
+            <Link href="/catalogo" onClick={closeNow}>
+              Catálogo
+            </Link>
+
+            <Link href="/cotizacion" onClick={closeNow}>
+              Mi cotización
+            </Link>
+
+            <Link href="/contacto" onClick={closeNow}>
+              Contacto
+            </Link>
+
+            <div className="mobile-nav-quick-lines">
+              <span>Líneas rápidas</span>
+
+              <Link href="/catalogo?familia=TERMOSTATO" onClick={closeNow}>
+                Termostatos
+              </Link>
+
+              <Link href="/catalogo?familia=BOMBAS%20DE%20AGUA" onClick={closeNow}>
+                Bombas de agua
+              </Link>
+
+              <Link href="/catalogo?q=toma" onClick={closeNow}>
+                Tomas y carcasas
+              </Link>
+
+              <Link href="/catalogo?familia=POLEAS" onClick={closeNow}>
+                Poleas
+              </Link>
+            </div>
+          </nav>
         </div>
       )}
     </header>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import HomeHeroCarousel from "@/components/HomeHeroCarousel";
 import VehicleSearchBar from "@/components/VehicleSearchBar";
 import HomeNewProductsClient from "@/components/HomeNewProductsClient";
@@ -47,6 +48,7 @@ export default async function HomePage() {
 
       <div className="andy-white-home-area">
         <HomeVideoSection />
+
         <section className="andy-about-section">
           <div className="container andy-about-inner">
             <span className="andy-section-kicker">¿Quiénes somos?</span>
@@ -54,15 +56,38 @@ export default async function HomePage() {
             <h2>En Andyfer’s.</h2>
 
             <p className="andy-about-lead">
-              Cada vehículo tiene una historia. La nuestra es ayudarte a mantenerlo en movimiento. Soluciones confiables para el sistema de enfriamiento, refacciones de calidad y un compromiso con la industria automotriz mexicana. Detrás de cada pieza hay una persona que busca tranquilidad. Por eso, la excelencia no es un lujo, es nuestra norma.
+              Cada vehículo tiene una historia. La nuestra es ayudarte a
+              mantenerlo en movimiento. Soluciones confiables para el sistema de
+              enfriamiento, refacciones de calidad y un compromiso con la
+              industria automotriz mexicana. Detrás de cada pieza hay una
+              persona que busca tranquilidad. Por eso, la excelencia no es un
+              lujo, es nuestra norma.
             </p>
 
-            <p>
-              Porque un motor frío también calienta corazones.
-            </p>
+            <p>Porque un motor frío también calienta corazones.</p>
           </div>
         </section>
+        
         <HomeNewProductsClient productos={productosNuevos} />
+
+        <section className="andy-final-public-cta">
+          <div className="container andy-final-public-cta-inner">
+            <div>
+              <span>¿Ya sabes qué pieza buscas?</span>
+              <h2>Encuéntrala en el catálogo o arma tu cotización.</h2>
+            </div>
+
+            <div className="andy-final-public-actions">
+              <Link href="/catalogo" className="andy-hero-btn catalogo">
+                Ver catálogo
+              </Link>
+
+              <Link href="/cotizacion" className="andy-hero-btn cotizacion">
+                Mi cotización
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

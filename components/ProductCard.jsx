@@ -81,9 +81,9 @@ export default function ProductCard({ producto }) {
         </div>
 
         <div className="product-actions">
-          {producto.codigo_andyfers ? (
+          {codigoDetalle ? (
             <Link
-              href={`/producto/${encodeURIComponent(producto.codigo_andyfers)}`}
+              href={`/producto/${encodeURIComponent(codigoDetalle)}`}
               className="btn-card-secondary"
             >
               Ver detalle
