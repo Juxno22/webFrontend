@@ -3,3 +3,6 @@ node_modules
 .env
 .env.local
 scripts
+public
+public/
+public/andyfers-gifts
