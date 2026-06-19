@@ -6806,3 +6806,50 @@ html.andy-video-modal-open {
   overflow: hidden !important;
   pointer-events: none !important;
 }
+/* =========================================================
+   MODULO 5 - LEYENDA NUEVO EN CARRUSEL HOME
+   ========================================================= */
+
+.andy-home-page .andy-new-products-section .andy-new-product-ribbon {
+  position: absolute !important;
+  top: 18px !important;
+  left: 50% !important;
+  z-index: 6 !important;
+
+  transform: translateX(-50%) !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 26px !important;
+  padding: 0 14px !important;
+
+  border-radius: 999px !important;
+
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff192f, #f8805c) !important;
+
+  font-size: 0.68rem !important;
+  font-weight: 950 !important;
+  font-style: normal !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+
+  box-shadow:
+    0 12px 28px rgba(255, 25, 47, 0.22),
+    0 0 0 4px rgba(255, 255, 255, 0.72) !important;
+
+  pointer-events: none !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card.is-new-product {
+  border-color: rgba(255, 25, 47, 0.18) !important;
+}
+
+.andy-home-page .andy-new-products-section .andy-new-product-card.is-new-product:hover,
+.andy-home-page .andy-new-products-section .andy-new-product-card.is-new-product:focus-within {
+  box-shadow:
+    0 30px 86px rgba(15, 23, 42, 0.16),
+    0 16px 42px rgba(255, 25, 47, 0.14) !important;
+}

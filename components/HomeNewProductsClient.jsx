@@ -73,10 +73,14 @@ export default function HomeNewProductsClient({ productos = [] }) {
 
               return (
                 <article
-                  className="andy-new-product-card"
+                  className={`andy-new-product-card ${Number(producto.nuevo_web) === 1 ? "is-new-product" : ""
+                    }`}
                   key={`${producto.id}-${index}`}
                 >
                   <div className="andy-new-product-media">
+                    {Number(producto.nuevo_web) === 1 && (
+                      <em className="andy-new-product-ribbon">NUEVO</em>
+                    )}
                     <span>{codigoVisible}</span>
                     <ProductMediaImage
                       producto={producto}

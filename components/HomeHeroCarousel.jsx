@@ -1,22 +1,73 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ClipboardList,
   Search,
-  ShieldCheck,
   Sparkles,
-  Timer,
 } from "lucide-react";
+import { getHomeHeroSlides } from "@/app/lib/api";
 
-const heroImages = [
-  "/andyfers-home/reel1.jfif",
-  "/andyfers-home/reel2.jfif",
-  "/andyfers-home/reel3.jfif",
-  "/andyfers-home/image4.jpeg",
+const fallbackSlides = [
+  {
+    id: "fallback-1",
+    secure_url:
+      "https://res.cloudinary.com/dm65frp96/image/upload/v1781829050/flayer1.png",
+    titulo: "Promoción Andyfers",
+  },
+  {
+    id: "fallback-2",
+    secure_url:
+      "https://res.cloudinary.com/dm65frp96/image/upload/v1781829049/flayer2.png",
+    titulo: "Promoción Andyfers",
+  },
+  {
+    id: "fallback-3",
+    secure_url:
+      "https://res.cloudinary.com/dm65frp96/image/upload/v1781829048/flayer3.png",
+    titulo: "Promoción Andyfers",
+  },
 ];
 
+function getSlideImage(slide) {
+  return slide?.secure_url || slide?.thumbnail_url || "";
+}
+
 export default function HomeHeroCarousel() {
+  const [slides, setSlides] = useState(fallbackSlides);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadSlides() {
+      try {
+        const response = await getHomeHeroSlides();
+        const nextSlides = Array.isArray(response.data)
+          ? response.data.filter((slide) => getSlideImage(slide))
+          : [];
+
+        if (!active || !nextSlides.length) return;
+
+        setSlides(nextSlides);
+      } catch {
+        if (active) {
+          setSlides(fallbackSlides);
+        }
+      }
+    }
+
+    loadSlides();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const carouselSlides = useMemo(() => {
+    return slides.length > 1 ? [...slides, ...slides] : slides;
+  }, [slides]);
+
   return (
     <section className="andy-hero-racing">
       <div className="andy-home-decor-left" />
@@ -56,11 +107,19 @@ export default function HomeHeroCarousel() {
         <div className="andy-hero-carousel">
           <div className="andy-hero-carousel-window">
             <div className="andy-hero-carousel-track">
-              {[...heroImages, ...heroImages].map((image, index) => (
-                <div className="andy-hero-slide" key={`${image}-${index}`}>
-                  <img src={image} alt="Andyfers Autopartes" />
-                </div>
-              ))}
+              {carouselSlides.map((slide, index) => {
+                const imageUrl = getSlideImage(slide);
+
+                return (
+                  <div className="andy-hero-slide" key={`${slide.id}-${index}`}>
+                    <img
+                      src={imageUrl}
+                      alt={slide.titulo || "Flyer promocional Andyfers"}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 

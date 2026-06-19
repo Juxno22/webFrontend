@@ -148,3 +148,26 @@ export async function updateAdminProducto(id, payload) {
     body: JSON.stringify(payload),
   });
 }
+export async function getAdminHomeHeroSlides() {
+  return adminFetch("/api/admin/home/hero-slides");
+}
+
+export async function createAdminHomeHeroSlide(payload) {
+  return adminFetch("/api/admin/home/hero-slides", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminHomeHeroSlide(id, payload) {
+  return adminFetch(`/api/admin/home/hero-slides/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteAdminHomeHeroSlide(id) {
+  return adminFetch(`/api/admin/home/hero-slides/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}

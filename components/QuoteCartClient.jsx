@@ -21,6 +21,7 @@ import {
   updateQuoteItemQuantity,
 } from "../app/lib/quoteCart";
 import { crearCotizacion } from "../app/lib/api";
+import ProductMediaImage from "@/components/ProductMediaImage";
 
 function getCodigoVisible(item) {
   return item.codigo_andyfers || item.codigo_importacion || item.product_key;
@@ -63,6 +64,55 @@ async function fetchRelatedProducts(queryString, signal) {
   return Array.isArray(payload.data) ? payload.data : [];
 }
 
+function hasQuoteImage(item) {
+  return Boolean(
+    item?.imagen_thumbnail_url ||
+    item?.imagen_url ||
+    item?.imagen_principal?.thumbnail_url ||
+    item?.imagen_principal?.secure_url
+  );
+}
+
+function getQuoteItemStableKey(item) {
+  return (
+    item?.product_key ||
+    item?.codigo_andyfers ||
+    item?.codigo_importacion ||
+    item?.id ||
+    item?.producto_id ||
+    ""
+  );
+}
+
+function pickProductImageFields(producto) {
+  if (!producto) return null;
+
+  const patch = {
+    imagen_thumbnail_url: producto.imagen_thumbnail_url || null,
+    imagen_url: producto.imagen_url || null,
+    imagen_principal: producto.imagen_principal || null,
+    galeria: producto.galeria || [],
+    multimedia: producto.multimedia || [],
+    total_imagenes: producto.total_imagenes || 0,
+  };
+
+  return hasQuoteImage(patch) ? patch : null;
+}
+
+async function fetchProductDetailForQuote(code, signal) {
+  const response = await fetch(
+    `${getApiBaseUrl()}/productos/${encodeURIComponent(code)}`,
+    { signal }
+  );
+
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok || payload.ok === false) {
+    return null;
+  }
+
+  return payload.data || null;
+}
 
 export default function QuoteCartClient() {
   const router = useRouter();
@@ -104,6 +154,74 @@ export default function QuoteCartClient() {
       window.removeEventListener("storage", loadCart);
     };
   }, []);
+
+  useEffect(() => {
+    if (!items.length) return;
+
+    const missingImageItems = items.filter((item) => {
+      const code = getCodigoVisible(item);
+
+      return code && !hasQuoteImage(item);
+    });
+
+    if (!missingImageItems.length) return;
+
+    const controller = new AbortController();
+
+    async function hydrateMissingImages() {
+      const results = await Promise.allSettled(
+        missingImageItems.map(async (item) => {
+          const code = getCodigoVisible(item);
+          const productKey = getQuoteItemStableKey(item);
+
+          const producto = await fetchProductDetailForQuote(
+            code,
+            controller.signal
+          );
+
+          const patch = pickProductImageFields(producto);
+
+          return {
+            productKey,
+            patch,
+          };
+        })
+      );
+
+      if (controller.signal.aborted) return;
+
+      const patches = new Map();
+
+      results.forEach((result) => {
+        if (result.status !== "fulfilled") return;
+        if (!result.value?.productKey) return;
+        if (!result.value?.patch) return;
+
+        patches.set(result.value.productKey, result.value.patch);
+      });
+
+      if (!patches.size) return;
+
+      setItems((current) =>
+        current.map((item) => {
+          const productKey = getQuoteItemStableKey(item);
+
+          if (!patches.has(productKey)) return item;
+
+          return {
+            ...item,
+            ...patches.get(productKey),
+          };
+        })
+      );
+    }
+
+    hydrateMissingImages();
+
+    return () => {
+      controller.abort();
+    };
+  }, [items]);
 
   const totalPiezas = useMemo(() => {
     return items.reduce((total, item) => total + Number(item.cantidad || 0), 0);
@@ -377,7 +495,12 @@ export default function QuoteCartClient() {
                             key={producto.id || codigoVisible}
                           >
                             <div className="quote-related-media">
-                              <ShoppingBag size={24} />
+                              <ProductMediaImage
+                                producto={producto}
+                                className="quote-related-image"
+                                fallbackClassName="quote-related-image-fallback"
+                                iconSize={24}
+                              />
                             </div>
 
                             <div className="quote-related-body">
@@ -444,7 +567,12 @@ export default function QuoteCartClient() {
                   return (
                     <div className="quote-item" key={item.product_key}>
                       <div className="quote-item-media">
-                        <ShoppingBag size={30} />
+                        <ProductMediaImage
+                          producto={item}
+                          className="quote-item-image"
+                          fallbackClassName="quote-item-image-fallback"
+                          iconSize={30}
+                        />
                       </div>
 
                       <div className="quote-item-info">

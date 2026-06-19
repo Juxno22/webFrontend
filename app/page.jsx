@@ -18,6 +18,7 @@ export default async function HomePage() {
   try {
     const response = await getProductos({
       limit: 12,
+      nuevo: 1,
     });
 
     productosNuevos = response.data || [];
@@ -67,7 +68,7 @@ export default async function HomePage() {
             <p>Porque un motor frío también calienta corazones.</p>
           </div>
         </section>
-        
+
         <HomeNewProductsClient productos={productosNuevos} />
 
         <section className="andy-final-public-cta">

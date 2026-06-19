@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ClipboardList, LayoutDashboard } from "lucide-react";
+import { Boxes, ClipboardList, ImagePlus, LayoutDashboard } from "lucide-react";
 
 const links = [
   {
@@ -19,6 +19,11 @@ const links = [
     href: "/admin/productos",
     label: "Productos",
     icon: Boxes,
+  },
+  {
+    href: "/admin/contenido/home-hero",
+    label: "Flyers Home",
+    icon: ImagePlus,
   },
 ];
 

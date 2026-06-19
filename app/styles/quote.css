@@ -2290,3 +2290,104 @@
   top: 28px !important;
   bottom: auto !important;
 }
+/* =========================================================
+   MODULO 5 - IMAGENES EN COTIZACION
+   Productos solicitados + relacionados
+   ========================================================= */
+
+.quote-item-media {
+  overflow: hidden !important;
+  background: #ffffff !important;
+}
+
+.quote-item-image {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+
+  mix-blend-mode: normal !important;
+  filter: none !important;
+}
+
+.quote-item-image-fallback {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: var(--af-red) !important;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.13), transparent 4rem),
+    #ffffff !important;
+}
+
+.quote-related-media {
+  overflow: hidden !important;
+  background: #ffffff !important;
+}
+
+.quote-related-image {
+  width: 100% !important;
+  height: 108px !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+
+  background: #ffffff !important;
+
+  mix-blend-mode: normal !important;
+  filter: none !important;
+}
+
+.quote-related-image-fallback {
+  width: 100% !important;
+  min-height: 108px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: var(--af-red) !important;
+  background:
+    radial-gradient(circle at center, rgba(255, 25, 47, 0.13), transparent 4rem),
+    #ffffff !important;
+}
+
+/* Variante compacta del carrusel relacionado */
+.quote-related-anchor .quote-related-image {
+  height: 74px !important;
+  padding: 8px !important;
+}
+
+.quote-related-anchor .quote-related-image-fallback {
+  min-height: 74px !important;
+}
+
+@media (max-width: 860px) {
+  .quote-item-image,
+  .quote-item-image-fallback {
+    height: 86px !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .quote-item-media {
+    width: 100% !important;
+    height: 96px !important;
+  }
+
+  .quote-item-image,
+  .quote-item-image-fallback {
+    height: 96px !important;
+  }
+}

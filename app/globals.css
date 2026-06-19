@@ -15,13 +15,6 @@
 @import "./styles/admin.css";
 @import "./styles/responsive.css";
 
-@font-face {
-  font-family: "Airstrike";
-  src: url("/fonts/bebas/bebasNeue-Regular.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 .public-shell h1,
 .public-shell h2,
 .public-shell .hero-title,

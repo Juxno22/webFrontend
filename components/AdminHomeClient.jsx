@@ -8,7 +8,7 @@ import {
   ClipboardList,
   LogOut,
   Settings,
-  Store,
+  ImagePlus,
 } from "lucide-react";
 import { clearAdminSession, getAdminUser } from "../app/lib/adminApi";
 
@@ -83,20 +83,20 @@ export default function AdminHomeClient() {
             </div>
           </Link>
 
-          <div className="admin-home-card disabled">
+          <Link href="/admin/contenido/home-hero" className="admin-home-card">
             <div className="admin-home-icon">
-              <Store size={34} />
+              <ImagePlus size={34} />
             </div>
 
             <div>
-              <span>Próximamente</span>
-              <h2>Contenido de página</h2>
+              <span>Contenido público</span>
+              <h2>Flyers del home</h2>
               <p>
-                Banners, textos del home, video, contacto y secciones
-                comerciales.
+                Edita los flyers promocionales del carrusel principal,
+                controla orden, visibilidad y URL de Cloudinary.
               </p>
             </div>
-          </div>
+          </Link>
 
           <div className="admin-home-card disabled">
             <div className="admin-home-icon">

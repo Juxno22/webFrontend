@@ -24,7 +24,7 @@ const defaultFilters = {
   motor: "",
   linea: "",
   page: 1,
-  limit: 12,
+  limit: 15,
 };
 
 function getFiltersFromSearchParams(searchParams) {
@@ -39,7 +39,7 @@ function getFiltersFromSearchParams(searchParams) {
     motor: searchParams.get("motor") || "",
     linea: searchParams.get("linea") || "",
     page: Number(searchParams.get("page") || 1),
-    limit: 12,
+    limit: 15,
   };
 }
 
@@ -204,7 +204,6 @@ export default function CatalogClient() {
     setFiltersOpen(false);
     router.push("/catalogo");
   }
-
   function goToPage(nextPage) {
     const nextFilters = {
       ...appliedFilters,

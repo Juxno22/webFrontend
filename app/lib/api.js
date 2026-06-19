@@ -121,3 +121,6 @@ export async function buscarConIA(payload = {}) {
     }),
   });
 }
+export async function getHomeHeroSlides() {
+  return apiFetch("/api/home/hero-slides");
+}
