@@ -76,11 +76,6 @@ export default function HomeHeroCarousel() {
 
       <div className="container andy-hero-racing-grid">
         <div className="andy-hero-copy">
-          <span className="andy-hero-eyebrow">
-            <Sparkles size={15} />
-            Catálogo inteligente
-          </span>
-
           <h1>
             El poder<div></div><span>de avanzar.</span>
           </h1>

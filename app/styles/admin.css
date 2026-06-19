@@ -1622,3 +1622,1269 @@
     height: 170px;
   }
 }
+/* =========================================================
+   ADMIN OPERATIVO - MULTIMEDIA PRODUCTO
+   ========================================================= */
+
+.admin-product-media-panel {
+  display: grid;
+  gap: 22px;
+  margin-top: 26px;
+  padding: 24px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #d9e0ea;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.admin-op-section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.admin-op-section-head span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-op-section-head h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.admin-op-section-head p {
+  max-width: 720px;
+  margin: 7px 0 0;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+.admin-op-error {
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  font-weight: 700;
+}
+
+.admin-media-create-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.admin-media-upload-card {
+  display: grid;
+  gap: 13px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+}
+
+.admin-media-form-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #111827;
+}
+
+.admin-media-form-title svg {
+  color: #2563eb;
+}
+
+.admin-media-upload-card label,
+.admin-media-fields label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-media-upload-card input,
+.admin-media-upload-card select,
+.admin-media-fields input,
+.admin-media-fields select {
+  width: 100%;
+  min-height: 40px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #111827;
+  padding: 0 11px;
+  outline: none;
+  font-weight: 650;
+}
+
+.admin-media-upload-card input[type="file"] {
+  padding: 9px 11px;
+  min-height: 44px;
+}
+
+.admin-media-form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  gap: 10px;
+}
+
+.admin-media-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+
+.admin-media-list-head strong {
+  display: block;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.admin-media-list-head span {
+  display: block;
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.admin-media-list-head.is-muted {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 18px;
+}
+
+.admin-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+}
+
+.admin-media-card {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #dbe4ef;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.admin-media-card.is-principal {
+  border-color: #93c5fd;
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.05),
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.admin-media-card.is-inactive {
+  opacity: 0.62;
+}
+
+.admin-media-preview {
+  position: relative;
+  height: 190px;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-media-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 14px;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.admin-media-empty-preview {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.admin-media-principal-badge,
+.admin-media-off-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.admin-media-off-badge {
+  left: auto;
+  right: 12px;
+  background: #64748b;
+}
+
+.admin-media-fields {
+  display: grid;
+  grid-template-columns: 1fr 92px;
+  gap: 10px;
+  padding: 14px;
+}
+
+.admin-media-field-full {
+  grid-column: 1 / -1;
+}
+
+.admin-media-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  padding: 0 14px 14px;
+}
+
+.admin-op-btn {
+  min-height: 38px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-op-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.admin-op-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.admin-op-btn-primary {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.admin-op-btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.admin-op-btn-danger {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.admin-op-btn-full {
+  width: 100%;
+}
+
+.admin-op-empty {
+  padding: 22px;
+  border-radius: 16px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  text-align: center;
+  font-weight: 750;
+}
+
+@media (max-width: 900px) {
+  .admin-media-create-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-media-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-product-media-panel {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .admin-media-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-media-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-media-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+/* =========================================================
+   ADMIN OPERATIVO - CRUD PRODUCTOS M6.2B
+   ========================================================= */
+
+.admin-primary-link {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  font-weight: 850;
+  text-decoration: none;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.18);
+}
+
+.admin-primary-link:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.admin-form-grid.two-cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-form-grid.three-cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-check-grid-expanded {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-detail-status-stack {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.admin-panel-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-panel-title-row h2 {
+  margin: 0;
+}
+
+.admin-small-action {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.admin-small-action:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.admin-small-action.danger {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.admin-small-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-product-form textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  padding: 12px;
+  resize: vertical;
+  font-weight: 650;
+}
+
+.admin-product-form select {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  padding: 0 11px;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 650;
+}
+
+@media (max-width: 880px) {
+  .admin-form-grid.two-cols,
+  .admin-form-grid.three-cols,
+  .admin-check-grid-expanded {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-detail-status-stack {
+    justify-items: start;
+  }
+
+  .admin-panel-title-row {
+    display: grid;
+  }
+
+  .admin-primary-link {
+    width: 100%;
+  }
+}
+/* =========================================================
+   ADMIN OPERATIVO - ATRIBUTOS / CRUCES / APLICACIONES M6.3B
+   ========================================================= */
+
+.admin-product-ops-panel {
+  display: grid;
+  gap: 22px;
+  margin-top: 26px;
+  padding: 24px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #d9e0ea;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.admin-ops-summary {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+}
+
+.admin-ops-summary strong {
+  color: #111827;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.admin-ops-summary span {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.admin-ops-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.admin-ops-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+}
+
+.admin-ops-card-wide {
+  background: #ffffff;
+}
+
+.admin-ops-title {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #111827;
+}
+
+.admin-ops-title svg {
+  color: #2563eb;
+  margin-top: 2px;
+}
+
+.admin-ops-title h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.admin-ops-title p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.admin-ops-create-form,
+.admin-ops-row {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-ops-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-ops-form-grid.two-cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-ops-vehicle-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.admin-ops-create-form label,
+.admin-ops-row label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.admin-ops-create-form input,
+.admin-ops-create-form textarea,
+.admin-ops-row input,
+.admin-ops-row textarea {
+  width: 100%;
+  min-height: 38px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #111827;
+  padding: 0 10px;
+  outline: none;
+  font-weight: 650;
+}
+
+.admin-ops-create-form textarea,
+.admin-ops-row textarea {
+  padding: 10px;
+  resize: vertical;
+}
+
+.admin-ops-create-form input:focus,
+.admin-ops-create-form textarea:focus,
+.admin-ops-row input:focus,
+.admin-ops-row textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.admin-ops-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+}
+
+.admin-ops-checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.admin-ops-checks input[type="number"] {
+  width: 86px;
+  min-height: 34px;
+}
+
+.admin-ops-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-ops-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+@media (max-width: 1120px) {
+  .admin-ops-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ops-form-grid,
+  .admin-ops-vehicle-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-product-ops-panel {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .admin-op-section-head {
+    display: grid;
+  }
+
+  .admin-ops-summary {
+    width: 100%;
+  }
+
+  .admin-ops-form-grid,
+  .admin-ops-form-grid.two-cols,
+  .admin-ops-vehicle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ops-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+/* =========================================================
+   ADMIN OPERATIVO - MANTENIMIENTO PRODUCTOS M6.4B
+   ========================================================= */
+
+.admin-kpi-grid-maintenance {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.admin-kpi-button {
+  cursor: pointer;
+  text-align: left;
+  border: 1px solid #dbe4ef;
+}
+
+.admin-kpi-button:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  box-shadow: 0 16px 36px rgba(37, 99, 235, 0.1);
+}
+
+.admin-kpi-card.danger {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.admin-kpi-card.danger svg {
+  color: #dc2626;
+}
+
+.admin-products-maintenance-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.6fr)
+    minmax(150px, 0.9fr)
+    minmax(150px, 0.9fr)
+    minmax(140px, 0.8fr)
+    minmax(120px, 0.7fr)
+    minmax(140px, 0.7fr)
+    minmax(120px, 0.7fr)
+    minmax(110px, 0.7fr)
+    auto
+    auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-products-maintenance-toolbar select {
+  min-height: 42px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #111827;
+  padding: 0 10px;
+  font-weight: 750;
+}
+
+.admin-product-maintenance-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 18px;
+  align-items: stretch;
+  text-decoration: none;
+}
+
+.admin-product-main-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.admin-product-main-link:hover h3 {
+  color: #1d4ed8;
+}
+
+.admin-product-maintenance-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.admin-product-maintenance-badges span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.admin-product-maintenance-badges span.ok {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+
+.admin-product-maintenance-badges span.bad {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.admin-product-maintenance-badges span.info {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.admin-product-maintenance-side {
+  display: grid;
+  align-content: space-between;
+  gap: 14px;
+  padding-left: 16px;
+  border-left: 1px solid #e2e8f0;
+}
+
+.admin-product-quick-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.admin-product-quick-btn {
+  min-height: 34px;
+  border-radius: 11px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.admin-product-quick-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.admin-product-quick-btn.is-on {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.admin-product-quick-btn.is-off {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.admin-product-quick-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1180px) {
+  .admin-kpi-grid-maintenance {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-products-maintenance-toolbar .admin-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 860px) {
+  .admin-product-maintenance-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-maintenance-side {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 14px;
+  }
+
+  .admin-product-quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-kpi-grid-maintenance,
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-quick-actions {
+    grid-template-columns: 1fr;
+  }
+}
+/* =========================================================
+   FIX VISUAL ADMIN - CONSOLIDACION ESTILOS
+   ========================================================= */
+
+/* 1. Contenedor admin más controlado */
+.admin-page .container,
+.admin-login-page .container {
+  width: min(1240px, calc(100% - 38px));
+}
+
+/* 2. Inputs generales de admin: faltaba .admin-field input */
+.admin-field input,
+.admin-field select,
+.admin-field textarea,
+.admin-home-hero-form input,
+.admin-home-hero-form select,
+.admin-home-hero-form textarea,
+.admin-product-form input,
+.admin-product-form select,
+.admin-product-form textarea,
+.admin-toolbar input,
+.admin-toolbar select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  border-radius: 14px;
+  background: #f8fafc;
+  color: var(--text-dark);
+  padding: 0 13px;
+  outline: none;
+  font-weight: 750;
+  box-sizing: border-box;
+}
+
+.admin-field textarea,
+.admin-home-hero-form textarea,
+.admin-product-form textarea {
+  min-height: 92px;
+  padding: 12px 13px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus,
+.admin-home-hero-form input:focus,
+.admin-home-hero-form select:focus,
+.admin-home-hero-form textarea:focus,
+.admin-product-form input:focus,
+.admin-product-form select:focus,
+.admin-product-form textarea:focus,
+.admin-toolbar input:focus,
+.admin-toolbar select:focus {
+  border-color: rgba(37, 99, 235, 0.55);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* 3. Formularios admin: evitar que columnas revienten */
+.admin-form-grid,
+.admin-form-grid.two-cols,
+.admin-form-grid.three-cols {
+  min-width: 0;
+}
+
+.admin-form-grid.two-cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-form-grid.three-cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-form-grid > *,
+.admin-panel > *,
+.admin-home-hero-form > *,
+.admin-product-form > * {
+  min-width: 0;
+}
+
+/* 4. Flyer form: que no parezca formulario de prueba */
+.admin-home-hero-form-panel {
+  overflow: hidden;
+}
+
+.admin-home-hero-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--text-dark);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.admin-home-hero-form input::placeholder,
+.admin-home-hero-form textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 650;
+}
+
+.admin-home-hero-preview {
+  margin-top: 2px;
+}
+
+/* 5. Toolbar productos: evitar desborde y compresión */
+.admin-products-maintenance-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(280px, 1.7fr)
+    repeat(4, minmax(132px, 0.82fr))
+    repeat(3, minmax(112px, 0.72fr))
+    auto
+    auto;
+  gap: 10px;
+  align-items: center;
+  overflow: visible;
+}
+
+.admin-products-maintenance-toolbar .admin-search {
+  min-width: 0;
+}
+
+.admin-products-maintenance-toolbar select {
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-products-maintenance-toolbar > strong {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* 6. KPI productos: más parejos y menos pesados */
+.admin-kpi-grid-maintenance {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-kpi-card {
+  min-width: 0;
+}
+
+.admin-kpi-card strong {
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+}
+
+.admin-kpi-card span {
+  line-height: 1.15;
+}
+
+/* 7. Cards productos: más limpias */
+.admin-product-maintenance-card {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 260px;
+}
+
+.admin-product-main-link {
+  min-width: 0;
+}
+
+.admin-product-main h3 {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.admin-product-web {
+  max-width: 290px;
+}
+
+/* 8. Acciones rápidas: que se vean como controles internos, no CTA gigante */
+.admin-product-quick-btn {
+  min-height: 36px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.admin-product-quick-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.admin-product-quick-btn.is-off {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.admin-product-quick-btn.is-on {
+  color: #334155;
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+/* 9. Home flyers: layout más sólido */
+.admin-home-hero-layout {
+  grid-template-columns: minmax(360px, 0.9fr) minmax(0, 1.1fr);
+}
+
+.admin-home-hero-card {
+  grid-template-columns: 150px minmax(0, 1fr) 150px;
+}
+
+.admin-home-hero-info {
+  min-width: 0;
+}
+
+.admin-home-hero-info strong,
+.admin-home-hero-info p,
+.admin-home-hero-info small {
+  overflow-wrap: anywhere;
+}
+
+/* 10. Botones tipo admin */
+.admin-primary-link,
+.admin-small-action,
+.admin-clean-button,
+.admin-home-hero-actions a,
+.admin-home-hero-actions button {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.admin-primary-link:hover,
+.admin-small-action:hover,
+.admin-clean-button:hover,
+.admin-home-hero-actions a:hover,
+.admin-home-hero-actions button:hover {
+  transform: translateY(-1px);
+}
+
+/* 11. Responsive más estable */
+@media (max-width: 1320px) {
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .admin-products-maintenance-toolbar .admin-search {
+    grid-column: 1 / -1;
+  }
+
+  .admin-products-maintenance-toolbar > strong {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 1180px) {
+  .admin-kpi-grid-maintenance {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-home-hero-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-maintenance-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-maintenance-side {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 14px;
+  }
+
+  .admin-product-quick-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .admin-page .container,
+  .admin-login-page .container {
+    width: min(100% - 28px, 1240px);
+  }
+
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-products-maintenance-toolbar .admin-search,
+  .admin-products-maintenance-toolbar > strong {
+    grid-column: 1 / -1;
+  }
+
+  .admin-product-quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-form-grid.two-cols,
+  .admin-form-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-home-hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-home-hero-thumb {
+    width: 100%;
+    height: 170px;
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-kpi-grid-maintenance,
+  .admin-products-maintenance-toolbar,
+  .admin-product-quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-topbar,
+  .admin-detail-header {
+    align-items: stretch;
+  }
+
+  .admin-primary-link {
+    width: 100%;
+  }
+}
+/* =========================================================
+   FIX FINAL - FILTROS PRODUCTOS EN 2 FILAS
+   ========================================================= */
+
+.admin-products-maintenance-toolbar {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  padding: 16px !important;
+}
+
+.admin-products-maintenance-toolbar .admin-search {
+  grid-column: span 2;
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-products-maintenance-toolbar select {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 38px 0 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.admin-products-maintenance-toolbar .admin-clean-button {
+  width: 100%;
+  justify-content: center;
+  border-radius: 14px;
+}
+
+.admin-products-maintenance-toolbar > strong {
+  justify-self: start;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+/* Mejorar visual del buscador para que no parezca doble input */
+.admin-products-maintenance-toolbar .admin-search {
+  min-height: 44px;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.admin-products-maintenance-toolbar .admin-search input {
+  min-height: 42px;
+  font-weight: 750;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .admin-products-maintenance-toolbar .admin-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-products-maintenance-toolbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-products-maintenance-toolbar .admin-search {
+    grid-column: auto;
+  }
+
+  .admin-products-maintenance-toolbar > strong {
+    justify-self: start;
+  }
+}

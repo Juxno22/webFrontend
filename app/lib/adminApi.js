@@ -1,4 +1,8 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_URL = (
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "http://localhost:4000"
+).replace(/\/+$/, "");
 
 const TOKEN_KEY = "andyfers_admin_token";
 const USER_KEY = "andyfers_admin_user";
@@ -170,4 +174,86 @@ export async function deleteAdminHomeHeroSlide(id) {
   return adminFetch(`/api/admin/home/hero-slides/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
+}
+
+function m62bGetApiBaseUrl() {
+  return API_URL.endsWith("/api")
+    ? API_URL
+    : `${API_URL}/api`;
+}
+
+function m62bGetAdminToken() {
+  if (typeof window === "undefined") return "";
+
+  return (
+    window.localStorage.getItem("andyfers_admin_token") ||
+    window.localStorage.getItem("admin_token") ||
+    window.localStorage.getItem("token") ||
+    ""
+  );
+}
+
+async function m62bParseResponse(response) {
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok || payload.ok === false) {
+    throw new Error(
+      payload.error ||
+        payload.message ||
+        "No se pudo completar la operación."
+    );
+  }
+
+  return payload;
+}
+
+function m62bAuthHeaders(extraHeaders = {}) {
+  const token = m62bGetAdminToken();
+
+  return {
+    ...extraHeaders,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
+export async function getAdminProductoCategorias() {
+  const response = await fetch(
+    `${m62bGetApiBaseUrl()}/admin/productos/catalogos/categorias`,
+    {
+      headers: m62bAuthHeaders(),
+    }
+  );
+
+  return m62bParseResponse(response);
+}
+
+export async function createAdminProducto(payload) {
+  const response = await fetch(`${m62bGetApiBaseUrl()}/admin/productos`, {
+    method: "POST",
+    headers: m62bAuthHeaders({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(payload),
+  });
+
+  return m62bParseResponse(response);
+}
+
+export async function deleteAdminProducto(id) {
+  const response = await fetch(`${m62bGetApiBaseUrl()}/admin/productos/${id}`, {
+    method: "DELETE",
+    headers: m62bAuthHeaders(),
+  });
+
+  return m62bParseResponse(response);
+}
+
+export async function updateAdminProductoAccionesRapidas(id, payload) {
+  return adminFetch(
+    `/api/admin/productos/${encodeURIComponent(id)}/acciones-rapidas`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }
+  );
 }

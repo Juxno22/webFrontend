@@ -440,9 +440,6 @@ export default function QuoteCartClient() {
               Seguir agregando productos
             </Link>
             <div></div>
-
-            <div className="eyebrow">Solicitud de cotización</div>
-
             <h1>Revisa tus productos antes de enviar la solicitud.</h1>
 
             <p>
