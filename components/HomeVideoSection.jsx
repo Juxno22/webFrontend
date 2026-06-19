@@ -12,10 +12,12 @@ export default function HomeVideoSection() {
   const rafRef = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const videoUrl =
-    process.env.NEXT_PUBLIC_HOME_VIDEO_URL || "/andyfers-gifts/presentacionAndyfers.mp4";
-
+  const videoUrl = process.env.NEXT_PUBLIC_HOME_VIDEO_URL || "";
   const posterUrl = process.env.NEXT_PUBLIC_HOME_VIDEO_POSTER_URL || "";
+
+  if (!videoUrl) {
+    return null;
+  }
 
   useEffect(() => {
     const section = sectionRef.current;
