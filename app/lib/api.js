@@ -1,8 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export async function apiFetch(path, options = {}) {
-    const url = `${API_URL}${path}`;
-
+    const url = `${API_URL}${path}`
     const response = await fetch(url, {
         ...options,
         headers: {
@@ -11,13 +10,10 @@ export async function apiFetch(path, options = {}) {
         },
         cache: "no-store",
     });
-
     const data = await response.json().catch(() => null);
-
     if (!response.ok) {
         throw new Error(data?.error || "Error al conectar con la API");
     }
-
     return data;
 }
 
@@ -123,4 +119,34 @@ export async function buscarConIA(payload = {}) {
 }
 export async function getHomeHeroSlides() {
   return apiFetch("/api/home/hero-slides");
+}
+
+export async function getSiteHome() {
+  return apiFetch("/api/site/home");
+}
+
+export async function getSiteContent(pagina = "HOME") {
+  const query = buildQuery({ pagina });
+
+  return apiFetch(`/api/site/content${query ? `?${query}` : ""}`);
+}
+
+export async function getSiteBanners(pagina = "HOME") {
+  const query = buildQuery({ pagina });
+
+  return apiFetch(`/api/site/banners${query ? `?${query}` : ""}`);
+}
+
+export async function getSiteLineasComerciales() {
+  return apiFetch("/api/site/lineas-comerciales");
+}
+
+export async function getSiteSeccionesDestacadas(pagina = "HOME") {
+  const query = buildQuery({ pagina });
+
+  return apiFetch(`/api/site/secciones-destacadas${query ? `?${query}` : ""}`);
+}
+
+export async function getSiteContacto() {
+  return apiFetch("/api/site/contacto");
 }

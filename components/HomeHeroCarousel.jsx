@@ -2,11 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  ClipboardList,
-  Search,
-  Sparkles,
-} from "lucide-react";
+import { ClipboardList, Search } from "lucide-react";
 import { getHomeHeroSlides } from "@/app/lib/api";
 
 const fallbackSlides = [
@@ -30,22 +26,56 @@ const fallbackSlides = [
   },
 ];
 
+const defaultHeroText = {
+  titulo: "",
+  subtitulo:
+    "Busca piezas para sistema de enfriamiento por vehículo, código, cruce o descripción. Agrega productos a tu cotización y nuestro equipo valida compatibilidad, disponibilidad y precio final.",
+  cta_texto: "Buscar en catálogo",
+  cta_url: "/catalogo",
+};
+
 function getSlideImage(slide) {
   return slide?.secure_url || slide?.thumbnail_url || "";
 }
 
-export default function HomeHeroCarousel() {
-  const [slides, setSlides] = useState(fallbackSlides);
+function normalizeSlides(slides = []) {
+  if (!Array.isArray(slides)) return [];
+
+  return slides.filter((slide) => getSlideImage(slide));
+}
+
+export default function HomeHeroCarousel({
+  initialSlides = [],
+  heroContent = null,
+}) {
+  const validInitialSlides = useMemo(
+    () => normalizeSlides(initialSlides),
+    [initialSlides]
+  );
+
+  const [slides, setSlides] = useState(
+    validInitialSlides.length ? validInitialSlides : fallbackSlides
+  );
+
+  const content = {
+    ...defaultHeroText,
+    ...(heroContent || {}),
+  };
 
   useEffect(() => {
     let active = true;
 
+    if (validInitialSlides.length) {
+      setSlides(validInitialSlides);
+      return () => {
+        active = false;
+      };
+    }
+
     async function loadSlides() {
       try {
         const response = await getHomeHeroSlides();
-        const nextSlides = Array.isArray(response.data)
-          ? response.data.filter((slide) => getSlideImage(slide))
-          : [];
+        const nextSlides = normalizeSlides(response.data);
 
         if (!active || !nextSlides.length) return;
 
@@ -62,7 +92,7 @@ export default function HomeHeroCarousel() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [validInitialSlides]);
 
   const carouselSlides = useMemo(() => {
     return slides.length > 1 ? [...slides, ...slides] : slides;
@@ -76,19 +106,23 @@ export default function HomeHeroCarousel() {
 
       <div className="container andy-hero-racing-grid">
         <div className="andy-hero-copy">
-          <h1>
-            El poder<div></div><span>de avanzar.</span>
-          </h1>
+          {content.titulo ? (
+            <h1>{content.titulo}</h1>
+          ) : (
+            <h1>
+              El poder<div></div>
+              <span>de avanzar.</span>
+            </h1>
+          )}
 
-          <p>
-            Busca piezas para sistema de enfriamiento por vehículo, código,
-            cruce o descripción. Agrega productos a tu cotización y nuestro
-            equipo valida compatibilidad, disponibilidad y precio final.
-          </p>
+          <p>{content.subtitulo || content.contenido}</p>
 
           <div className="andy-hero-actions">
-            <Link href="/catalogo" className="andy-hero-btn catalogo">
-              Buscar en catálogo
+            <Link
+              href={content.cta_url || "/catalogo"}
+              className="andy-hero-btn catalogo"
+            >
+              {content.cta_texto || "Buscar en catálogo"}
               <Search size={18} />
             </Link>
 

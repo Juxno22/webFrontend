@@ -8,6 +8,10 @@ import {
   ShieldCheck,
   Thermometer,
   Wrench,
+  ThermometerSnowflakeIcon,
+  TerminalSquareIcon,
+  Fan,
+  ChartBarStackedIcon,
 } from "lucide-react";
 
 const lineas = [
@@ -63,7 +67,7 @@ const lineas = [
     title: "Fan clutch",
     description:
       "Fan clutch con búsqueda por diámetro, tipo, cruces y códigos equivalentes.",
-    icon: Thermometer,
+    icon: Fan,
     href: "/catalogo",
     tags: ["Diámetro", "Tipo", "Cruces", "OEM"],
   },
@@ -71,9 +75,17 @@ const lineas = [
     title: "Radiadores",
     description:
       "Radiadores para todos los sistemas de enfriamiento.",
-    icon: Thermometer,
+    icon: TerminalSquareIcon,
     href: "/catalogo",
     tags: ["Radiadores", "Enfriamiento", "Motor"],
+  },
+  {
+    title: "Otras lineas",
+    description:
+      "Dale un vistazo a nuestras demas lineas.",
+    icon: ChartBarStackedIcon,
+    href: "/catalogo",
+    tags: ["Herrajes", "Balatas", "Tambor", "Traseras"],
   },
 ];
 

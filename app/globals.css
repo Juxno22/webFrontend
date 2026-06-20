@@ -48,9 +48,6 @@
 .public-shell button[type="submit"]:hover {
   filter: brightness(1.04);
 }
-/* =========================================================
-BOTONES ROJO SOLIDO ANDYFERS
-========================================================= */
 :root {
   --andyfers-action-red: var(--af-red, #ff192f);
 }

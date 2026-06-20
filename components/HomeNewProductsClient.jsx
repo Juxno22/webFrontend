@@ -30,8 +30,19 @@ function getProductCode(producto) {
   return null;
 }
 
-export default function HomeNewProductsClient({ productos = [] }) {
+export default function HomeNewProductsClient({
+  productos = [],
+  section = null,
+}) {
   if (!productos.length) return null;
+
+  const kicker = section?.subtitulo || "Productos nuevos";
+  const title = section?.titulo || "Últimas refacciones agregadas.";
+  const description =
+    section?.descripcion ||
+    "Explora los productos recientes y agrégalos a una cotización para validación de ventas.";
+  const ctaText = section?.cta_texto || "Ver catálogo completo";
+  const ctaUrl = section?.cta_url || "/catalogo";
 
   function addProduct(producto) {
     const code = getProductCode(producto) || "Producto";
@@ -52,16 +63,13 @@ export default function HomeNewProductsClient({ productos = [] }) {
       <div className="container">
         <div className="andy-new-products-head">
           <div>
-            <span className="andy-section-kicker">Productos nuevos</span>
-            <h2>Últimas refacciones agregadas.</h2>
-            <p>
-              Explora los productos recientes y agrégalos a una cotización para
-              validación de ventas.
-            </p>
+            <span className="andy-section-kicker">{kicker}</span>
+            <h2>{title}</h2>
+            <p>{description}</p>
           </div>
 
-          <Link href="/catalogo" className="andy-products-link">
-            Ver catálogo completo
+          <Link href={ctaUrl} className="andy-products-link">
+            {ctaText}
           </Link>
         </div>
 
@@ -73,15 +81,18 @@ export default function HomeNewProductsClient({ productos = [] }) {
 
               return (
                 <article
-                  className={`andy-new-product-card ${Number(producto.nuevo_web) === 1 ? "is-new-product" : ""
-                    }`}
+                  className={`andy-new-product-card ${
+                    Number(producto.nuevo_web) === 1 ? "is-new-product" : ""
+                  }`}
                   key={`${producto.id}-${index}`}
                 >
                   <div className="andy-new-product-media">
                     {Number(producto.nuevo_web) === 1 && (
                       <em className="andy-new-product-ribbon">NUEVO</em>
                     )}
+
                     <span>{codigoVisible}</span>
+
                     <ProductMediaImage
                       producto={producto}
                       className="andy-new-product-image"

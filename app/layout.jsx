@@ -2,7 +2,7 @@ import "./globals.css";
 import AppShell from "../components/AppShell";
 
 export const metadata = {
-  title: "Andyfers | Catálogo inteligente de refacciones",
+  title: "Andyfer's",
   description:
     "Catálogo inteligente de refacciones Andyfers. Encuentra productos, consulta compatibilidad y solicita cotización con apoyo de asistencia inteligente.",
   keywords: [
