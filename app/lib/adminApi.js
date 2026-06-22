@@ -152,6 +152,7 @@ export async function updateAdminProducto(id, payload) {
     body: JSON.stringify(payload),
   });
 }
+
 export async function getAdminHomeHeroSlides() {
   return adminFetch("/api/admin/home/hero-slides");
 }
@@ -256,4 +257,196 @@ export async function updateAdminProductoAccionesRapidas(id, payload) {
       body: JSON.stringify(payload),
     }
   );
+}
+
+function buildAdminQuery(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  return searchParams.toString();
+}
+
+/* ADMIN CONTENIDO EDITABLE API */
+
+export async function getAdminSiteContentBlocks(params = {}) {
+  const query = buildAdminQuery(params);
+
+  return adminFetch(
+    `/api/admin/site/content-blocks${query ? `?${query}` : ""}`
+  );
+}
+
+export async function createAdminSiteContentBlock(payload) {
+  return adminFetch("/api/admin/site/content-blocks", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminSiteContentBlock(id, payload) {
+  return adminFetch(`/api/admin/site/content-blocks/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteAdminSiteContentBlock(id) {
+  return adminFetch(`/api/admin/site/content-blocks/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function getAdminSiteBanners(params = {}) {
+  const query = buildAdminQuery(params);
+
+  return adminFetch(`/api/admin/site/banners${query ? `?${query}` : ""}`);
+}
+
+export async function createAdminSiteBanner(payload) {
+  return adminFetch("/api/admin/site/banners", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminSiteBanner(id, payload) {
+  return adminFetch(`/api/admin/site/banners/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteAdminSiteBanner(id) {
+  return adminFetch(`/api/admin/site/banners/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function getAdminSiteLineasComerciales(params = {}) {
+  const query = buildAdminQuery(params);
+
+  return adminFetch(
+    `/api/admin/site/lineas-comerciales${query ? `?${query}` : ""}`
+  );
+}
+
+export async function createAdminSiteLineaComercial(payload) {
+  return adminFetch("/api/admin/site/lineas-comerciales", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminSiteLineaComercial(id, payload) {
+  return adminFetch(
+    `/api/admin/site/lineas-comerciales/${encodeURIComponent(id)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }
+  );
+}
+
+export async function deleteAdminSiteLineaComercial(id) {
+  return adminFetch(
+    `/api/admin/site/lineas-comerciales/${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
+export async function getAdminSiteSeccionesDestacadas(params = {}) {
+  const query = buildAdminQuery(params);
+
+  return adminFetch(
+    `/api/admin/site/secciones-destacadas${query ? `?${query}` : ""}`
+  );
+}
+
+export async function createAdminSiteSeccionDestacada(payload) {
+  return adminFetch("/api/admin/site/secciones-destacadas", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminSiteSeccionDestacada(id, payload) {
+  return adminFetch(
+    `/api/admin/site/secciones-destacadas/${encodeURIComponent(id)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }
+  );
+}
+
+export async function deleteAdminSiteSeccionDestacada(id) {
+  return adminFetch(
+    `/api/admin/site/secciones-destacadas/${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
+export async function getAdminSiteContacto(params = {}) {
+  const query = buildAdminQuery(params);
+
+  return adminFetch(`/api/admin/site/contacto${query ? `?${query}` : ""}`);
+}
+
+export async function createAdminSiteContacto(payload) {
+  return adminFetch("/api/admin/site/contacto", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminSiteContacto(id, payload) {
+  return adminFetch(`/api/admin/site/contacto/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteAdminSiteContacto(id) {
+  return adminFetch(`/api/admin/site/contacto/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function uploadAdminSiteMedia(file, payload = {}) {
+  const token = getAdminToken();
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      formData.append(key, String(value).trim());
+    }
+  });
+
+  const response = await fetch(`${API_URL}/api/admin/site/media/upload`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+    cache: "no-store",
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok || data?.ok === false) {
+    throw new Error(data?.error || "No se pudo subir la imagen.");
+  }
+
+  return data;
 }

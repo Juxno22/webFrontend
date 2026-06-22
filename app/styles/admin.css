@@ -2888,3 +2888,329 @@
     justify-self: start;
   }
 }
+/* ADMIN CONTENIDO EDITABLE */
+
+.admin-site-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -4px 0 18px;
+}
+
+.admin-site-tabs button {
+  min-height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #ffffff;
+  color: var(--text-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 15px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.admin-site-tabs button.active {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.admin-site-toolbar {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 180px 150px auto auto;
+  gap: 12px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 22px;
+  padding: 16px;
+  margin-bottom: 22px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.07);
+}
+
+.admin-site-toolbar select {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  background: #f8fafc;
+  color: var(--text-dark);
+  padding: 0 12px;
+  font-weight: 800;
+}
+
+.admin-site-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-site-list-panel,
+.admin-site-form-panel {
+  min-width: 0;
+}
+
+.admin-site-list {
+  display: grid;
+  gap: 12px;
+  max-height: 820px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.admin-site-list-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  border-radius: 18px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-site-list-card.is-selected {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.admin-site-list-card > button {
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-site-list-card strong {
+  display: block;
+  color: #111827;
+  font-size: 0.96rem;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+
+.admin-site-list-card span {
+  display: block;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.admin-site-list-card small {
+  display: block;
+  margin-top: 5px;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.admin-site-card-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+  justify-items: end;
+}
+
+.admin-site-card-actions button {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.admin-site-card-actions button:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.admin-site-card-actions button.danger {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.admin-site-form {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-site-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-site-field-wide {
+  grid-column: 1 / -1;
+}
+
+.admin-site-fields .admin-field {
+  min-width: 0;
+}
+
+.admin-site-fields textarea {
+  min-height: 96px;
+}
+
+.admin-site-fields input[type="number"] {
+  appearance: textfield;
+}
+
+.admin-site-fields input[type="number"]::-webkit-outer-spin-button,
+.admin-site-fields input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 1180px) {
+  .admin-site-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-site-list {
+    max-height: none;
+  }
+
+  .admin-site-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-site-toolbar .admin-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-site-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-site-tabs button {
+    justify-content: center;
+  }
+
+  .admin-site-toolbar,
+  .admin-site-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-site-toolbar .admin-search {
+    grid-column: auto;
+  }
+
+  .admin-site-list-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-site-card-actions {
+    grid-template-columns: repeat(4, auto);
+    justify-content: start;
+    justify-items: start;
+  }
+}
+
+/* ADMIN CONTENT IMAGE UPLOAD */
+
+.admin-site-upload-field {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-site-upload-field > label {
+  display: grid;
+  gap: 7px;
+  color: var(--text-dark);
+  font-weight: 850;
+  font-size: 0.9rem;
+}
+
+.admin-site-upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+
+.admin-site-upload-button {
+  position: relative;
+  min-height: 38px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0 14px;
+  border-radius: 12px;
+  color: #ffffff !important;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.admin-site-upload-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.admin-site-upload-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.admin-site-upload-button:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-site-upload-preview-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border-radius: 12px;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.admin-site-upload-preview {
+  width: 100%;
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-site-upload-preview img {
+  width: 100%;
+  max-height: 190px;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+  background: #ffffff;
+}

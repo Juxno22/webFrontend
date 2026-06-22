@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ClipboardList, ImagePlus, LayoutDashboard } from "lucide-react";
+import {
+  Boxes,
+  ClipboardList,
+  FileText,
+  ImagePlus,
+  LayoutDashboard,
+} from "lucide-react";
 
 const links = [
   {
     href: "/admin",
     label: "Inicio",
     icon: LayoutDashboard,
+    exact: true,
   },
   {
     href: "/admin/cotizaciones",
@@ -19,6 +26,12 @@ const links = [
     href: "/admin/productos",
     label: "Productos",
     icon: Boxes,
+  },
+  {
+    href: "/admin/contenido",
+    label: "Contenido Web",
+    icon: FileText,
+    exact: true,
   },
   {
     href: "/admin/contenido/home-hero",
@@ -35,10 +48,9 @@ export default function AdminModuleNav() {
       {links.map((item) => {
         const Icon = item.icon;
 
-        const active =
-          item.href === "/admin"
-            ? pathname === "/admin"
-            : pathname.startsWith(item.href);
+        const active = item.exact
+          ? pathname === item.href
+          : pathname.startsWith(item.href);
 
         return (
           <Link

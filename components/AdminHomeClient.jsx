@@ -9,6 +9,7 @@ import {
   LogOut,
   Settings,
   ImagePlus,
+  FileText,
 } from "lucide-react";
 import { clearAdminSession, getAdminUser } from "../app/lib/adminApi";
 
@@ -98,20 +99,20 @@ export default function AdminHomeClient() {
             </div>
           </Link>
 
-          <div className="admin-home-card disabled">
+          <Link href="/admin/contenido" className="admin-home-card">
             <div className="admin-home-icon">
-              <Settings size={34} />
+              <FileText size={34} />
             </div>
 
             <div>
-              <span>Próximamente</span>
-              <h2>Configuración</h2>
+              <span>Contenido editable</span>
+              <h2>Textos y secciones web</h2>
               <p>
-                Ajustes generales, imágenes, visibilidad de secciones y datos de
-                contacto.
+                Edita textos del home, banners secundarios, líneas comerciales,
+                secciones destacadas y datos de contacto.
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </section>

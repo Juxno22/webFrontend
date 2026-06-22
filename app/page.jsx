@@ -6,6 +6,7 @@ import HomeCommercialLinesSection from "@/components/HomeCommercialLinesSection"
 import { getProductos, getSiteHome } from "@/app/lib/api";
 import HomeThemeSwitch from "@/components/HomeThemeSwitch";
 import HomeVideoSection from "@/components/HomeVideoSection";
+import HomeEditableBannersSection from "@/components/HomeEditableBannersSection";
 
 export const metadata = {
   title: "Andyfer's",
@@ -108,10 +109,13 @@ export default async function HomePage() {
             </p>
           </div>
         </section>
+
         <HomeNewProductsClient
           productos={productosNuevos}
           section={newProductsSection}
         />
+
+        <HomeEditableBannersSection banners={siteHome?.banners || []} />
 
         <section className="andy-final-public-cta">
           <div className="container andy-final-public-cta-inner">
