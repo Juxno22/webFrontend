@@ -7129,3 +7129,26 @@ html.andy-video-modal-open {
     min-height: 180px;
   }
 }
+
+/* HOME PRODUCTOS DESTACADOS EDITABLES */
+
+.andy-featured-products-recycled {
+  padding-top: clamp(76px, 7vw, 116px);
+  padding-bottom: clamp(76px, 7vw, 116px);
+}
+
+.andy-new-product-card.is-featured-product {
+  border-color: rgba(255, 25, 47, 0.13);
+}
+
+.andy-new-product-ribbon.featured {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--af-red);
+  color: #ffffff;
+}
+
+.andy-new-product-ribbon.featured svg {
+  flex: 0 0 auto;
+}

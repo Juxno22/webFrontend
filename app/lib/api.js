@@ -58,7 +58,7 @@ export async function getProducto(codigo) {
     return apiFetch(`/api/productos/${encodeURIComponent(codigo)}`);
 }
 
-export async function getProductosDestacados(limit = 8) {
+export async function getProductosDestacados(limit = 10) {
     return apiFetch(`/api/productos/destacados?limit=${limit}`);
 }
 

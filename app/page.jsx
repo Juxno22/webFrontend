@@ -3,10 +3,11 @@ import HomeHeroCarousel from "@/components/HomeHeroCarousel";
 import VehicleSearchBar from "@/components/VehicleSearchBar";
 import HomeNewProductsClient from "@/components/HomeNewProductsClient";
 import HomeCommercialLinesSection from "@/components/HomeCommercialLinesSection";
-import { getProductos, getSiteHome } from "@/app/lib/api";
+import { getProductos, getProductosDestacados, getSiteHome } from "@/app/lib/api";
 import HomeThemeSwitch from "@/components/HomeThemeSwitch";
 import HomeVideoSection from "@/components/HomeVideoSection";
 import HomeEditableBannersSection from "@/components/HomeEditableBannersSection";
+import HomeFeaturedProductsSection from "@/components/HomeFeaturedProductsSection";
 
 export const metadata = {
   title: "Andyfer's",
@@ -29,6 +30,7 @@ function findSection(siteHome, key) {
 
 export default async function HomePage() {
   let productosNuevos = [];
+  let productosDestacados = [];
   let siteHome = null;
 
   try {
@@ -39,6 +41,10 @@ export default async function HomePage() {
   }
 
   const newProductsSection = findSection(siteHome, "home_productos_nuevos");
+  const featuredProductsSection = findSection(
+    siteHome,
+    "home_productos_destacados"
+  );
 
   try {
     const response = await getProductos({
@@ -49,6 +55,16 @@ export default async function HomePage() {
     productosNuevos = response.data || [];
   } catch {
     productosNuevos = [];
+  }
+
+  try {
+    const response = await getProductosDestacados(
+      featuredProductsSection?.limite_productos || 8
+    );
+
+    productosDestacados = response.data || [];
+  } catch {
+    productosDestacados = [];
   }
 
   const heroContent = findBlock(siteHome, "home_intro_principal");
@@ -113,6 +129,11 @@ export default async function HomePage() {
         <HomeNewProductsClient
           productos={productosNuevos}
           section={newProductsSection}
+        />
+
+        <HomeFeaturedProductsSection
+          productos={productosDestacados}
+          section={featuredProductsSection}
         />
 
         <HomeEditableBannersSection banners={siteHome?.banners || []} />
