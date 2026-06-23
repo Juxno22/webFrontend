@@ -11,6 +11,7 @@ import {
 } from "../app/lib/api";
 import Link from "next/link";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage from "@/components/ProductMediaImage";
 
 const defaultFilters = {
@@ -66,6 +67,37 @@ function getProductCode(producto) {
   if (isValidCode(producto.codigo_importacion)) return producto.codigo_importacion;
 
   return null;
+}
+
+function shouldTrackCatalogSearch(filters = {}) {
+  return Boolean(
+    filters.q ||
+      filters.categoria ||
+      filters.familia ||
+      filters.armadora ||
+      filters.anio ||
+      filters.marca_auto ||
+      filters.modelo_auto ||
+      filters.motor ||
+      filters.linea
+  );
+}
+
+function buildCatalogSearchText(filters = {}) {
+  return [
+    filters.q,
+    filters.linea,
+    filters.categoria,
+    filters.familia,
+    filters.armadora,
+    filters.marca_auto,
+    filters.modelo_auto,
+    filters.anio,
+    filters.motor,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
 }
 
 export default function CatalogClient() {
@@ -144,9 +176,35 @@ export default function CatalogClient() {
         setError("");
 
         const response = await getProductos(appliedFilters);
+        const nextProducts = response.data || [];
+        const totalResultados = Number(
+          response.pagination?.total ?? nextProducts.length ?? 0
+        );
 
-        setProductos(response.data || []);
+        setProductos(nextProducts);
         setPagination(response.pagination || null);
+
+        if (shouldTrackCatalogSearch(appliedFilters)) {
+          trackAnalyticsEvent(
+            totalResultados > 0
+              ? "BUSQUEDA_CATALOGO"
+              : "BUSQUEDA_CATALOGO_SIN_RESULTADO",
+            {
+              busqueda_original: buildCatalogSearchText(appliedFilters),
+              total_resultados: totalResultados,
+              resultado_estado:
+                totalResultados > 0 ? "CON_RESULTADO" : "SIN_RESULTADO",
+              marca_vehiculo: appliedFilters.marca_auto,
+              modelo_vehiculo: appliedFilters.modelo_auto,
+              anio_vehiculo: appliedFilters.anio,
+              motor_vehiculo: appliedFilters.motor,
+              metadata: {
+                filtros: appliedFilters,
+                page: appliedFilters.page,
+              },
+            }
+          );
+        }
       } catch (err) {
         setError(err.message || "No se pudieron cargar productos.");
       } finally {

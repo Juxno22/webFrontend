@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   Boxes,
   ClipboardList,
+  FileSearch,
   FileText,
   ImagePlus,
   LayoutDashboard,
+  ListChecks,
+  ShieldCheck,
 } from "lucide-react";
 
 const links = [
@@ -26,6 +30,26 @@ const links = [
     href: "/admin/productos",
     label: "Productos",
     icon: Boxes,
+  },
+  {
+    href: "/admin/catalogo-calidad",
+    label: "Calidad Catálogo",
+    icon: ShieldCheck,
+  },
+  {
+    href: "/admin/pendientes-comerciales",
+    label: "Pendientes",
+    icon: ListChecks,
+  },
+  {
+    href: "/admin/multimedia-macheo",
+    label: "Macheo Multimedia",
+    icon: FileSearch,
+  },
+  {
+    href: "/admin/analitica",
+    label: "Analítica",
+    icon: BarChart3,
   },
   {
     href: "/admin/contenido",

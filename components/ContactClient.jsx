@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { trackAnalyticsBeacon } from "@/app/lib/analytics";
 import {
   ArrowRight,
   Clock,
@@ -127,6 +128,23 @@ Mensaje: ${
 
       return;
     }
+
+    trackAnalyticsBeacon("CONTACTO_FORMULARIO", {
+      metadata: {
+        nombre: form.nombre,
+        whatsapp: form.whatsapp,
+        ciudad: form.ciudad,
+        mensaje: form.mensaje,
+        ubicacion: "CONTACTO_FORMULARIO",
+      },
+    });
+
+    trackAnalyticsBeacon("WHATSAPP_CLICK", {
+      metadata: {
+        ubicacion: "CONTACTO_FORMULARIO",
+        url: whatsappLink,
+      },
+    });
 
     window.open(whatsappLink, "_blank", "noopener,noreferrer");
   }

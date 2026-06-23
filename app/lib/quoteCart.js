@@ -1,3 +1,5 @@
+import { trackAnalyticsEvent } from "./analytics";
+
 const STORAGE_KEY = "DEBdlt4GA8ANmbqTgO0xALKcVvN6LU";
 
 function safeParseJson(value, fallback = []) {
@@ -6,6 +8,27 @@ function safeParseJson(value, fallback = []) {
   } catch {
     return fallback;
   }
+}
+
+function trackQuoteCartAdd(producto, cantidad = 1) {
+  if (typeof window === "undefined" || !producto) return;
+
+  trackAnalyticsEvent("PRODUCTO_AGREGADO_CARRITO", {
+    producto_id: producto.id || producto.producto_id || null,
+    codigo_andyfers: producto.codigo_andyfers || null,
+    codigo_importacion: producto.codigo_importacion || null,
+    categoria_nombre: producto.categoria || null,
+    familia: producto.familia || null,
+    cantidad,
+    metadata: {
+      descripcion: producto.descripcion || "",
+      armadora: producto.armadora || "",
+      product_key:
+        producto.codigo_andyfers ||
+        producto.codigo_importacion ||
+        String(producto.id || producto.producto_id || ""),
+    },
+  });
 }
 
 export function getQuoteCart() {
@@ -40,6 +63,7 @@ export function addToQuoteCart(producto) {
   if (existingIndex >= 0) {
     current[existingIndex].cantidad += 1;
     saveQuoteCart(current);
+    trackQuoteCartAdd(producto, 1);
     return current;
   }
 
@@ -58,6 +82,7 @@ export function addToQuoteCart(producto) {
   const updated = [...current, nextItem];
 
   saveQuoteCart(updated);
+  trackQuoteCartAdd(producto, 1);
 
   return updated;
 }

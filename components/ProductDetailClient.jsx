@@ -15,6 +15,7 @@ import {
     Wrench,
 } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
+import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage, { getProductGallery } from "@/components/ProductMediaImage";
 
 function groupCrucesByMarca(cruces = []) {
@@ -69,6 +70,23 @@ export default function ProductDetailClient({ producto }) {
             item.atributo_normalizado !== "APLICACION PRINCIPAL" &&
             item.atributo_normalizado !== "CRUCES DISPONIBLES"
     );
+
+    useEffect(() => {
+        if (!producto?.id) return;
+
+        trackAnalyticsEvent("PRODUCTO_CONSULTADO", {
+            producto_id: producto.id,
+            codigo_andyfers: producto.codigo_andyfers,
+            codigo_importacion: producto.codigo_importacion,
+            categoria_id: producto.categoria_id,
+            categoria_nombre: producto.categoria,
+            familia: producto.familia,
+            metadata: {
+                descripcion: producto.descripcion,
+                armadora: producto.armadora,
+            },
+        });
+    }, [producto?.id]);
 
     useEffect(() => {
         const body = document.body;
