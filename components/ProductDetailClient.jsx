@@ -239,6 +239,7 @@ export default function ProductDetailClient({ producto }) {
                                 fallbackClassName="product-detail-image-fallback"
                                 iconSize={86}
                                 loading="eager"
+                                priority
                             />
                         </div>
 

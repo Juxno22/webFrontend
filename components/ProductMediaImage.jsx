@@ -1,16 +1,36 @@
 "use client";
 
+import { Wrench } from "lucide-react";
 import OptimizedPublicImage from "@/components/OptimizedPublicImage";
+
+const IMAGE_PRESETS = {
+  thumbnail: {
+    width: 520,
+    height: 390,
+    sizes: "(max-width: 768px) 75vw, (max-width: 1200px) 28vw, 310px",
+    cloudinaryWidth: 620,
+    cloudinaryHeight: 520,
+    cloudinaryQuality: "auto",
+  },
+  full: {
+    width: 1440,
+    height: 1080,
+    sizes: "(max-width: 768px) 92vw, (max-width: 1200px) 48vw, 760px",
+    cloudinaryWidth: null,
+    cloudinaryHeight: null,
+    cloudinaryQuality: null,
+  },
+};
 
 export function getProductImageUrl(producto, mode = "thumbnail") {
   if (!producto) return null;
 
-  if (mode === "full") {
+  if (mode === "full" || mode === "detail") {
     return (
-      producto.imagen_url ||
       producto.imagen_principal?.secure_url ||
-      producto.imagen_thumbnail_url ||
+      producto.imagen_url ||
       producto.imagen_principal?.thumbnail_url ||
+      producto.imagen_thumbnail_url ||
       null
     );
   }
@@ -39,14 +59,24 @@ export default function ProductMediaImage({
   className = "",
   fallbackClassName = "",
   iconSize = 42,
-  loading = "lazy",
-  priority = false,
-  width = 520,
-  height = 390,
-  sizes = "(max-width: 768px) 75vw, (max-width: 1200px) 28vw, 310px",
+  loading,
+  priority,
+  width,
+  height,
+  sizes,
   fill = false,
+  objectFit = "contain",
+  quality,
+  cloudinaryWidth,
+  cloudinaryHeight,
+  cloudinaryQuality,
+  cloudinaryCrop = "c_fit",
 }) {
-  const imageUrl = getProductImageUrl(producto, mode);
+  const resolvedMode = mode === "detail" ? "full" : mode;
+  const preset = IMAGE_PRESETS[resolvedMode] || IMAGE_PRESETS.thumbnail;
+  const isFull = resolvedMode === "full";
+
+  const imageUrl = getProductImageUrl(producto, resolvedMode);
 
   const imageAlt =
     alt ||
@@ -55,6 +85,30 @@ export default function ProductMediaImage({
     producto?.codigo_importacion ||
     "Producto Andyfers";
 
+  if (isFull) {
+    if (!imageUrl) {
+      return (
+        <div className={fallbackClassName} aria-label="Producto sin imagen">
+          <Wrench size={iconSize} />
+        </div>
+      );
+    }
+
+    return (
+      <img
+        src={imageUrl}
+        alt={imageAlt}
+        className={className}
+        loading={loading || "eager"}
+        decoding="async"
+        draggable="false"
+        width={width || preset.width}
+        height={height || preset.height}
+        style={{ objectFit }}
+      />
+    );
+  }
+
   return (
     <OptimizedPublicImage
       src={imageUrl}
@@ -62,14 +116,18 @@ export default function ProductMediaImage({
       className={className}
       fallbackClassName={fallbackClassName}
       iconSize={iconSize}
-      loading={loading}
-      priority={priority}
-      width={width}
-      height={height}
-      sizes={sizes}
+      loading={loading || "lazy"}
+      priority={priority ?? false}
+      width={width || preset.width}
+      height={height || preset.height}
+      sizes={sizes || preset.sizes}
       fill={fill}
-      cloudinaryWidth={mode === "full" ? 1200 : 620}
-      cloudinaryHeight={mode === "full" ? 900 : 520}
+      objectFit={objectFit}
+      quality={quality}
+      cloudinaryWidth={cloudinaryWidth || preset.cloudinaryWidth}
+      cloudinaryHeight={cloudinaryHeight || preset.cloudinaryHeight}
+      cloudinaryQuality={cloudinaryQuality || preset.cloudinaryQuality}
+      cloudinaryCrop={cloudinaryCrop}
     />
   );
 }
