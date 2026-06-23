@@ -1,0 +1,12 @@
+*** Begin Patch
+*** Update File: front/app/layout.jsx
+@@
+ import "./globals.css";
+ import AppShell from "../components/AppShell";
++import PublicPerformanceMonitor from "@/components/PublicPerformanceMonitor";
+@@
+       <body>
++        <PublicPerformanceMonitor />
+         <AppShell>{children}</AppShell>
+       </body>
+*** End Patch

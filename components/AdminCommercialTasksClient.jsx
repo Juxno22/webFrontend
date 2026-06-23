@@ -80,6 +80,16 @@ const ESTADOS = [
 
 const PRIORIDADES = ["CRITICA", "ALTA", "MEDIA", "BAJA"];
 
+const CRITICAL_ACTION_LABELS = {
+  OCULTAR_CATALOGO: "Ocultar catálogo",
+  ACTIVAR_CATALOGO: "Activar catálogo",
+  DESMARCAR_NUEVO: "Quitar nuevo",
+  DESMARCAR_DESTACADO: "Quitar destacado",
+  DESCARTAR_PENDIENTE: "Descartar pendiente",
+};
+
+const CRITICAL_ACTIONS = new Set(Object.keys(CRITICAL_ACTION_LABELS));
+
 function formatNumber(value) {
   return new Intl.NumberFormat("es-MX").format(Number(value || 0));
 }
@@ -390,17 +400,52 @@ export default function AdminCommercialTasksClient() {
     }
   }
 
-  async function discardTask(task) {
-    const confirmed = window.confirm("¿Descartar este pendiente comercial?");
+  function requestCriticalConfirmation(action) {
+    if (!CRITICAL_ACTIONS.has(action)) return {};
 
-    if (!confirmed) return;
+    const label = CRITICAL_ACTION_LABELS[action] || action;
+    const confirmacion = window.prompt(
+      `Acción crítica: ${label}.
+
+Para continuar escribe exactamente:
+${action}`
+    );
+
+    if (confirmacion === null) return null;
+
+    if (String(confirmacion).trim().toUpperCase() !== action) {
+      setError(`Confirmación inválida. Debes escribir exactamente: ${action}`);
+      return null;
+    }
+
+    const motivo = window.prompt(
+      "Motivo operativo obligatorio para auditoría. Mínimo 8 caracteres."
+    );
+
+    if (motivo === null) return null;
+
+    if (String(motivo).trim().length < 8) {
+      setError("Motivo inválido. Escribe al menos 8 caracteres.");
+      return null;
+    }
+
+    return {
+      confirmacion_accion: action,
+      motivo_critico: String(motivo).trim(),
+    };
+  }
+
+  async function discardTask(task) {
+    const criticalPayload = requestCriticalConfirmation("DESCARTAR_PENDIENTE");
+
+    if (!criticalPayload) return;
 
     try {
       setSaving(true);
       setError("");
       setMessage("");
 
-      await deleteAdminCommercialTask(task.id);
+      await deleteAdminCommercialTask(task.id, criticalPayload);
       setMessage("Pendiente descartado correctamente.");
       await loadAll(filters);
     } catch (err) {
@@ -424,6 +469,9 @@ export default function AdminCommercialTasksClient() {
 
     if (confirmMessage && !window.confirm(confirmMessage)) return;
 
+    const criticalPayload = requestCriticalConfirmation(action);
+    if (criticalPayload === null) return;
+
     try {
       setActionLoading(action);
       setSaving(true);
@@ -433,6 +481,7 @@ export default function AdminCommercialTasksClient() {
       const response = await applyAdminCommercialTaskAction(selected.id, {
         accion: action,
         nota: extraNote,
+        ...criticalPayload,
       });
 
       setMessage(response.message || "Acción aplicada correctamente.");
@@ -677,11 +726,18 @@ export default function AdminCommercialTasksClient() {
               )}
 
               {tasks.map((task) => (
-                <button
+                <article
                   className={`admin-commercial-card ${selected?.id === task.id ? "active" : ""}`}
-                  type="button"
                   key={task.id}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => startEdit(task)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      startEdit(task);
+                    }
+                  }}
                 >
                   <div className="admin-commercial-card-head">
                     <span className={`admin-commercial-priority ${prioridadClass(task.prioridad)}`}>
@@ -704,7 +760,7 @@ export default function AdminCommercialTasksClient() {
                   </div>
 
                   <small>Actualizado {formatDate(task.updated_at)}</small>
-                </button>
+                </article>
               ))}
             </div>
           </article>
@@ -755,6 +811,10 @@ export default function AdminCommercialTasksClient() {
                       <span className="eyebrow">Acciones operativas</span>
                       <h3>Aplicar sobre catálogo</h3>
                     </div>
+                  </div>
+
+                  <div className="admin-commercial-critical-note">
+                    Las acciones que cambian visibilidad, destacado, nuevo o descarte piden confirmación exacta y motivo obligatorio.
                   </div>
 
                   {renderProductContext()}

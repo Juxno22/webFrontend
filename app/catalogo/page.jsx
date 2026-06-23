@@ -12,10 +12,16 @@ export default function CatalogoPage() {
   return (
     <>
       <section className="catalog-racing-hero">
-        <div className="catalog-racing-decor catalog-racing-decor-left" />
-        <div className="catalog-racing-decor catalog-racing-decor-right" />
+        {/*<div className="catalog-racing-decor catalog-racing-decor-left" />
+        <div className="catalog-racing-decor catalog-racing-decor-right" />*/}
         <div className="container catalog-racing-inner">
-          <h1>Catálogo de Refacciones</h1>
+          <div className="quote-hero-logo-pop-catalogo" aria-hidden="true">
+            <img
+              src="/andyfers-home/logo-andyfers.png"
+              alt="Andyfers Autopartes"
+              height={"80pvh"}
+            />
+          </div>
         </div>
       </section>
       <section className="catalog-workspace-section">

@@ -749,7 +749,7 @@ export default function AdminSiteContentClient() {
     }
 
     return (
-        <section className="admin-page">
+        <section className="admin-page admin-site-content-page">
             <div className="container">
                 <div className="admin-topbar">
                     <div>

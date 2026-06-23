@@ -48,9 +48,10 @@ export async function updateAdminCommercialTask(id, payload) {
   });
 }
 
-export async function deleteAdminCommercialTask(id) {
+export async function deleteAdminCommercialTask(id, payload = {}) {
   return adminFetch(`/api/admin/pendientes-comerciales/${encodeURIComponent(id)}`, {
     method: "DELETE",
+    body: JSON.stringify(payload),
   });
 }
 

@@ -38,6 +38,25 @@ async function getSitemapProducts() {
   }
 }
 
+async function getSeoLandings() {
+  try {
+    const response = await fetch(`${API_URL}/api/seo/landings`, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) return { categorias: [], familias: [] };
+
+    const data = await response.json().catch(() => null);
+
+    return {
+      categorias: Array.isArray(data?.data?.categorias) ? data.data.categorias : [],
+      familias: Array.isArray(data?.data?.familias) ? data.data.familias : [],
+    };
+  } catch {
+    return { categorias: [], familias: [] };
+  }
+}
+
 export default async function sitemap() {
   const now = new Date();
 
@@ -55,6 +74,12 @@ export default async function sitemap() {
       priority: 0.95,
     },
     {
+      url: siteUrl("/catalogo/lineas"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.88,
+    },
+    {
       url: siteUrl("/cotizacion"),
       lastModified: now,
       changeFrequency: "weekly",
@@ -68,7 +93,30 @@ export default async function sitemap() {
     },
   ];
 
-  const productos = await getSitemapProducts();
+  const [productos, landings] = await Promise.all([
+    getSitemapProducts(),
+    getSeoLandings(),
+  ]);
+
+  const categoryPages = landings.categorias
+    .filter((item) => item.slug)
+    .map((item) => ({
+      url: siteUrl(`/catalogo/categoria/${encodeURIComponent(item.slug)}`),
+      lastModified: safeDate(item.updated_at),
+      changeFrequency: "weekly",
+      priority: 0.86,
+      images: item.imagen_url ? [item.imagen_url] : undefined,
+    }));
+
+  const familyPages = landings.familias
+    .filter((item) => item.slug)
+    .map((item) => ({
+      url: siteUrl(`/catalogo/familia/${encodeURIComponent(item.slug)}`),
+      lastModified: safeDate(item.updated_at),
+      changeFrequency: "weekly",
+      priority: 0.84,
+      images: item.imagen_url ? [item.imagen_url] : undefined,
+    }));
 
   const productPages = productos
     .filter((producto) => producto.codigo_publico)
@@ -80,5 +128,5 @@ export default async function sitemap() {
       images: producto.imagen_url ? [producto.imagen_url] : undefined,
     }));
 
-  return [...staticPages, ...productPages];
+  return [...staticPages, ...categoryPages, ...familyPages, ...productPages];
 }

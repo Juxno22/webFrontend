@@ -376,3 +376,56 @@
     display: grid;
   }
 }
+
+/* =========================================================
+   REPARACION 2 - ANALITICA RESPONSIVE / KPI CARDS
+   ========================================================= */
+
+.admin-analytics-page .container {
+  width: min(1280px, calc(100% - 32px));
+}
+
+.admin-analytics-toolbar {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  align-items: end;
+  overflow: hidden;
+}
+
+.admin-analytics-search-field {
+  grid-column: span 2;
+}
+
+.admin-analytics-kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+}
+
+.admin-analytics-kpi-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-analytics-kpi-card span,
+.admin-analytics-kpi-card strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-analytics-grid-two,
+.admin-analytics-grid-three {
+  min-width: 0;
+}
+
+.admin-analytics-panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .admin-analytics-search-field {
+    grid-column: auto;
+  }
+
+  .admin-analytics-grid-two {
+    grid-template-columns: 1fr;
+  }
+}

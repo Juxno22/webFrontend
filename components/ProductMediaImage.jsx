@@ -1,6 +1,6 @@
 "use client";
 
-import { Wrench } from "lucide-react";
+import OptimizedPublicImage from "@/components/OptimizedPublicImage";
 
 export function getProductImageUrl(producto, mode = "thumbnail") {
   if (!producto) return null;
@@ -40,6 +40,11 @@ export default function ProductMediaImage({
   fallbackClassName = "",
   iconSize = 42,
   loading = "lazy",
+  priority = false,
+  width = 520,
+  height = 390,
+  sizes = "(max-width: 768px) 75vw, (max-width: 1200px) 28vw, 310px",
+  fill = false,
 }) {
   const imageUrl = getProductImageUrl(producto, mode);
 
@@ -50,20 +55,21 @@ export default function ProductMediaImage({
     producto?.codigo_importacion ||
     "Producto Andyfers";
 
-  if (!imageUrl) {
-    return (
-      <div className={fallbackClassName}>
-        <Wrench size={iconSize} />
-      </div>
-    );
-  }
-
   return (
-    <img
-      className={className}
+    <OptimizedPublicImage
       src={imageUrl}
       alt={imageAlt}
+      className={className}
+      fallbackClassName={fallbackClassName}
+      iconSize={iconSize}
       loading={loading}
+      priority={priority}
+      width={width}
+      height={height}
+      sizes={sizes}
+      fill={fill}
+      cloudinaryWidth={mode === "full" ? 1200 : 620}
+      cloudinaryHeight={mode === "full" ? 900 : 520}
     />
   );
 }

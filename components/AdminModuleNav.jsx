@@ -8,9 +8,12 @@ import {
   ClipboardList,
   FileSearch,
   FileText,
+  Gauge,
   ImagePlus,
   LayoutDashboard,
   ListChecks,
+  LockKeyhole,
+  Server,
   ShieldCheck,
 } from "lucide-react";
 
@@ -52,6 +55,21 @@ const links = [
     icon: BarChart3,
   },
   {
+    href: "/admin/performance",
+    label: "Performance",
+    icon: Gauge,
+  },
+  {
+    href: "/admin/seguridad",
+    label: "Seguridad",
+    icon: LockKeyhole,
+  },
+  {
+    href: "/admin/produccion",
+    label: "Producción",
+    icon: Server,
+  },
+  {
     href: "/admin/contenido",
     label: "Contenido Web",
     icon: FileText,
@@ -68,10 +86,9 @@ export default function AdminModuleNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="admin-module-nav">
+    <nav className="admin-module-nav" aria-label="Navegación de módulos admin">
       {links.map((item) => {
         const Icon = item.icon;
-
         const active = item.exact
           ? pathname === item.href
           : pathname.startsWith(item.href);
@@ -83,7 +100,7 @@ export default function AdminModuleNav() {
             key={item.href}
           >
             <Icon size={17} />
-            {item.label}
+            <span>{item.label}</span>
           </Link>
         );
       })}

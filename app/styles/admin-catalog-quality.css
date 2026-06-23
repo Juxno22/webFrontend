@@ -553,3 +553,84 @@
     justify-items: start;
   }
 }
+
+/* =========================================================
+   REPARACION 2 - CALIDAD CATALOGO SIN CARGA A LA DERECHA
+   ========================================================= */
+
+.admin-quality-page .container {
+  width: min(1280px, calc(100% - 32px));
+}
+
+.admin-quality-page *,
+.admin-quality-page *::before,
+.admin-quality-page *::after {
+  box-sizing: border-box;
+}
+
+.admin-quality-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.admin-quality-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.admin-quality-toolbar .admin-search {
+  flex: 1 1 280px;
+  min-width: min(100%, 240px);
+}
+
+.admin-quality-toolbar select,
+.admin-quality-toolbar .admin-quality-range {
+  flex: 1 1 145px;
+  max-width: 185px;
+}
+
+.admin-quality-toolbar button,
+.admin-quality-toolbar .admin-clean-button,
+.admin-quality-toolbar .admin-primary-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.admin-quality-grid-two {
+  min-width: 0;
+}
+
+.admin-quality-panel,
+.admin-quality-table-wrap,
+.admin-quality-table {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-quality-table-wrap {
+  overflow-x: auto;
+}
+
+@media (max-width: 1180px) {
+  .admin-quality-grid-two {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-quality-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-quality-toolbar .admin-search,
+  .admin-quality-toolbar select,
+  .admin-quality-toolbar .admin-quality-range,
+  .admin-quality-toolbar button {
+    width: 100%;
+    max-width: none;
+  }
+}

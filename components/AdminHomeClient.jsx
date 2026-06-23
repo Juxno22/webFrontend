@@ -9,9 +9,12 @@ import {
   ClipboardList,
   FileSearch,
   FileText,
+  Gauge,
   ImagePlus,
   ListChecks,
+  LockKeyhole,
   LogOut,
+  Server,
   ShieldCheck,
 } from "lucide-react";
 import { clearAdminSession, getAdminUser } from "../app/lib/adminApi";
@@ -19,7 +22,6 @@ import { clearAdminSession, getAdminUser } from "../app/lib/adminApi";
 export default function AdminHomeClient() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-
   useEffect(() => {
     const currentUser = getAdminUser();
 
@@ -143,6 +145,51 @@ export default function AdminHomeClient() {
               <p>
                 Consulta búsquedas sin resultado, productos más consultados,
                 cotizaciones, WhatsApp y oportunidades de mercado.
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/admin/performance" className="admin-home-card">
+            <div className="admin-home-icon">
+              <Gauge size={34} />
+            </div>
+
+            <div>
+              <span>Performance pública</span>
+              <h2>Velocidad y Core Web Vitals</h2>
+              <p>
+                Revisa páginas lentas, métricas LCP, CLS, INP, tiempos de carga
+                y señales técnicas para mejorar experiencia y SEO.
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/admin/seguridad" className="admin-home-card">
+            <div className="admin-home-icon">
+              <LockKeyhole size={34} />
+            </div>
+
+            <div>
+              <span>Seguridad admin</span>
+              <h2>Auditoría y protección</h2>
+              <p>
+                Revisa eventos de seguridad, rate limits, acciones administrativas,
+                trazabilidad de cambios y hallazgos críticos del panel admin.
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/admin/produccion" className="admin-home-card">
+            <div className="admin-home-icon">
+              <Server size={34} />
+            </div>
+
+            <div>
+              <span>Preparación producción</span>
+              <h2>Producción y respaldos</h2>
+              <p>
+                Revisa variables críticas, conexión a base, tablas necesarias,
+                respaldos manuales y checklist antes de publicar cambios.
               </p>
             </div>
           </Link>

@@ -1361,3 +1361,65 @@
   background: #fff7e6 !important;
   border-color: rgba(245, 158, 11, 0.28) !important;
 }
+
+/* Logo flotante */
+.quote-hero-logo-pop-catalogo {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: clamp(70px, 8vw, 108px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.quote-hero-logo-pop-catalogo img {
+  width: clamp(550px, 80vw, 600px);
+  max-width: none;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transform:
+    translateX(clamp(12px, 3vw, 54px))
+    translateY(clamp(4px, 1vw, 18px))
+    scale(1.04);
+  filter:
+    drop-shadow(0 34px 58px rgba(0, 0, 0, 0.58))
+    drop-shadow(0 0 24px rgba(255, 25, 47, 0.22));
+  animation: quoteHeroLogoFloat 6.4s ease-in-out infinite;
+}
+
+.quote-hero-logo-pop-catalogo::before {
+  content: "";
+  position: absolute;
+  width: min(260px, 40%);
+  height: min(155px, 35%);
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 25, 47, 0.15) 0%,
+    rgba(255, 25, 47, 0.06) 38%,
+    transparent 72%
+  );
+  filter: blur(10px);
+  transform: translateX(8%);
+  z-index: -1;
+}
+
+@keyframes quoteHeroLogoFloat {
+  0%,
+  100% {
+    transform:
+      translateX(clamp(12px, 3vw, 54px))
+      translateY(clamp(4px, 1vw, 18px))
+      scale(1.04);
+  }
+
+  50% {
+    transform:
+      translateX(clamp(12px, 3vw, 54px))
+      translateY(clamp(-8px, -0.8vw, -14px))
+      scale(1.065);
+  }
+}

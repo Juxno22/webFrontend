@@ -445,3 +445,449 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-commercial-critical-note {
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(190, 18, 60, 0.22);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 25, 47, 0.08), rgba(255, 255, 255, 0.92));
+  color: #7f1d1d;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   REPARACION 2 - PENDIENTES COMERCIALES
+   Evita desbordes, botones ovalados heredados y textos quebrados.
+   ========================================================= */
+
+.admin-commercial-tasks-page .container {
+  width: min(1280px, calc(100% - 32px));
+}
+
+.admin-commercial-tasks-page *,
+.admin-commercial-tasks-page *::before,
+.admin-commercial-tasks-page *::after {
+  box-sizing: border-box;
+}
+
+.admin-commercial-tasks-page .admin-topbar {
+  align-items: flex-start;
+}
+
+.admin-commercial-actions {
+  max-width: 100%;
+}
+
+.admin-commercial-actions button,
+.admin-commercial-actions .admin-export-menu,
+.admin-commercial-actions .admin-export-menu button {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.admin-commercial-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+}
+
+.admin-commercial-kpi {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-commercial-kpi span,
+.admin-commercial-kpi strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-commercial-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.admin-commercial-toolbar .admin-search {
+  flex: 1 1 290px;
+  min-width: min(100%, 250px);
+}
+
+.admin-commercial-toolbar select {
+  flex: 1 1 148px;
+  max-width: 190px;
+}
+
+.admin-commercial-toolbar button,
+.admin-commercial-toolbar .admin-clean-button,
+.admin-commercial-toolbar .admin-primary-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.admin-commercial-layout {
+  grid-template-columns: minmax(410px, 0.95fr) minmax(520px, 1.05fr);
+  gap: 22px;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.admin-commercial-list-panel,
+.admin-commercial-detail-panel {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.admin-commercial-list {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.admin-commercial-card,
+button.admin-commercial-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 9px !important;
+  text-align: left !important;
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  border-radius: 20px !important;
+  padding: 15px !important;
+  overflow: hidden !important;
+  appearance: none;
+}
+
+.admin-commercial-card *,
+button.admin-commercial-card * {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal !important;
+  line-height: inherit;
+}
+
+.admin-commercial-card-head {
+  width: 100%;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-commercial-card strong {
+  display: block !important;
+  width: 100% !important;
+  font-size: 0.98rem;
+  line-height: 1.28 !important;
+  letter-spacing: -0.015em;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+.admin-commercial-card p {
+  width: 100%;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+.admin-commercial-card-meta {
+  width: 100%;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-commercial-card-meta span,
+.admin-commercial-priority,
+.admin-commercial-status {
+  flex: 0 1 auto;
+  width: auto !important;
+  max-width: 100%;
+  white-space: nowrap !important;
+}
+
+.admin-commercial-form,
+.admin-commercial-fields {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-commercial-fields .admin-field,
+.admin-commercial-fields label {
+  min-width: 0;
+}
+
+.admin-commercial-fields input,
+.admin-commercial-fields select,
+.admin-commercial-fields textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+}
+
+.admin-commercial-fields input,
+.admin-commercial-fields select {
+  min-height: 44px;
+  padding: 0 13px;
+}
+
+.admin-commercial-fields textarea {
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.admin-commercial-quick-actions,
+.admin-commercial-operational-actions {
+  width: 100%;
+}
+
+.admin-commercial-quick-actions button,
+.admin-commercial-operational-actions button {
+  white-space: normal;
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  .admin-commercial-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-commercial-list {
+    max-height: 620px;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-commercial-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-commercial-toolbar .admin-search,
+  .admin-commercial-toolbar select,
+  .admin-commercial-toolbar button,
+  .admin-commercial-toolbar .admin-clean-button,
+  .admin-commercial-toolbar .admin-primary-link {
+    width: 100%;
+    max-width: none;
+  }
+
+  .admin-commercial-fields,
+  .admin-commercial-product-context,
+  .admin-commercial-operational-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   REPARACION 3 - PENDIENTES COMERCIALES
+   Corrige cards deformadas, texto vertical y filtros largos.
+   ========================================================= */
+
+.admin-commercial-tasks-page .container {
+  width: min(1280px, calc(100% - 32px));
+  max-width: 1280px;
+}
+
+.admin-commercial-toolbar {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.admin-commercial-toolbar .admin-search {
+  flex: 1 1 280px;
+  min-width: min(100%, 260px);
+}
+
+.admin-commercial-toolbar select {
+  flex: 1 1 145px;
+  max-width: 190px;
+  min-width: 0;
+}
+
+.admin-commercial-toolbar button,
+.admin-commercial-toolbar .admin-clean-button,
+.admin-commercial-toolbar .admin-primary-link {
+  flex: 0 0 auto;
+}
+
+.admin-commercial-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(480px, 1.05fr);
+  gap: 22px;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-commercial-list-panel,
+.admin-commercial-detail-panel,
+.admin-commercial-list {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-commercial-list {
+  display: grid;
+  gap: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.admin-commercial-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 15px !important;
+  border-radius: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  text-align: left !important;
+  line-height: 1.35 !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.admin-commercial-card:hover,
+.admin-commercial-card.active,
+.admin-commercial-card:focus-visible {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  outline: none;
+}
+
+.admin-commercial-card *,
+.admin-commercial-card strong,
+.admin-commercial-card p,
+.admin-commercial-card small {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+.admin-commercial-card-head,
+.admin-commercial-card-meta {
+  width: 100%;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.admin-commercial-card-head {
+  justify-content: space-between;
+}
+
+.admin-commercial-card strong {
+  display: block;
+  width: 100%;
+  color: #0f172a;
+  font-size: 0.98rem;
+  line-height: 1.28 !important;
+  letter-spacing: -0.015em;
+}
+
+.admin-commercial-card p {
+  display: -webkit-box;
+  width: 100%;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.84rem;
+  line-height: 1.45 !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-commercial-card small {
+  display: block;
+  width: 100%;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.admin-commercial-card-meta span,
+.admin-commercial-priority,
+.admin-commercial-status {
+  width: auto !important;
+  flex: 0 1 auto;
+  max-width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-commercial-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-commercial-wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1180px) {
+  .admin-commercial-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-commercial-list {
+    max-height: 640px;
+  }
+
+  .admin-commercial-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-commercial-toolbar,
+  .admin-commercial-fields {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-commercial-toolbar .admin-search,
+  .admin-commercial-toolbar select,
+  .admin-commercial-toolbar button,
+  .admin-commercial-toolbar .admin-clean-button,
+  .admin-commercial-toolbar .admin-primary-link {
+    width: 100%;
+    max-width: none;
+  }
+}
