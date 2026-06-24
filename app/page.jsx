@@ -136,8 +136,6 @@ export default async function HomePage() {
           section={featuredProductsSection}
         />
 
-        <HomeEditableBannersSection banners={siteHome?.banners || []} />
-
         <section className="andy-final-public-cta">
           <div className="container andy-final-public-cta-inner">
             <div>

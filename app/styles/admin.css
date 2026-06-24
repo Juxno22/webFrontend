@@ -3210,3 +3210,24 @@
     justify-content: flex-start;
   }
 }
+
+.admin-quote-card.is-nueva {
+  border-left: 3px solid var(--af-red);
+}
+
+.admin-toolbar-summary {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+}
+
+.admin-toolbar-summary small {
+  color: var(--text-soft-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.admin-whatsapp-actions {
+  display: grid;
+  gap: 10px;
+}

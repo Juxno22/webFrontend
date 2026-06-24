@@ -1,6 +1,7 @@
 import { trackAnalyticsEvent } from "./analytics";
 
 const STORAGE_KEY = "DEBdlt4GA8ANmbqTgO0xALKcVvN6LU";
+const MAX_CART_ITEMS = 50;
 
 function safeParseJson(value, fallback = []) {
   try {
@@ -8,6 +9,16 @@ function safeParseJson(value, fallback = []) {
   } catch {
     return fallback;
   }
+}
+
+function dispatchCartToast(message) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent("andyfers_toast", {
+      detail: { message },
+    })
+  );
 }
 
 function trackQuoteCartAdd(producto, cantidad = 1) {
@@ -67,6 +78,11 @@ export function addToQuoteCart(producto) {
     return current;
   }
 
+  if (current.length >= MAX_CART_ITEMS) {
+    dispatchCartToast(`Máximo ${MAX_CART_ITEMS} productos por cotización.`);
+    return current;
+  }
+
   const nextItem = {
     product_key: productKey,
     producto_id: producto.id,
@@ -76,6 +92,12 @@ export function addToQuoteCart(producto) {
     familia: producto.familia,
     armadora: producto.armadora,
     categoria: producto.categoria,
+    imagen_thumbnail_url: producto.imagen_thumbnail_url || producto.imagen_principal?.thumbnail_url || null,
+    imagen_url: producto.imagen_url || producto.imagen_principal?.secure_url || null,
+    imagen_principal: producto.imagen_principal || null,
+    galeria: producto.galeria || [],
+    multimedia: producto.multimedia || [],
+    total_imagenes: producto.total_imagenes || 0,
     cantidad: 1,
   };
 

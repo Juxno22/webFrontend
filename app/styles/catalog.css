@@ -1423,3 +1423,10 @@
       scale(1.065);
   }
 }
+
+.vehicle-finder-error {
+  margin: 10px 0 0;
+  color: var(--af-red);
+  font-size: 0.86rem;
+  font-weight: 700;
+}

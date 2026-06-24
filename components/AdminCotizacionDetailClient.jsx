@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   ClipboardList,
   Copy,
+  ExternalLink,
   MessageSquare,
   Package,
   Save,
@@ -86,6 +87,16 @@ export default function AdminCotizacionDetailClient({ folio }) {
     if (!cotizacion) return "";
     return buildWhatsappMessage(cotizacion);
   }, [cotizacion]);
+
+  const whatsappLink = useMemo(() => {
+    if (!cotizacion || !whatsappMessage) return null;
+
+    const waPhone = String(cotizacion.whatsapp || "").replace(/\D/g, "");
+
+    if (!waPhone) return null;
+
+    return `https://wa.me/52${waPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+  }, [cotizacion, whatsappMessage]);
 
   async function loadCotizacion() {
     try {
@@ -170,6 +181,11 @@ export default function AdminCotizacionDetailClient({ folio }) {
     );
   }
 
+  function openWhatsapp() {
+    if (!whatsappLink) return;
+    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  }
+
   if (loading) {
     return (
       <section className="admin-page">
@@ -236,7 +252,15 @@ export default function AdminCotizacionDetailClient({ folio }) {
 
                 <div>
                   <span>WhatsApp</span>
-                  <strong>{cotizacion.whatsapp || "-"}</strong>
+                  <strong>
+                    {cotizacion.whatsapp ? (
+                      <a href={`tel:${String(cotizacion.whatsapp).replace(/\s/g, "")}`}>
+                        {cotizacion.whatsapp}
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </strong>
                 </div>
 
                 <div>
@@ -270,6 +294,11 @@ export default function AdminCotizacionDetailClient({ folio }) {
                       .filter(Boolean)
                       .join(" ") || "-"}
                   </strong>
+                </div>
+
+                <div>
+                  <span>Comentario</span>
+                  <strong>{cotizacion.mensaje_cliente || "-"}</strong>
                 </div>
               </div>
             </article>
@@ -398,10 +427,19 @@ export default function AdminCotizacionDetailClient({ folio }) {
 
               <pre className="admin-whatsapp-preview">{whatsappMessage}</pre>
 
-              <button className="btn-primary full" onClick={copyMessage}>
-                <Copy size={16} />
-                Copiar mensaje
-              </button>
+              <div className="admin-whatsapp-actions">
+                <button className="btn-primary full" onClick={copyMessage}>
+                  <Copy size={16} />
+                  Copiar mensaje
+                </button>
+
+                {whatsappLink && (
+                  <button className="btn-primary full" onClick={openWhatsapp}>
+                    <ExternalLink size={16} />
+                    Abrir en WhatsApp
+                  </button>
+                )}
+              </div>
             </article>
           </aside>
         </div>

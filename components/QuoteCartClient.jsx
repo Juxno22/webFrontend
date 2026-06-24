@@ -84,6 +84,26 @@ function getQuoteItemStableKey(item) {
   );
 }
 
+function validateQuoteForm(form, items) {
+  const errors = {};
+
+  if (!form.nombre_cliente.trim()) {
+    errors.nombre_cliente = "El nombre es obligatorio.";
+  }
+
+  if (!form.whatsapp.trim()) {
+    errors.whatsapp = "El WhatsApp es obligatorio para contactarte.";
+  } else if (!/^\d{10}$/.test(form.whatsapp.replace(/\s/g, ""))) {
+    errors.whatsapp = "Ingresa un número de 10 dígitos.";
+  }
+
+  if (items.length === 0) {
+    errors.items = "Agrega al menos un producto a tu cotización.";
+  }
+
+  return errors;
+}
+
 function pickProductImageFields(producto) {
   if (!producto) return null;
 
@@ -120,6 +140,7 @@ export default function QuoteCartClient() {
   const [items, setItems] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
 
@@ -344,6 +365,13 @@ export default function QuoteCartClient() {
       ...current,
       [name]: value,
     }));
+
+    setFormErrors((current) => {
+      if (!current[name]) return current;
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
   }
 
   function buildPayload() {
@@ -380,11 +408,15 @@ export default function QuoteCartClient() {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (items.length === 0) {
-      setSubmitError("Agrega al menos un producto a la cotización.");
+    const nextErrors = validateQuoteForm(form, items);
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFormErrors(nextErrors);
+      setSubmitError(nextErrors.items || "Revisa los datos obligatorios.");
       return;
     }
 
+    setFormErrors({});
     setSubmitting(true);
     setSubmitError("");
 
@@ -682,7 +714,11 @@ export default function QuoteCartClient() {
                     }
                     placeholder="Nombre del cliente"
                     required
+                    aria-invalid={Boolean(formErrors.nombre_cliente)}
                   />
+                  {formErrors.nombre_cliente && (
+                    <span className="quote-field-error">{formErrors.nombre_cliente}</span>
+                  )}
                 </label>
 
                 <label>
@@ -695,7 +731,11 @@ export default function QuoteCartClient() {
                     }
                     placeholder="Ej. 2381234567"
                     required
+                    aria-invalid={Boolean(formErrors.whatsapp)}
                   />
+                  {formErrors.whatsapp && (
+                    <span className="quote-field-error">{formErrors.whatsapp}</span>
+                  )}
                 </label>
 
                 <label>

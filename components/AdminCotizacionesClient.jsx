@@ -16,6 +16,7 @@ import {
   getAdminCotizaciones,
   getAdminUser,
 } from "../app/lib/adminApi";
+import { useAdminAuth } from "../app/hooks/useAdminAuth";
 
 const ESTADOS = [
   "",
@@ -53,12 +54,21 @@ export default function AdminCotizacionesClient() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
 
   const totalText = useMemo(() => {
     if (!pagination) return "";
 
     return `${pagination.total} cotización${pagination.total === 1 ? "" : "es"}`;
   }, [pagination]);
+
+  const lastUpdatedText = useMemo(() => {
+    if (!lastUpdatedAt) return "";
+
+    const seconds = Math.max(0, Math.floor((Date.now() - lastUpdatedAt.getTime()) / 1000));
+
+    return `Actualizado hace ${seconds} seg`;
+  }, [lastUpdatedAt, cotizaciones]);
 
   useEffect(() => {
     const currentUser = getAdminUser();
@@ -72,11 +82,11 @@ export default function AdminCotizacionesClient() {
   }, [router]);
 
   useEffect(() => {
-    async function loadData() {
-      if (!user) return;
+    if (!user) return;
 
+    async function loadData({ silent = false } = {}) {
       try {
-        setLoading(true);
+        if (!silent) setLoading(true);
         setError("");
 
         const response = await getAdminCotizaciones({
@@ -88,14 +98,23 @@ export default function AdminCotizacionesClient() {
 
         setCotizaciones(response.data || []);
         setPagination(response.pagination || null);
+        setLastUpdatedAt(new Date());
       } catch (err) {
         setError(err.message || "No se pudieron cargar cotizaciones.");
       } finally {
-        setLoading(false);
+        if (!silent) setLoading(false);
       }
     }
 
     loadData();
+
+    const interval = window.setInterval(() => {
+      if (!document.hidden) {
+        loadData({ silent: true });
+      }
+    }, 60_000);
+
+    return () => window.clearInterval(interval);
   }, [user, filters]);
 
   function logout() {
@@ -157,7 +176,10 @@ export default function AdminCotizacionesClient() {
             ))}
           </select>
 
-          <strong>{totalText}</strong>
+          <div className="admin-toolbar-summary">
+            <strong>{totalText}</strong>
+            {lastUpdatedText && <small>{lastUpdatedText}</small>}
+          </div>
         </div>
 
         {error && <div className="alert-error">{error}</div>}
@@ -169,7 +191,7 @@ export default function AdminCotizacionesClient() {
             cotizaciones.map((item) => (
               <Link
                 href={`/admin/cotizaciones/${encodeURIComponent(item.folio)}`}
-                className="admin-quote-card admin-quote-card-expanded"
+                className={`admin-quote-card admin-quote-card-expanded ${item.estado === "NUEVA" ? "is-nueva" : ""}`}
                 key={item.id}
               >
                 <div className="admin-quote-icon">

@@ -1315,3 +1315,25 @@ body.product-detail-theme-light {
     opacity: 0.24 !important;
   }
 }
+
+.product-detail-gallery-thumb {
+  cursor: pointer !important;
+}
+
+.product-detail-gallery-thumb.is-active {
+  outline: 2px solid var(--af-red) !important;
+  outline-offset: 2px !important;
+}
+
+.product-detail-gallery-more {
+  min-width: 62px !important;
+  height: 62px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--af-red) !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22) !important;
+}

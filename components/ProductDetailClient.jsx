@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
     ArrowLeft,
@@ -54,6 +54,21 @@ export default function ProductDetailClient({ producto }) {
     const codigoVisible = producto.codigo_andyfers || `ID-${producto.id}`;
     const crucesAgrupados = groupCrucesByMarca(producto.cruces || []);
     const galeriaProducto = getProductGallery(producto);
+    const [activeImage, setActiveImage] = useState(null);
+    const activeMediaProducto = useMemo(() => {
+        if (!activeImage) return producto;
+
+        return {
+            ...producto,
+            imagen_principal: {
+                ...(producto.imagen_principal || {}),
+                secure_url: activeImage.secure_url || activeImage.thumbnail_url,
+                thumbnail_url: activeImage.thumbnail_url || activeImage.secure_url,
+            },
+            imagen_url: activeImage.secure_url || activeImage.thumbnail_url || producto.imagen_url,
+            imagen_thumbnail_url: activeImage.thumbnail_url || activeImage.secure_url || producto.imagen_thumbnail_url,
+        };
+    }, [activeImage, producto]);
 
     const inventarioDisponible = (producto.inventario || []).filter(
         (item) => Number(item.disponible_web) === 1
@@ -233,7 +248,7 @@ export default function ProductDetailClient({ producto }) {
                         <div className="product-detail-code">{codigoVisible}</div>
                         <div className="product-detail-icon product-detail-image-stage">
                             <ProductMediaImage
-                                producto={producto}
+                                producto={activeMediaProducto}
                                 mode="full"
                                 className="product-detail-main-image"
                                 fallbackClassName="product-detail-image-fallback"
@@ -246,14 +261,26 @@ export default function ProductDetailClient({ producto }) {
                         {galeriaProducto.length > 0 && (
                             <div className="product-detail-gallery-strip">
                                 {galeriaProducto.slice(0, 5).map((item) => (
-                                    <div className="product-detail-gallery-thumb" key={item.id}>
+                                    <button
+                                        type="button"
+                                        className={`product-detail-gallery-thumb ${item.id === activeImage?.id ? "is-active" : ""}`}
+                                        key={item.id}
+                                        onClick={() => setActiveImage(item)}
+                                        aria-label="Ver imagen en grande"
+                                    >
                                         <img
                                             src={item.thumbnail_url || item.secure_url}
                                             alt={item.nombre_archivo_original || producto.descripcion}
                                             loading="lazy"
                                         />
-                                    </div>
+                                    </button>
                                 ))}
+
+                                {galeriaProducto.length > 5 && (
+                                    <div className="product-detail-gallery-more">
+                                        +{galeriaProducto.length - 5} más
+                                    </div>
+                                )}
                             </div>
                         )}
                         <div className="visual-stat top">

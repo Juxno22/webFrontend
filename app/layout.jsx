@@ -39,12 +39,21 @@ export const metadata = {
     title: "Andyfers | Catálogo inteligente de refacciones",
     description:
       "Encuentra refacciones de sistema de enfriamiento, consulta compatibilidad y solicita cotización.",
+    images: [
+      {
+        url: `${SITE_URL}/andyfers-home/logo-andyfers.png`,
+        width: 1200,
+        height: 630,
+        alt: "Andyfers – Catálogo inteligente de refacciones",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Andyfers | Catálogo inteligente de refacciones",
     description:
       "Encuentra refacciones de sistema de enfriamiento, consulta compatibilidad y solicita cotización.",
+    images: [`${SITE_URL}/andyfers-home/logo-andyfers.png`],
   },
   robots: {
     index: true,

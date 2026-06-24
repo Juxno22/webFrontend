@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   BarChart3,
@@ -17,21 +16,14 @@ import {
   Server,
   ShieldCheck,
 } from "lucide-react";
-import { clearAdminSession, getAdminUser } from "../app/lib/adminApi";
+import { clearAdminSession } from "../app/lib/adminApi";
+import { useAdminAuth } from "../app/hooks/useAdminAuth";
 
 export default function AdminHomeClient() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const currentUser = getAdminUser();
+  const { user, checking } = useAdminAuth();
 
-    if (!currentUser) {
-      router.push("/admin/login");
-      return;
-    }
-
-    setUser(currentUser);
-  }, [router]);
+  if (checking) return null;
 
   function logout() {
     clearAdminSession();

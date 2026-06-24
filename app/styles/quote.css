@@ -2391,3 +2391,11 @@
     height: 96px !important;
   }
 }
+
+.quote-field-error {
+  display: block;
+  margin-top: 6px;
+  color: var(--af-red);
+  font-size: 0.78rem;
+  font-weight: 750;
+}

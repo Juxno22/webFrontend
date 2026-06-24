@@ -13,7 +13,7 @@ import {
 import { buscarConIA } from "../app/lib/api";
 import { addToQuoteCart } from "../app/lib/quoteCart";
 
-const SESSION_STORAGE_KEY = "andyfers_ai_session_id";
+const CHAT_SESSION_KEY = "andyfers_ai_session_id";
 
 function createId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -55,6 +55,17 @@ function getRelaxedSearchInfo(message = {}) {
   };
 }
 
+function renderBotText(text = "") {
+  return String(text)
+    .split("\n")
+    .map((line, index) => (
+      <span key={`${index}-${line.slice(0, 12)}`}>
+        {index > 0 && <br />}
+        {line}
+      </span>
+    ));
+}
+
 function buildRelaxedSearchNotice(relaxedSearch = null) {
   if (!relaxedSearch?.active) return "";
 
@@ -86,7 +97,7 @@ function dispatchToast(message) {
   );
 }
 
-function HorseMascot() {
+function HorseMascot({ active }) {
   const frames = Array.from(
     { length: 16 },
     (_, index) => `/img/horse-clean/horse${index + 1}.png`
@@ -95,20 +106,24 @@ function HorseMascot() {
   const [frameIndex, setFrameIndex] = useState(0);
 
   useEffect(() => {
-    // Preload para evitar parpadeos entre frames
+    if (!active) return;
+
+    // Preload diferido: solo cuando la mascota está visible.
     frames.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
-  }, []);
+  }, [active]);
 
   useEffect(() => {
+    if (!active) return;
+
     const interval = window.setInterval(() => {
       setFrameIndex((current) => (current + 1) % frames.length);
     }, 180);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [active, frames.length]);
 
   return (
     <img
@@ -123,6 +138,7 @@ function HorseMascot() {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [mascotActive, setMascotActive] = useState(false);
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -142,7 +158,7 @@ export default function ChatWidget() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const stored = window.localStorage.getItem(SESSION_STORAGE_KEY);
+    const stored = window.localStorage.getItem(CHAT_SESSION_KEY);
 
     if (stored) {
       setSessionId(stored);
@@ -196,7 +212,7 @@ export default function ChatWidget() {
     if (!nextSessionId || typeof window === "undefined") return;
 
     setSessionId(nextSessionId);
-    window.localStorage.setItem(SESSION_STORAGE_KEY, nextSessionId);
+    window.localStorage.setItem(CHAT_SESSION_KEY, nextSessionId);
   }
 
   function addBotMessage(payload) {
@@ -295,9 +311,16 @@ export default function ChatWidget() {
       }
 
       setMessages([buildBotMessageFromAiResponse(data)]);
-    } catch {
+    } catch (error) {
       if (typeof window !== "undefined") {
-        window.localStorage.removeItem(SESSION_STORAGE_KEY);
+        const shouldForgetSession =
+          error?.message?.includes("404") ||
+          error?.message?.toLowerCase?.().includes("sesión") ||
+          error?.message?.toLowerCase?.().includes("sesion");
+
+        if (shouldForgetSession) {
+          window.localStorage.removeItem(CHAT_SESSION_KEY);
+        }
       }
 
       setSessionId("");
@@ -463,7 +486,7 @@ export default function ChatWidget() {
                     className={`andy-chat-message ${message.role === "user" ? "is-user" : "is-bot"
                       }`}
                   >
-                    {message.text}
+                    {message.role === "bot" ? renderBotText(message.text) : message.text}
                   </div>
 
                   {contextLabel && (
@@ -618,7 +641,12 @@ export default function ChatWidget() {
           <button
             type="button"
             className="andy-chat-closed"
-            onClick={() => setOpen(true)}
+            onMouseEnter={() => setMascotActive(true)}
+            onFocus={() => setMascotActive(true)}
+            onClick={() => {
+              setMascotActive(true);
+              setOpen(true);
+            }}
             aria-label="Abrir asistente Andyfers"
           >
             <div className="andy-chat-speech-bubble">
@@ -628,7 +656,7 @@ export default function ChatWidget() {
             </div>
 
             <div className="andy-chat-horse-container">
-              <HorseMascot />
+              <HorseMascot active={mascotActive && !open} />
             </div>
           </button>
         )

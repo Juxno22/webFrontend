@@ -38,6 +38,7 @@ export default function VehicleSearchBar({ variant = "full" }) {
         motores: false,
         lineas: false,
     });
+    const [fetchError, setFetchError] = useState("");
 
     useEffect(() => {
         async function loadAnios() {
@@ -50,7 +51,9 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     ...current,
                     anios: response.data || [],
                 }));
+                setFetchError("");
             } catch {
+                setFetchError("No se pudieron cargar las opciones. Intenta de nuevo.");
                 setOptions((current) => ({
                     ...current,
                     anios: [],
@@ -92,6 +95,10 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     ...current,
                     marcas: response.data || [],
                 }));
+                setFetchError("");
+            } catch {
+                setFetchError("No se pudieron cargar las opciones. Intenta de nuevo.");
+                setOptions((current) => ({ ...current, marcas: [] }));
             } finally {
                 setLoading((current) => ({ ...current, marcas: false }));
             }
@@ -125,6 +132,10 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     ...current,
                     modelos: response.data || [],
                 }));
+                setFetchError("");
+            } catch {
+                setFetchError("No se pudieron cargar las opciones. Intenta de nuevo.");
+                setOptions((current) => ({ ...current, modelos: [] }));
             } finally {
                 setLoading((current) => ({ ...current, modelos: false }));
             }
@@ -160,6 +171,10 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     ...current,
                     motores: response.data || [],
                 }));
+                setFetchError("");
+            } catch {
+                setFetchError("No se pudieron cargar las opciones. Intenta de nuevo.");
+                setOptions((current) => ({ ...current, motores: [] }));
             } finally {
                 setLoading((current) => ({ ...current, motores: false }));
             }
@@ -194,6 +209,10 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     ...current,
                     lineas: response.data || [],
                 }));
+                setFetchError("");
+            } catch {
+                setFetchError("No se pudieron cargar las opciones. Intenta de nuevo.");
+                setOptions((current) => ({ ...current, lineas: [] }));
             } finally {
                 setLoading((current) => ({ ...current, lineas: false }));
             }
@@ -356,6 +375,12 @@ export default function VehicleSearchBar({ variant = "full" }) {
                     </select>
                 </label>
             </div>
+
+            {fetchError && (
+                <p className="vehicle-finder-error" role="alert">
+                    {fetchError}
+                </p>
+            )}
 
             <div className="vehicle-finder-bottom">
                 <div className="vehicle-free-field">
