@@ -338,7 +338,7 @@
 
 .admin-production-table {
   width: 100%;
-  min-width: 940px;
+  min-width: 1180px;
   border-collapse: collapse;
   overflow: hidden;
   border-radius: 18px;
@@ -847,4 +847,188 @@
   .admin-deploy-layout {
     grid-template-columns: 1fr;
   }
+}
+
+/* =========================================================
+   ADMIN PRODUCCIÓN / CONFIGURACIÓN FINAL M12.1C
+   ========================================================= */
+
+.admin-production-config-panel {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.admin-production-config-panel article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 11px;
+  align-items: flex-start;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.admin-production-config-panel svg {
+  width: 36px;
+  height: 36px;
+  border-radius: 13px;
+  color: #ef233c;
+  background: rgba(239, 35, 60, 0.08);
+  padding: 9px;
+}
+
+.admin-production-config-panel span,
+.admin-production-url-list span {
+  display: block;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-production-config-panel strong {
+  display: block;
+  color: #0f172a;
+  margin-top: 3px;
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.admin-production-config-panel small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #64748b;
+  margin-top: 3px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-production-url-list {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 18px;
+  background: #f8fafc;
+  margin-bottom: 18px;
+  padding: 13px;
+}
+
+.admin-production-url-list h3 {
+  margin: 0 0 4px;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+.admin-production-url-list div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.admin-production-url-list strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   M12.1D — RESPALDOS / INTEGRIDAD / RESTAURACIÓN SEGURA
+   ========================================================= */
+
+.admin-backup-policy-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, rgba(16, 185, 129, 0.07));
+  margin-bottom: 18px;
+  padding: 14px;
+}
+
+.admin-backup-policy-card span {
+  display: block;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-backup-policy-card strong {
+  display: block;
+  color: #0f172a;
+  margin-top: 3px;
+  font-weight: 950;
+}
+
+.admin-backup-policy-card ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+  color: #475569;
+  font-size: 0.84rem;
+}
+
+.admin-restore-test-panel {
+  grid-column: 1 / -1;
+}
+
+.admin-production-form select {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 0 13px;
+  outline: none;
+  font-weight: 800;
+}
+
+.admin-backup-integrity-cell {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.admin-backup-integrity-cell strong {
+  color: #059669;
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.admin-muted-text {
+  color: #94a3b8;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.admin-table-action {
+  min-height: 34px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 0 12px;
+  font-weight: 950;
+}
+
+.admin-table-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.admin-production-badge.WARNING {
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.12);
 }

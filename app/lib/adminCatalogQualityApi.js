@@ -18,6 +18,10 @@ function withQuery(path, params = {}) {
   return `${path}${query ? `?${query}` : ""}`;
 }
 
+export async function getAdminCatalogQualityCierre(params = {}) {
+  return adminFetch(withQuery("/api/admin/catalogo-calidad/cierre", params));
+}
+
 export async function getAdminCatalogQualityResumen(params = {}) {
   return adminFetch(withQuery("/api/admin/catalogo-calidad/resumen", params));
 }

@@ -159,7 +159,7 @@
 .admin-quality-range {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: flex-end;
   gap: 12px;
   padding: 16px;
   border-radius: 24px;
@@ -632,5 +632,207 @@
   .admin-quality-toolbar button {
     width: 100%;
     max-width: none;
+  }
+}
+
+/* =========================================================
+   M12.1B - CIERRE DE CATALOGO / AUDITORIA FINAL
+   ========================================================= */
+
+.admin-quality-release-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: 24px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+}
+
+.admin-quality-release-card.is-ready {
+  border-color: #bbf7d0;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.admin-quality-release-card.is-blocked {
+  border-color: #fecaca;
+  background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+}
+
+.admin-quality-release-card h2 {
+  margin: 4px 0 8px;
+  color: #0f172a;
+  font-size: clamp(1.55rem, 2.2vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+
+.admin-quality-release-card p {
+  max-width: 820px;
+  margin: 0;
+  color: #475569;
+  font-weight: 760;
+  line-height: 1.55;
+}
+
+.admin-quality-release-card small {
+  display: block;
+  margin-top: 10px;
+  color: #64748b;
+  font-weight: 850;
+}
+
+.admin-quality-release-status {
+  min-width: 168px;
+  min-height: 116px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 22px;
+  background: #0f172a;
+  color: #ffffff;
+  text-align: center;
+}
+
+.admin-quality-release-card.is-ready .admin-quality-release-status {
+  background: #15803d;
+}
+
+.admin-quality-release-card.is-blocked .admin-quality-release-status {
+  background: var(--af-red, #ff192f);
+}
+
+.admin-quality-release-status strong {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.admin-quality-close-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-quality-close-metrics button {
+  display: grid;
+  gap: 8px;
+  min-height: 104px;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.06);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.admin-quality-close-metrics button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 25, 47, 0.28);
+  box-shadow: 0 20px 54px rgba(15, 23, 42, 0.1);
+}
+
+.admin-quality-close-metrics span {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.admin-quality-close-metrics strong {
+  color: #0f172a;
+  font-size: clamp(1.45rem, 2.2vw, 2.15rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.admin-quality-checklist {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-quality-check-item {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-quality-check-item strong {
+  color: #0f172a;
+  font-size: 0.94rem;
+}
+
+.admin-quality-check-item span {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 820;
+  line-height: 1.45;
+}
+
+.admin-quality-check-item.danger {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+
+.admin-quality-check-item.danger strong {
+  color: #991b1b;
+}
+
+.admin-quality-check-item.warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.admin-quality-check-item.warning strong {
+  color: #92400e;
+}
+
+.admin-quality-badge.priority {
+  color: #ffffff;
+  background: var(--af-red, #ff192f);
+  border-color: var(--af-red, #ff192f);
+}
+
+.admin-quality-action-hint {
+  flex-basis: 100%;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.admin-quality-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+@media (max-width: 1180px) {
+  .admin-quality-close-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-quality-release-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-quality-release-status {
+    width: 100%;
+  }
+
+  .admin-quality-close-metrics {
+    grid-template-columns: 1fr;
   }
 }

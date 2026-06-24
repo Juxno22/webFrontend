@@ -15,10 +15,6 @@ export default function HomeVideoSection() {
   const videoUrl = process.env.NEXT_PUBLIC_HOME_VIDEO_URL || "";
   const posterUrl = process.env.NEXT_PUBLIC_HOME_VIDEO_POSTER_URL || "";
 
-  if (!videoUrl) {
-    return null;
-  }
-
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return undefined;
@@ -96,58 +92,66 @@ export default function HomeVideoSection() {
   }, [modalOpen]);
 
   return (
-    <section className="andy-video-scroll-section" ref={sectionRef}>
-      <div className="andy-video-scroll-stage">
-        <video
-          className="andy-video-scroll-player"
-          src={videoUrl}
-          poster={posterUrl || undefined}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
+    <section
+      className={`andy-video-scroll-section${!videoUrl ? " is-empty" : ""}`}
+      ref={sectionRef}
+      aria-hidden={!videoUrl ? "true" : undefined}
+    >
+      {videoUrl && (
+        <>
+          <div className="andy-video-scroll-stage">
+            <video
+              className="andy-video-scroll-player"
+              src={videoUrl}
+              poster={posterUrl || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
 
-        <div className="andy-video-scroll-dim" aria-hidden="true" />
+            <div className="andy-video-scroll-dim" aria-hidden="true" />
 
-        <button
-          type="button"
-          className="andy-video-fullscreen-button"
-          onClick={() => setModalOpen(true)}
-          aria-label="Reproducir video de Andyfers en pantalla completa"
-        >
-          <span className="andy-video-play-glyph" aria-hidden="true">
-            <Play size={17} fill="currentColor" strokeWidth={2.6} />
-          </span>
-        </button>
-      </div>
+            <button
+              type="button"
+              className="andy-video-fullscreen-button"
+              onClick={() => setModalOpen(true)}
+              aria-label="Reproducir video de Andyfers en pantalla completa"
+            >
+              <span className="andy-video-play-glyph" aria-hidden="true">
+                <Play size={17} fill="currentColor" strokeWidth={2.6} />
+              </span>
+            </button>
+          </div>
 
-      {modalOpen && (
-        <div
-          className="andy-video-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Video Andyfers"
-        >
-          <button
-            type="button"
-            className="andy-video-modal-close"
-            onClick={() => setModalOpen(false)}
-            aria-label="Cerrar video"
-          >
-            <X size={25} />
-          </button>
+          {modalOpen && (
+            <div
+              className="andy-video-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Video Andyfers"
+            >
+              <button
+                type="button"
+                className="andy-video-modal-close"
+                onClick={() => setModalOpen(false)}
+                aria-label="Cerrar video"
+              >
+                <X size={25} />
+              </button>
 
-          <video
-            className="andy-video-modal-player"
-            src={videoUrl}
-            poster={posterUrl || undefined}
-            controls
-            autoPlay
-            playsInline
-          />
-        </div>
+              <video
+                className="andy-video-modal-player"
+                src={videoUrl}
+                poster={posterUrl || undefined}
+                controls
+                autoPlay
+                playsInline
+              />
+            </div>
+          )}
+        </>
       )}
     </section>
   );

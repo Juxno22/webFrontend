@@ -5,8 +5,12 @@ import {
   AlertTriangle,
   CheckCircle2,
   ClipboardCheck,
+  Cloud,
   DatabaseBackup,
+  FileCheck2,
+  Globe2,
   HardDrive,
+  KeyRound,
   Loader2,
   PlayCircle,
   RefreshCw,
@@ -25,6 +29,8 @@ import {
   getAdminProductionSummary,
   updateAdminProductionDeployItem,
   updateAdminProductionDeployStatus,
+  validateAdminProductionBackup,
+  markAdminProductionBackupRestoreTested,
   recalculateAdminProductionChecks,
 } from "@/app/lib/adminProductionApi";
 
@@ -115,12 +121,18 @@ export default function AdminProductionClient() {
   const [backupConfirm, setBackupConfirm] = useState("");
   const [cleanConfirm, setCleanConfirm] = useState("");
   const [keepBackups, setKeepBackups] = useState(15);
+  const [restoreBackupId, setRestoreBackupId] = useState("");
+  const [restoreConfirm, setRestoreConfirm] = useState("");
+  const [restoreNotes, setRestoreNotes] = useState("");
   const [deployForm, setDeployForm] = useState({
     titulo: "",
     version_label: "",
     ambiente: "PRODUCCION",
     resumen: "",
   });
+
+  const productionConfig = env?.production_config || null;
+  const backupPolicy = env?.backup_policy || null;
 
   const groupedChecks = useMemo(() => {
     return checks.reduce((acc, item) => {
@@ -233,6 +245,51 @@ export default function AdminProductionClient() {
       await loadData({ quiet: true });
     } catch (actionError) {
       setError(actionError?.message || "No se pudieron limpiar respaldos.");
+    } finally {
+      setBusyAction("");
+    }
+  }
+
+  async function handleValidateBackup(backup) {
+    if (!backup?.id) return;
+
+    try {
+      setBusyAction(`validate-backup-${backup.id}`);
+      setError("");
+      setMessage("");
+      const result = await validateAdminProductionBackup({ id: backup.id });
+      const validation = result?.validation;
+      setMessage(
+        validation?.ok
+          ? "Integridad del respaldo validada correctamente."
+          : validation?.message || "Validación finalizada con advertencias."
+      );
+      await loadData({ quiet: true });
+    } catch (actionError) {
+      setError(actionError?.message || "No se pudo validar el respaldo.");
+    } finally {
+      setBusyAction("");
+    }
+  }
+
+  async function handleRestoreTested(event) {
+    event.preventDefault();
+    if (!restoreBackupId) return;
+
+    try {
+      setBusyAction("restore-tested");
+      setError("");
+      setMessage("");
+      await markAdminProductionBackupRestoreTested(restoreBackupId, {
+        confirmacion: restoreConfirm,
+        notas: restoreNotes,
+      });
+      setRestoreConfirm("");
+      setRestoreNotes("");
+      setMessage("Prueba de restauración registrada para el respaldo seleccionado.");
+      await loadData({ quiet: true });
+    } catch (actionError) {
+      setError(actionError?.message || "No se pudo registrar la prueba de restauración.");
     } finally {
       setBusyAction("");
     }
@@ -554,6 +611,77 @@ export default function AdminProductionClient() {
               </div>
             </div>
 
+            {backupPolicy ? (
+              <div className="admin-backup-policy-card">
+                <div>
+                  <span>Política de respaldos</span>
+                  <strong>{backupPolicy.automatic_enabled ? "Automática configurada" : "Modo manual"}</strong>
+                </div>
+                <ul>
+                  <li>Retención: {backupPolicy.keep} respaldo(s)</li>
+                  <li>Tamaño mínimo: {formatBytes(backupPolicy.min_bytes)}</li>
+                  <li>Programación: {backupPolicy.schedule || "manual"}</li>
+                  <li>Restauración: prueba manual documentada</li>
+                </ul>
+              </div>
+            ) : null}
+
+            {productionConfig ? (
+              <div className="admin-production-config-panel">
+                <article>
+                  <Globe2 size={18} />
+                  <div>
+                    <span>Dominios CORS</span>
+                    <strong>{productionConfig.allowed_cors_origins?.length || 0}</strong>
+                    <small>
+                      {productionConfig.allowed_cors_origins?.length
+                        ? productionConfig.allowed_cors_origins.join(", ")
+                        : "Sin dominios configurados"}
+                    </small>
+                  </div>
+                </article>
+
+                <article>
+                  <KeyRound size={18} />
+                  <div>
+                    <span>JWT_SECRET</span>
+                    <strong>{productionConfig.jwt_secret?.strong ? "Fuerte" : "Revisar"}</strong>
+                    <small>{productionConfig.jwt_secret?.length || 0} caracteres detectados</small>
+                  </div>
+                </article>
+
+                <article>
+                  <Cloud size={18} />
+                  <div>
+                    <span>Cloudinary</span>
+                    <strong>{productionConfig.cloudinary?.fully_configured ? "Completo" : "Incompleto"}</strong>
+                    <small>Cloud name, API key y API secret</small>
+                  </div>
+                </article>
+
+                <article>
+                  <Server size={18} />
+                  <div>
+                    <span>Proveedor IA</span>
+                    <strong>{productionConfig.ai_provider_count || 0}</strong>
+                    <small>Proveedor(es) con API key detectada</small>
+                  </div>
+                </article>
+              </div>
+            ) : null}
+
+            {productionConfig?.public_urls ? (
+              <div className="admin-production-url-list">
+                <h3>URLs públicas</h3>
+                {Object.entries(productionConfig.public_urls).map(([key, value]) => (
+                  <div key={key}>
+                    <span>{key}</span>
+                    <strong title={value || ""}>{value || "No configurada"}</strong>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
             <div className="admin-env-list">
               {[...(env?.required || []), ...(env?.optional || [])].map((item) => (
                 <div className="admin-env-item" key={item.key}>
@@ -636,6 +764,56 @@ export default function AdminProductionClient() {
               </button>
             </form>
           </section>
+
+          <section className="admin-panel admin-production-panel admin-restore-test-panel">
+            <div className="admin-panel-title-row">
+              <div>
+                <span className="eyebrow">Restauración</span>
+                <h2>Registrar prueba manual</h2>
+              </div>
+              <FileCheck2 size={24} />
+            </div>
+
+            <form className="admin-production-form" onSubmit={handleRestoreTested}>
+              <p>
+                Primero restaura el SQL en una base alterna. Después registra la evidencia aquí.
+                Este panel no restaura ni modifica producción.
+              </p>
+              <div className="admin-production-form-row">
+                <label>
+                  Respaldo
+                  <select value={restoreBackupId} onChange={(event) => setRestoreBackupId(event.target.value)}>
+                    <option value="">Selecciona un respaldo</option>
+                    {backups.map((backup) => (
+                      <option key={backup.id} value={backup.id}>
+                        #{backup.id} · {backup.filename || "Sin archivo"}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Confirmar
+                  <input
+                    value={restoreConfirm}
+                    onChange={(event) => setRestoreConfirm(event.target.value)}
+                    placeholder="RESTAURACION PROBADA"
+                  />
+                </label>
+              </div>
+              <label>
+                Notas de evidencia
+                <textarea
+                  value={restoreNotes}
+                  onChange={(event) => setRestoreNotes(event.target.value)}
+                  placeholder="Ej. Restaurado en andyfers_restore_test, tablas críticas revisadas, conteos OK."
+                />
+              </label>
+              <button className="admin-secondary-button" disabled={busyAction === "restore-tested" || !restoreBackupId}>
+                {busyAction === "restore-tested" ? <Loader2 size={17} className="spin" /> : <FileCheck2 size={17} />}
+                Registrar prueba
+              </button>
+            </form>
+          </section>
         </div>
 
         <section className="admin-panel admin-production-panel">
@@ -653,11 +831,14 @@ export default function AdminProductionClient() {
                 <tr>
                   <th>Archivo</th>
                   <th>Estado</th>
+                  <th>Integridad</th>
                   <th>Tamaño</th>
                   <th>Base</th>
                   <th>Duración</th>
                   <th>Fecha</th>
+                  <th>Restauración</th>
                   <th>Usuario</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -673,16 +854,44 @@ export default function AdminProductionClient() {
                           {backup.status || "—"}
                         </span>
                       </td>
+                      <td>
+                        <div className="admin-backup-integrity-cell">
+                          <span className={`admin-production-badge ${backup.integrity_status || backup.status || ""}`}>
+                            {backup.integrity_status || backup.status || "—"}
+                          </span>
+                          {backup.checksum_sha256 ? <small title={backup.checksum_sha256}>SHA256: {backup.checksum_sha256.slice(0, 12)}…</small> : null}
+                        </div>
+                      </td>
                       <td>{formatBytes(backup.size_bytes)}</td>
                       <td>{backup.db_name || "—"}</td>
                       <td>{backup.duration_ms ? `${backup.duration_ms} ms` : "—"}</td>
                       <td>{formatDate(backup.created_at || backup.finished_at)}</td>
+                      <td>
+                        {backup.restore_tested_at ? (
+                          <div className="admin-backup-integrity-cell">
+                            <strong>Probada</strong>
+                            <small>{formatDate(backup.restore_tested_at)}</small>
+                          </div>
+                        ) : (
+                          <span className="admin-muted-text">Pendiente</span>
+                        )}
+                      </td>
                       <td>{backup.created_by_nombre || "—"}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="admin-table-action"
+                          onClick={() => handleValidateBackup(backup)}
+                          disabled={busyAction === `validate-backup-${backup.id}`}
+                        >
+                          {busyAction === `validate-backup-${backup.id}` ? "Validando..." : "Validar"}
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7">Todavía no hay respaldos registrados.</td>
+                    <td colSpan="10">Todavía no hay respaldos registrados.</td>
                   </tr>
                 )}
               </tbody>

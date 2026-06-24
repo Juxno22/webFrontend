@@ -7152,3 +7152,6 @@ html.andy-video-modal-open {
 .andy-new-product-ribbon.featured svg {
   flex: 0 0 auto;
 }
+.andy-video-scroll-section.is-empty {
+  display: none;
+}

@@ -46,6 +46,20 @@ export async function cleanAdminProductionBackups(payload = {}) {
   });
 }
 
+export async function validateAdminProductionBackup(payload = {}) {
+  return adminFetch("/api/admin/produccion/backups/validar", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function markAdminProductionBackupRestoreTested(id, payload = {}) {
+  return adminFetch(`/api/admin/produccion/backups/${id}/restauracion-probada`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getAdminProductionDeploys(params = {}) {
   const searchParams = new URLSearchParams();
 

@@ -27,6 +27,7 @@ import AdminModuleNav from "@/components/AdminModuleNav";
 import AdminExportMenu from "@/components/AdminExportMenu";
 import { getAdminUser } from "@/app/lib/adminApi";
 import {
+  getAdminCatalogQualityCierre,
   getAdminCatalogQualityOpciones,
   getAdminCatalogQualityOportunidades,
   getAdminCatalogQualityProductos,
@@ -39,6 +40,10 @@ const ISSUE_OPTIONS = [
   { value: "SIN_DESCRIPCION_WEB", label: "Sin descripción web" },
   { value: "SIN_CRUCES", label: "Sin cruces" },
   { value: "SIN_APLICACIONES", label: "Sin aplicaciones" },
+  { value: "SIN_ATRIBUTOS_BUSCABLES", label: "Sin atributos buscables" },
+  { value: "SIN_FAMILIA", label: "Sin familia" },
+  { value: "SIN_IMAGEN_PRINCIPAL", label: "Sin imagen principal" },
+  { value: "SIN_THUMBNAIL", label: "Sin thumbnail" },
   { value: "SIN_STOCK", label: "Sin stock web" },
   { value: "SIN_PRECIO", label: "Sin precio web" },
   { value: "CODIGO_SOSPECHOSO", label: "Código sospechoso" },
@@ -111,6 +116,22 @@ function emptyResumen() {
   };
 }
 
+function emptyCierre() {
+  return {
+    generado_en: null,
+    kpis: {},
+    cierre: {
+      apto_publicacion: false,
+      estado: "PENDIENTE",
+      bloqueantes: [],
+      advertencias: [],
+      reglas: [],
+    },
+    productos_criticos: [],
+    pendientes_manuales: [],
+  };
+}
+
 function emptyOportunidades() {
   return {
     rango: defaultDateRange(),
@@ -175,6 +196,22 @@ function getKpiCards(kpis = {}) {
       issue: "SIN_APLICACIONES",
     },
     {
+      key: "sin_atributos_buscables",
+      label: "Sin atributos buscables",
+      value: kpis.sin_atributos_buscables,
+      icon: Search,
+      tone: "warning",
+      issue: "SIN_ATRIBUTOS_BUSCABLES",
+    },
+    {
+      key: "sin_imagen_principal",
+      label: "Sin imagen principal",
+      value: kpis.sin_imagen_principal,
+      icon: ImageOff,
+      tone: "danger",
+      issue: "SIN_IMAGEN_PRINCIPAL",
+    },
+    {
       key: "visibles_incompletos",
       label: "Visibles incompletos",
       value: kpis.visibles_incompletos,
@@ -200,6 +237,10 @@ function issueBadges(producto) {
   if (Number(producto.sin_descripcion_web) === 1) badges.push(["Sin descripción", "warning"]);
   if (Number(producto.sin_cruces) === 1) badges.push(["Sin cruces", "accent"]);
   if (Number(producto.sin_aplicaciones) === 1) badges.push(["Sin aplicaciones", "accent"]);
+  if (Number(producto.sin_atributos_buscables) === 1) badges.push(["Sin atributos", "warning"]);
+  if (Number(producto.sin_familia) === 1) badges.push(["Sin familia", "warning"]);
+  if (Number(producto.sin_imagen_principal) === 1) badges.push(["Sin principal", "danger"]);
+  if (Number(producto.sin_thumbnail) === 1) badges.push(["Sin thumbnail", "muted"]);
   if (Number(producto.sin_stock) === 1) badges.push(["Sin stock", "muted"]);
   if (Number(producto.sin_precio) === 1) badges.push(["Sin precio", "muted"]);
   if (Number(producto.codigo_sospechoso) === 1) badges.push(["Código sospechoso", "danger"]);
@@ -215,11 +256,18 @@ function buildProductUrl(producto) {
   return `/producto/${encodeURIComponent(code)}`;
 }
 
+function buildAdminProductUrl(producto) {
+  if (!producto?.id) return "";
+
+  return `/admin/productos/${producto.id}`;
+}
+
 export default function AdminCatalogQualityClient() {
   const router = useRouter();
 
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("resumen");
+  const [activeTab, setActiveTab] = useState("cierre");
+  const [cierre, setCierre] = useState(emptyCierre());
   const [resumen, setResumen] = useState(emptyResumen());
   const [productos, setProductos] = useState([]);
   const [oportunidades, setOportunidades] = useState(emptyOportunidades());
@@ -270,14 +318,16 @@ export default function AdminCatalogQualityClient() {
       setError("");
       setMessage("");
 
-      const [resumenResponse, opcionesResponse, productosResponse, oportunidadesResponse] =
+      const [cierreResponse, resumenResponse, opcionesResponse, productosResponse, oportunidadesResponse] =
         await Promise.all([
+          getAdminCatalogQualityCierre(),
           getAdminCatalogQualityResumen(),
           getAdminCatalogQualityOpciones(),
           getAdminCatalogQualityProductos(filters),
           getAdminCatalogQualityOportunidades({ ...range, limit: 50 }),
         ]);
 
+      setCierre(cierreResponse?.data || emptyCierre());
       setResumen(resumenResponse?.data || emptyResumen());
       setOpciones(opcionesResponse?.data || { categorias: [], familias: [], armadoras: [] });
       setProductos(productosResponse?.data || []);
@@ -286,6 +336,15 @@ export default function AdminCatalogQualityClient() {
       setError(err.message || "No se pudo cargar la auditoría de catálogo.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadCierre() {
+    try {
+      const response = await getAdminCatalogQualityCierre();
+      setCierre(response?.data || emptyCierre());
+    } catch (err) {
+      setError(err.message || "No se pudo actualizar el cierre del catálogo.");
     }
   }
 
@@ -330,7 +389,7 @@ export default function AdminCatalogQualityClient() {
   }
 
   async function refreshAll() {
-    await Promise.all([loadResumen(), loadProductos(), loadOportunidades()]);
+    await Promise.all([loadCierre(), loadResumen(), loadProductos(), loadOportunidades()]);
     setMessage("Auditoría actualizada correctamente.");
   }
 
@@ -438,6 +497,14 @@ export default function AdminCatalogQualityClient() {
             <div className="admin-quality-tabs">
               <button
                 type="button"
+                className={activeTab === "cierre" ? "active" : ""}
+                onClick={() => setActiveTab("cierre")}
+              >
+                <ClipboardList size={17} />
+                Cierre M12
+              </button>
+              <button
+                type="button"
                 className={activeTab === "resumen" ? "active" : ""}
                 onClick={() => setActiveTab("resumen")}
               >
@@ -461,6 +528,13 @@ export default function AdminCatalogQualityClient() {
                 Oportunidades
               </button>
             </div>
+
+            {activeTab === "cierre" && (
+              <CatalogClosePanel
+                cierre={cierre}
+                onApplyIssue={applyIssue}
+              />
+            )}
 
             {activeTab === "resumen" && (
               <div className="admin-quality-section-stack">
@@ -759,6 +833,156 @@ export default function AdminCatalogQualityClient() {
   );
 }
 
+function CatalogClosePanel({ cierre = emptyCierre(), onApplyIssue }) {
+  const status = cierre?.cierre || emptyCierre().cierre;
+  const kpis = cierre?.kpis || {};
+  const productosCriticos = cierre?.productos_criticos || [];
+  const pendientesManuales = cierre?.pendientes_manuales || [];
+  const statusLabel = status.estado === "APTO"
+    ? "Apto para publicación"
+    : status.estado === "APTO_CON_OBSERVACIONES"
+      ? "Apto con observaciones"
+      : "No apto para publicación";
+
+  return (
+    <div className="admin-quality-section-stack">
+      <article className={`admin-quality-release-card ${status.apto_publicacion ? "is-ready" : "is-blocked"}`}>
+        <div>
+          <span className="eyebrow">M12.1B — Auditoría de datos finales</span>
+          <h2>{statusLabel}</h2>
+          <p>
+            Este cierre evalúa productos visibles, imágenes, descripción web, cruces,
+            aplicaciones, atributos buscables, códigos sospechosos y demanda real del catálogo.
+          </p>
+          {cierre.generado_en && <small>Generado: {formatDate(cierre.generado_en)}</small>}
+        </div>
+
+        <div className="admin-quality-release-status">
+          {status.apto_publicacion ? <BadgeCheck size={30} /> : <AlertTriangle size={30} />}
+          <strong>{status.estado}</strong>
+        </div>
+      </article>
+
+      <div className="admin-quality-close-metrics">
+        <button type="button" onClick={() => onApplyIssue("")}> 
+          <span>Publicados web</span>
+          <strong>{formatNumber(kpis.publicados_web)}</strong>
+        </button>
+        <button type="button" onClick={() => onApplyIssue("VISIBLE_INCOMPLETO")}> 
+          <span>Visibles incompletos</span>
+          <strong>{formatNumber(kpis.visibles_incompletos)}</strong>
+        </button>
+        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN")}> 
+          <span>Sin imagen</span>
+          <strong>{formatNumber(kpis.sin_imagen)}</strong>
+        </button>
+        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN_PRINCIPAL")}> 
+          <span>Sin principal</span>
+          <strong>{formatNumber(kpis.sin_imagen_principal)}</strong>
+        </button>
+        <button type="button" onClick={() => onApplyIssue("COTIZADO_SIN_IMAGEN")}> 
+          <span>Cotizados sin imagen</span>
+          <strong>{formatNumber(kpis.cotizados_sin_imagen)}</strong>
+        </button>
+        <button type="button" onClick={() => onApplyIssue("CODIGO_SOSPECHOSO")}> 
+          <span>Código sospechoso</span>
+          <strong>{formatNumber(kpis.codigo_sospechoso)}</strong>
+        </button>
+      </div>
+
+      <div className="admin-quality-grid-two">
+        <QualityChecklist
+          title="Bloqueantes de publicación"
+          empty="No hay bloqueantes críticos de catálogo."
+          rows={status.bloqueantes || []}
+          tone="danger"
+        />
+        <QualityChecklist
+          title="Observaciones manuales"
+          empty="No hay observaciones pendientes."
+          rows={status.advertencias || []}
+          tone="warning"
+        />
+      </div>
+
+      <article className="admin-panel">
+        <div className="admin-panel-title-row">
+          <div>
+            <span className="eyebrow">Corrección priorizada</span>
+            <h2>Productos críticos visibles en web</h2>
+          </div>
+          <span className="admin-quality-count">{formatNumber(productosCriticos.length)} productos</span>
+        </div>
+        <ProductQualityTable productos={productosCriticos} />
+      </article>
+
+      <article className="admin-panel">
+        <div className="admin-panel-title-row">
+          <div>
+            <span className="eyebrow">Captura manual</span>
+            <h2>Pendientes comerciales abiertos</h2>
+          </div>
+        </div>
+
+        <div className="admin-quality-table-wrap compact">
+          <table className="admin-quality-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendientesManuales.length ? (
+                pendientesManuales.map((row) => (
+                  <tr key={`${row.tipo_pendiente}-${row.estado}-${row.prioridad}`}>
+                    <td>{row.tipo_pendiente}</td>
+                    <td>{row.estado}</td>
+                    <td>{row.prioridad}</td>
+                    <td>{formatNumber(row.total)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4}>No hay pendientes comerciales abiertos.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  );
+}
+
+function QualityChecklist({ title, rows = [], empty, tone = "default" }) {
+  return (
+    <article className="admin-panel">
+      <div className="admin-panel-title-row">
+        <div>
+          <span className="eyebrow">Checklist M12</span>
+          <h2>{title}</h2>
+        </div>
+      </div>
+
+      <div className="admin-quality-checklist">
+        {rows.length ? (
+          rows.map((row) => (
+            <div className={`admin-quality-check-item ${tone}`} key={row.key || row.label}>
+              <strong>{row.label}</strong>
+              <span>{row.action}</span>
+            </div>
+          ))
+        ) : (
+          <div className="admin-empty">{empty}</div>
+        )}
+      </div>
+    </article>
+  );
+}
+
 function ProductQualityTable({ productos = [], loading = false }) {
   if (loading) {
     return (
@@ -789,6 +1013,7 @@ function ProductQualityTable({ productos = [], loading = false }) {
         <tbody>
           {productos.map((producto) => {
             const url = buildProductUrl(producto);
+            const adminUrl = buildAdminProductUrl(producto);
 
             return (
               <tr key={producto.id}>
@@ -797,11 +1022,18 @@ function ProductQualityTable({ productos = [], loading = false }) {
                     <strong>{valueOrDash(producto.codigo_andyfers)}</strong>
                     <span>{valueOrDash(producto.codigo_importacion)}</span>
                     <small>{valueOrDash(producto.descripcion)}</small>
-                    {url && (
-                      <a href={url} target="_blank" rel="noopener noreferrer">
-                        Ver público
-                      </a>
-                    )}
+                    <div className="admin-quality-product-actions">
+                      {url && (
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                          Ver público
+                        </a>
+                      )}
+                      {adminUrl && (
+                        <a href={adminUrl}>
+                          Editar
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </td>
 
@@ -823,6 +1055,14 @@ function ProductQualityTable({ productos = [], loading = false }) {
                       ))
                     ) : (
                       <span className="admin-quality-badge success">OK</span>
+                    )}
+                    {producto.severidad_calidad && producto.severidad_calidad !== "OK" && (
+                      <span className="admin-quality-badge priority">
+                        {producto.severidad_calidad}
+                      </span>
+                    )}
+                    {producto.accion_sugerida && producto.accion_sugerida !== "Sin acción crítica" && (
+                      <small className="admin-quality-action-hint">{producto.accion_sugerida}</small>
                     )}
                   </div>
                 </td>
