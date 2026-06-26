@@ -116,12 +116,12 @@ export default async function HomePage() {
 
             <p className="andy-about-lead">
               {aboutContent?.contenido ||
-                "Cada vehículo tiene una historia. La nuestra es ayudarte a mantenerlo en movimiento. Soluciones confiables para el sistema de enfriamiento, refacciones de calidad y un compromiso con la industria automotriz mexicana. Detrás de cada pieza hay una persona que busca tranquilidad. Por eso, la excelencia no es un lujo, es nuestra norma."}
+                "Somos una empresa mexicana especializada en sistemas de refrigeración automotriz. Combinamos tecnología de punta, refacciones de calidad y asesoría técnica experta para mantener el confort de tu vehículo. Porque para nosotros, avanzar es sinónimo de confianza y rendimiento."}
             </p>
 
             <p>
               {aboutContent?.subtitulo ||
-                "Porque un motor frío también calienta corazones."}
+                "El poder de avanzar."}
             </p>
           </div>
         </section>

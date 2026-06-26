@@ -1367,7 +1367,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  min-height: clamp(70px, 8vw, 108px);
+  min-height: clamp(10px, 2vw, 15px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1375,7 +1375,7 @@
 }
 
 .quote-hero-logo-pop-catalogo img {
-  width: clamp(550px, 80vw, 600px);
+  width: clamp(400px, 50vw, 450px);
   max-width: none;
   height: auto;
   display: block;
@@ -1393,8 +1393,8 @@
 .quote-hero-logo-pop-catalogo::before {
   content: "";
   position: absolute;
-  width: min(260px, 40%);
-  height: min(155px, 35%);
+  width: min(200px, 30%);
+  height: min(100px, 25%);
   border-radius: 999px;
   background: radial-gradient(
     circle,

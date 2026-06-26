@@ -14,9 +14,16 @@
 @import "./styles/contact.css";
 @import "./styles/admin.css";
 @import "./styles/responsive.css";
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap");
+
 
 .public-shell h1,
 .public-shell h2,
+.public-shell h3,
+.public-shell h4,
+.public-shell h5,
+.public-shell h6,
 .public-shell .hero-title,
 .public-shell .section-title,
 .public-shell .vehicle-finder-heading h2,
@@ -24,9 +31,34 @@
 .public-shell .catalog-hero h1,
 .public-shell .product-detail-title,
 .public-shell .quote-page h1 {
-  font-family: "Airstrike", var(--font-heading, system-ui, sans-serif);
-  letter-spacing: 0.035em;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
+
+.public-shell,
+.public-shell p,
+.public-shell span,
+.public-shell li,
+.public-shell a,
+.public-shell input,
+.public-shell textarea,
+.public-shell select {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+.public-shell button,
+.public-shell .btn,
+.public-shell .btn-primary,
+.public-shell .product-detail-chip,
+.public-shell .product-detail-badge,
+.public-shell .quote-cart-button,
+.public-shell .product-detail-actions a {
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
 /* Quita degradados rojos en botones públicos */
 .public-shell .btn-primary,
 .public-shell .vehicle-finder-button,
