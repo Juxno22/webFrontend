@@ -498,10 +498,6 @@ export default function CatalogClient() {
                       <span>{Number(producto.total_cruces || 0)} cruces</span>
                     </div>
 
-                    <div className="product-warning">
-                      Compatibilidad y disponibilidad sujetas a validación.
-                    </div>
-
                     <div className={`product-sale-info ${saleInfo.canSell ? "is-ready" : "is-unavailable"}`}>
                       <strong>{saleInfo.formattedPrice || "Precio no disponible"}</strong>
                       <span>{saleInfo.canSell ? saleInfo.stockLabel : saleInfo.unavailableReason}</span>

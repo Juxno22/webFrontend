@@ -271,15 +271,6 @@ export default function ProductDetailClient({ producto }) {
                                 Ver mi cotización
                             </Link>
                         </div>
-
-                        <div className="detail-advice">
-                            <ShieldAlert size={18} />
-                            <span>
-                                <span>
-                                    El pago se realiza en Mercado Pago. Andyfers valida precio y existencia desde el almacén ecommerce antes de iniciar la compra.
-                                </span>
-                            </span>
-                        </div>
                     </div>
 
                     <div className="product-detail-visual product-detail-hero-visual">

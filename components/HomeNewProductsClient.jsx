@@ -168,10 +168,6 @@ export default function HomeNewProductsClient({
                       </span>
                     </div>
 
-                    <div className="product-warning">
-                      Compatibilidad y disponibilidad sujetas a validación.
-                    </div>
-
                     <div className="andy-new-product-actions product-actions-three">
                       {codigoDetalle ? (
                         <Link
