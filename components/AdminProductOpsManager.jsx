@@ -41,6 +41,10 @@ const emptyApplication = {
   marca_auto: "",
   modelo_auto: "",
   motor: "",
+  cilindraje: "",
+  motor_detalle: "",
+  motor_original: "",
+  motor_label: "",
   anio_inicio: "",
   anio_fin: "",
   version_auto: "",
@@ -80,12 +84,30 @@ function normalizeCross(item = {}) {
   };
 }
 
+function buildApplicationMotorLabel(item = {}) {
+  const parts = [
+    item.motor,
+    item.cilindraje,
+    item.motor_detalle,
+  ]
+    .map((value) => String(value || "").trim())
+    .filter(Boolean);
+
+  if (parts.length) return parts.join(" · ");
+
+  return item.motor_label || item.motor_original || "";
+}
+
 function normalizeApplication(item = {}) {
   return {
     id: item.id,
     marca_auto: item.marca_auto || "",
     modelo_auto: item.modelo_auto || "",
     motor: item.motor || "",
+    cilindraje: item.cilindraje || "",
+    motor_detalle: item.motor_detalle || "",
+    motor_original: item.motor_original || "",
+    motor_label: item.motor_label || "",
     anio_inicio: item.anio_inicio ?? "",
     anio_fin: item.anio_fin ?? "",
     version_auto: item.version_auto || "",
@@ -119,6 +141,9 @@ function buildApplicationPayload(form) {
     marca_auto: form.marca_auto,
     modelo_auto: form.modelo_auto,
     motor: form.motor,
+    cilindraje: form.cilindraje,
+    motor_detalle: form.motor_detalle,
+    motor_original: form.motor_original || null,
     anio_inicio: form.anio_inicio === "" ? null : Number(form.anio_inicio),
     anio_fin: form.anio_fin === "" ? null : Number(form.anio_fin),
     version_auto: form.version_auto,
@@ -827,7 +852,7 @@ export default function AdminProductOpsManager({
             </label>
 
             <label>
-              Motor
+              Motor / litros
               <input
                 value={newApplication.motor}
                 onChange={(event) =>
@@ -836,7 +861,35 @@ export default function AdminProductOpsManager({
                     motor: event.target.value,
                   }))
                 }
-                placeholder="1.6"
+                placeholder="1.6L"
+              />
+            </label>
+
+            <label>
+              Cilindraje
+              <input
+                value={newApplication.cilindraje}
+                onChange={(event) =>
+                  setNewApplication((current) => ({
+                    ...current,
+                    cilindraje: event.target.value,
+                  }))
+                }
+                placeholder="L4"
+              />
+            </label>
+
+            <label>
+              Detalle motor
+              <input
+                value={newApplication.motor_detalle}
+                onChange={(event) =>
+                  setNewApplication((current) => ({
+                    ...current,
+                    motor_detalle: event.target.value,
+                  }))
+                }
+                placeholder="TURBO / DIESEL"
               />
             </label>
 
@@ -946,7 +999,7 @@ export default function AdminProductOpsManager({
                   </label>
 
                   <label>
-                    Motor
+                    Motor / litros
                     <input
                       value={item.motor}
                       onChange={(event) =>
@@ -956,6 +1009,37 @@ export default function AdminProductOpsManager({
                           event.target.value
                         )
                       }
+                      placeholder="1.6L"
+                    />
+                  </label>
+
+                  <label>
+                    Cilindraje
+                    <input
+                      value={item.cilindraje}
+                      onChange={(event) =>
+                        updateApplicationDraft(
+                          item.id,
+                          "cilindraje",
+                          event.target.value
+                        )
+                      }
+                      placeholder="L4"
+                    />
+                  </label>
+
+                  <label>
+                    Detalle motor
+                    <input
+                      value={item.motor_detalle}
+                      onChange={(event) =>
+                        updateApplicationDraft(
+                          item.id,
+                          "motor_detalle",
+                          event.target.value
+                        )
+                      }
+                      placeholder="TURBO / DIESEL"
                     />
                   </label>
 
@@ -1003,6 +1087,15 @@ export default function AdminProductOpsManager({
                     />
                   </label>
                 </div>
+
+                {(item.motor_original || item.motor_label) && (
+                  <div className="admin-op-empty">
+                    Motor original: {item.motor_original || item.motor_label}
+                    {buildApplicationMotorLabel(item) && (
+                      <> · Actual: {buildApplicationMotorLabel(item)}</>
+                    )}
+                  </div>
+                )}
 
                 <label>
                   Notas

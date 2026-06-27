@@ -11,6 +11,28 @@ import {
     getVehiculoMotores,
 } from "../app/lib/api";
 
+function cleanOptionText(value) {
+    return String(value || "").trim();
+}
+
+function buildMotorOptionLabel(item = {}) {
+    const motor = cleanOptionText(item.motor);
+    const cilindraje = cleanOptionText(item.cilindraje);
+    const detalle = cleanOptionText(item.motor_detalle);
+
+    const secondaryParts = [cilindraje, detalle].filter(Boolean);
+
+    if (!motor) {
+        return cleanOptionText(item.motor_label) || "Motor";
+    }
+
+    if (!secondaryParts.length) {
+        return motor;
+    }
+
+    return `${motor} · ${secondaryParts.join(" · ")}`;
+}
+
 export default function VehicleSearchBar({ variant = "full" }) {
     const router = useRouter();
 
@@ -346,7 +368,7 @@ export default function VehicleSearchBar({ variant = "full" }) {
 
                         {options.motores.map((item) => (
                             <option key={item.motor} value={item.motor}>
-                                {item.motor}
+                                {buildMotorOptionLabel(item)}
                             </option>
                         ))}
                     </select>

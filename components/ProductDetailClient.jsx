@@ -37,7 +37,9 @@ function formatAplicacion(aplicacion) {
 
     if (aplicacion.marca_auto) partes.push(aplicacion.marca_auto);
     if (aplicacion.modelo_auto) partes.push(aplicacion.modelo_auto);
-    if (aplicacion.motor) partes.push(aplicacion.motor);
+
+    const motorLabel = aplicacion.motor_label || aplicacion.motor;
+    if (motorLabel) partes.push(motorLabel);;
 
     const anios =
         aplicacion.anio_inicio && aplicacion.anio_fin
