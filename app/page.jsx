@@ -112,7 +112,13 @@ export default async function HomePage() {
               {aboutContent?.etiqueta || "¿Quiénes somos?"}
             </span>
 
-            <h2>{aboutContent?.titulo || "En Andyfer’s."}</h2>
+            <h2 className="andy-about-logo-title">
+              <img
+                src="/andyfers-home/logo-andyfers.png"
+                alt={aboutContent?.titulo || "Andyfer’s"}
+                className="andy-about-logo"
+              />
+            </h2>
 
             <p className="andy-about-lead">
               {aboutContent?.contenido ||
