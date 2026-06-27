@@ -24,15 +24,7 @@ function getItemCode(item = {}) {
 }
 
 function getCheckoutUrl(mercadoPago = {}) {
-  const mode = String(
-    process.env.NEXT_PUBLIC_MP_CHECKOUT_MODE || "sandbox"
-  ).toLowerCase();
-
-  if (mode === "production") {
-    return mercadoPago.init_point || mercadoPago.sandbox_init_point;
-  }
-
-  return mercadoPago.sandbox_init_point || mercadoPago.init_point;
+  return mercadoPago.init_point || mercadoPago.sandbox_init_point;
 }
 
 export default function CheckoutClient() {
