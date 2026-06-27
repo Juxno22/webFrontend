@@ -55,6 +55,16 @@ export default function SalesCartDrawer() {
         };
     }, []);
 
+    useEffect(() => {
+        if (typeof document === "undefined") return;
+
+        document.body.classList.toggle("sales-cart-open", open);
+
+        return () => {
+            document.body.classList.remove("sales-cart-open");
+        };
+    }, [open]);
+
     function updateQuantity(productKey, nextQuantity) {
         const updated = updateSalesItemQuantity(productKey, nextQuantity);
         setItems(updated);

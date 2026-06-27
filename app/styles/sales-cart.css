@@ -571,3 +571,71 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+.product-actions-three,
+.catalog-product-actions.product-actions-three,
+.andy-new-product-actions.product-actions-three {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+
+.product-actions-three > *,
+.catalog-product-actions.product-actions-three > *,
+.andy-new-product-actions.product-actions-three > * {
+  min-width: 0 !important;
+}
+
+.product-actions-three .btn-card-secondary,
+.product-actions-three .btn-card-primary,
+.product-actions-three .btn-card-cart,
+.catalog-product-actions.product-actions-three .btn-card-secondary,
+.catalog-product-actions.product-actions-three .btn-card-primary,
+.catalog-product-actions.product-actions-three .btn-card-cart,
+.andy-new-product-actions.product-actions-three .btn-card-secondary,
+.andy-new-product-actions.product-actions-three .btn-card-primary,
+.andy-new-product-actions.product-actions-three .btn-card-cart {
+  width: 100% !important;
+  min-height: 42px !important;
+  border-radius: 999px !important;
+  padding: 0 12px !important;
+  font-size: 0.78rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+.product-actions-three .btn-card-cart,
+.catalog-product-actions.product-actions-three .btn-card-cart,
+.andy-new-product-actions.product-actions-three .btn-card-cart {
+  grid-column: 1 / -1 !important;
+  color: #ffffff !important;
+  background: #111827 !important;
+  box-shadow: none !important;
+}
+
+.andy-new-product-actions.product-actions-three {
+  margin-top: auto !important;
+}
+
+.andy-new-product-body {
+  overflow: visible !important;
+}
+
+.btn-card-cart:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+.sales-cart-layer {
+  z-index: 2147483000 !important;
+}
+
+body.sales-cart-open .andy-chat-widget,
+body.sales-cart-open .andy-chat-window,
+body.sales-cart-open .andy-chat-horse-container,
+body.sales-cart-open .andy-chat-speech-bubble {
+  display: none !important;
+  pointer-events: none !important;
+}
