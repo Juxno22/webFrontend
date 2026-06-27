@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Boxes, Filter, Plus, X, SlidersHorizontal } from "lucide-react";
+import {
+  Boxes,
+  Filter,
+  Plus,
+  ShoppingCart,
+  X,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   getArmadoras,
   getCategorias,
@@ -13,6 +20,8 @@ import Link from "next/link";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
 import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage from "@/components/ProductMediaImage";
+import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
+import { getProductSaleInfo } from "@/app/lib/productSale";
 
 const defaultFilters = {
   q: "",
@@ -290,6 +299,22 @@ export default function CatalogClient() {
     );
   }
 
+  function addProductToSalesCart(producto) {
+    const codigoVisible = getProductCode(producto) || "Producto";
+
+    addToSalesCart(producto);
+
+    window.dispatchEvent(
+      new CustomEvent("andyfers_toast", {
+        detail: {
+          message: `${codigoVisible} agregado al carrito`,
+        },
+      })
+    );
+
+    openSalesCartDrawer();
+  }
+
   function openProductDetail(codigoDetalle) {
     if (!codigoDetalle) return;
 
@@ -434,6 +459,7 @@ export default function CatalogClient() {
             {productos.map((producto) => {
               const codigoDetalle = getProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
+              const saleInfo = getProductSaleInfo(producto);
 
               return (
                 <article className="catalog-product-card" key={producto.id}>
@@ -476,7 +502,12 @@ export default function CatalogClient() {
                       Compatibilidad y disponibilidad sujetas a validación.
                     </div>
 
-                    <div className="catalog-product-actions">
+                    <div className={`product-sale-info ${saleInfo.canSell ? "is-ready" : "is-unavailable"}`}>
+                      <strong>{saleInfo.formattedPrice || "Precio no disponible"}</strong>
+                      <span>{saleInfo.canSell ? saleInfo.stockLabel : saleInfo.unavailableReason}</span>
+                    </div>
+
+                    <div className="catalog-product-actions product-actions-three">
                       {codigoDetalle ? (
                         <Link
                           href={`/producto/${encodeURIComponent(codigoDetalle)}`}
@@ -497,6 +528,17 @@ export default function CatalogClient() {
                       >
                         <Plus size={16} />
                         Cotizar
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-card-cart"
+                        onClick={() => addProductToSalesCart(producto)}
+                        disabled={!saleInfo.canSell}
+                        title={!saleInfo.canSell ? saleInfo.unavailableReason : "Agregar al carrito"}
+                      >
+                        <ShoppingCart size={16} />
+                        Carrito
                       </button>
                     </div>
                   </div>

@@ -450,3 +450,81 @@ export async function uploadAdminSiteMedia(file, payload = {}) {
 
   return data;
 }
+
+export async function getAdminEcommerceInventarioResumen() {
+  return adminFetch("/api/admin/ecommerce/inventario/resumen");
+}
+
+export async function uploadAdminEcommerceInventario(file, { dryRun = true } = {}) {
+  const token = getAdminToken();
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("dry_run", dryRun ? "1" : "0");
+
+  const response = await fetch(
+    `${API_URL}/api/admin/ecommerce/inventario/importar`,
+    {
+      method: "POST",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+      cache: "no-store",
+    }
+  );
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok || data?.ok === false) {
+    throw new Error(data?.error || "No se pudo importar el inventario ecommerce.");
+  }
+
+  return data;
+}
+
+export async function getAdminVentasResumen(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/ventas/resumen${query ? `?${query}` : ""}`);
+}
+
+export async function getAdminVentas(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/ventas${query ? `?${query}` : ""}`);
+}
+
+export async function getAdminVenta(folio) {
+  return adminFetch(`/api/admin/ventas/${encodeURIComponent(folio)}`);
+}
+
+export async function updateAdminVentaEstado(folio, payload) {
+  return adminFetch(`/api/admin/ventas/${encodeURIComponent(folio)}/estado`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function addAdminVentaNota(folio, payload) {
+  return adminFetch(`/api/admin/ventas/${encodeURIComponent(folio)}/notas`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}

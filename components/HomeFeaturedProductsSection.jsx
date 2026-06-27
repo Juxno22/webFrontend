@@ -1,9 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Boxes, Gauge, Plus, Sparkles } from "lucide-react";
+import {
+  Boxes,
+  Gauge,
+  Plus,
+  ShoppingCart,
+  Sparkles,
+} from "lucide-react";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
 import { useRouter } from "next/navigation";
 
 function isValidCode(value) {
@@ -73,6 +80,22 @@ export default function HomeFeaturedProductsSection({
         },
       })
     );
+  }
+
+  function addProductToSalesCart(producto) {
+    const code = getProductCode(producto) || "Producto";
+
+    addToSalesCart(producto);
+
+    window.dispatchEvent(
+      new CustomEvent("andyfers_toast", {
+        detail: {
+          message: `${code} agregado al carrito`,
+        },
+      })
+    );
+
+    openSalesCartDrawer();
   }
 
   return (
@@ -157,7 +180,7 @@ export default function HomeFeaturedProductsSection({
                       Compatibilidad y disponibilidad sujetas a validación.
                     </div>
 
-                    <div className="andy-new-product-actions">
+                    <div className="andy-new-product-actions product-actions-three">
                       {codigoDetalle ? (
                         <Link
                           href={`/producto/${encodeURIComponent(codigoDetalle)}`}
@@ -178,6 +201,15 @@ export default function HomeFeaturedProductsSection({
                       >
                         <Plus size={16} />
                         Cotizar
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-card-cart"
+                        onClick={() => addProductToSalesCart(producto)}
+                      >
+                        <ShoppingCart size={16} />
+                        Carrito
                       </button>
                     </div>
                   </div>

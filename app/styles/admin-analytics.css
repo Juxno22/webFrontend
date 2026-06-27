@@ -1,7 +1,3 @@
-/* =========================================================
-   M8.1D - ADMIN ANALITICA COMERCIAL
-   ========================================================= */
-
 .admin-analytics-toolbar {
   display: grid;
   grid-template-columns: 150px 150px 130px 220px minmax(260px, 1fr) auto;
@@ -428,4 +424,44 @@
   .admin-analytics-grid-two {
     grid-template-columns: 1fr;
   }
+}
+
+.admin-analytics-funnel {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-analytics-funnel div {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding: 15px;
+  background:
+    radial-gradient(circle at right, rgba(255, 25, 47, 0.08), transparent 12rem),
+    #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-analytics-funnel strong {
+  display: block;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.admin-analytics-funnel span {
+  display: block;
+  margin-top: 5px;
+  color: var(--af-red);
+  font-size: 1.25rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.admin-analytics-funnel small {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-weight: 800;
+  line-height: 1.45;
 }

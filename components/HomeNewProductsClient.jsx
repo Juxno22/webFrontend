@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Boxes, Gauge, Plus } from "lucide-react";
+import { Boxes, Gauge, Plus, ShoppingCart } from "lucide-react";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { useRouter } from "next/navigation";
 
@@ -73,6 +74,22 @@ export default function HomeNewProductsClient({
         },
       })
     );
+  }
+
+  function addProductToSalesCart(producto) {
+    const code = getProductCode(producto) || "Producto";
+
+    addToSalesCart(producto);
+
+    window.dispatchEvent(
+      new CustomEvent("andyfers_toast", {
+        detail: {
+          message: `${code} agregado al carrito`,
+        },
+      })
+    );
+
+    openSalesCartDrawer();
   }
 
   return (
@@ -155,7 +172,7 @@ export default function HomeNewProductsClient({
                       Compatibilidad y disponibilidad sujetas a validación.
                     </div>
 
-                    <div className="andy-new-product-actions">
+                    <div className="andy-new-product-actions product-actions-three">
                       {codigoDetalle ? (
                         <Link
                           href={`/producto/${encodeURIComponent(codigoDetalle)}`}
@@ -175,6 +192,15 @@ export default function HomeNewProductsClient({
                       >
                         <Plus size={16} />
                         Cotizar
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-card-cart"
+                        onClick={() => addProductToSalesCart(producto)}
+                      >
+                        <ShoppingCart size={16} />
+                        Carrito
                       </button>
                     </div>
                   </div>

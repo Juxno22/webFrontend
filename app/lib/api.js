@@ -150,3 +150,14 @@ export async function getSiteSeccionesDestacadas(pagina = "HOME") {
 export async function getSiteContacto() {
   return apiFetch("/api/site/contacto");
 }
+
+export async function crearCheckoutVenta(payload) {
+  return apiFetch("/api/ventas/checkout", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getVentaPublica(folio) {
+  return apiFetch(`/api/ventas/${encodeURIComponent(folio)}/publica`);
+}

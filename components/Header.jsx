@@ -3,8 +3,19 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, Search, ShoppingBag, X } from "lucide-react";
+import {
+  ChevronDown,
+  Menu,
+  Search,
+  ShoppingBag,
+  ShoppingCart,
+  X,
+} from "lucide-react";
 import { getQuoteCartCount } from "../app/lib/quoteCart";
+import {
+  getSalesCartCount,
+  openSalesCartDrawer,
+} from "../app/lib/salesCart";
 
 const lineasMenu = [
   {
@@ -59,6 +70,7 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [count, setCount] = useState(0);
+  const [salesCount, setSalesCount] = useState(0);
   const [lineasOpen, setLineasOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -72,18 +84,21 @@ export default function Header() {
   const isContact = pathname?.startsWith("/contacto");
 
   useEffect(() => {
-    function refreshCount() {
+    function refreshCounts() {
       setCount(getQuoteCartCount());
+      setSalesCount(getSalesCartCount());
     }
 
-    refreshCount();
+    refreshCounts();
 
-    window.addEventListener("andyfers_quote_cart_updated", refreshCount);
-    window.addEventListener("storage", refreshCount);
+    window.addEventListener("andyfers_quote_cart_updated", refreshCounts);
+    window.addEventListener("andyfers_sales_cart_updated", refreshCounts);
+    window.addEventListener("storage", refreshCounts);
 
     return () => {
-      window.removeEventListener("andyfers_quote_cart_updated", refreshCount);
-      window.removeEventListener("storage", refreshCount);
+      window.removeEventListener("andyfers_quote_cart_updated", refreshCounts);
+      window.removeEventListener("andyfers_sales_cart_updated", refreshCounts);
+      window.removeEventListener("storage", refreshCounts);
     };
   }, []);
 
@@ -217,17 +232,18 @@ export default function Header() {
         {searchForm("header-search", "header-search-input")}
 
         <div className="header-actions">
-          <Link
-            href="/cotizacion"
-            className="quote-action"
-            aria-label="Mi cotización"
-            onClick={closeNow}
+          
+          <button
+            type="button"
+            className="quote-action sales-cart-action"
+            aria-label="Carrito de compra"
+            onClick={openSalesCartDrawer}
           >
-            <ShoppingBag size={18} />
-            <span>Mi cotización</span>
+            <ShoppingCart size={18} />
+            <span>Carrito</span>
 
-            {count > 0 && <strong className="quote-count">{count}</strong>}
-          </Link>
+            {salesCount > 0 && <strong className="quote-count">{salesCount}</strong>}
+          </button>
 
           <button
             type="button"

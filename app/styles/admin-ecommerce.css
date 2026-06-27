@@ -1,0 +1,261 @@
+.admin-ecommerce-page {
+  min-height: 100vh;
+}
+
+.admin-ecommerce-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.85fr);
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.admin-ecommerce-card {
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
+  padding: 22px;
+  margin-top: 18px;
+}
+
+.admin-ecommerce-card-head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.admin-ecommerce-card-head svg {
+  color: var(--af-red);
+}
+
+.admin-ecommerce-card-head span {
+  display: block;
+  color: #b91c1c;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.admin-ecommerce-card-head h2 {
+  color: var(--text-dark);
+  margin: 3px 0 0;
+  font-size: 1.35rem;
+}
+
+.admin-ecommerce-kpis,
+.admin-ecommerce-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-ecommerce-kpis div,
+.admin-ecommerce-result-grid div {
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  padding: 15px;
+}
+
+.admin-ecommerce-kpis span,
+.admin-ecommerce-result-grid span {
+  display: block;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.admin-ecommerce-kpis strong,
+.admin-ecommerce-result-grid strong {
+  color: #0f172a;
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.admin-ecommerce-date {
+  font-size: 0.9rem !important;
+  line-height: 1.35 !important;
+}
+
+.admin-ecommerce-upload {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-ecommerce-file {
+  min-height: 150px;
+  border-radius: 22px;
+  border: 1px dashed rgba(255, 25, 47, 0.38);
+  background: rgba(255, 25, 47, 0.045);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  text-align: center;
+  color: #991b1b;
+  font-weight: 900;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.admin-ecommerce-file input {
+  display: none;
+}
+
+.admin-ecommerce-file svg {
+  color: var(--af-red);
+}
+
+.admin-ecommerce-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #334155;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.admin-ecommerce-check input {
+  margin-top: 4px;
+}
+
+.admin-ecommerce-alert {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  border-radius: 18px;
+  padding: 13px 15px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.admin-ecommerce-alert.is-error {
+  color: #991b1b;
+  background: rgba(255, 25, 47, 0.1);
+  border: 1px solid rgba(255, 25, 47, 0.2);
+}
+
+.admin-ecommerce-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.admin-spin {
+  animation: adminEcommerceSpin 0.9s linear infinite;
+}
+
+@keyframes adminEcommerceSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-ecommerce-result {
+  overflow: hidden;
+}
+
+.admin-ecommerce-table-wrap {
+  overflow: auto;
+  margin-top: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-ecommerce-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.admin-ecommerce-table th,
+.admin-ecommerce-table td {
+  padding: 12px 13px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+  text-align: left;
+  font-size: 0.88rem;
+  vertical-align: top;
+}
+
+.admin-ecommerce-table th {
+  color: #475569;
+  background: #f8fafc;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-ecommerce-table td {
+  color: #0f172a;
+}
+
+.admin-ecommerce-status {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  font-weight: 950;
+  color: #334155;
+  background: #e2e8f0;
+}
+
+.admin-ecommerce-status.status-actualizado,
+.admin-ecommerce-status.status-creado,
+.admin-ecommerce-status.status-validado {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.admin-ecommerce-status.status-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.admin-ecommerce-status.status-sin_cambios {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.admin-ecommerce-note {
+  color: #64748b;
+  margin: 12px 0 0;
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .admin-ecommerce-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ecommerce-kpis,
+  .admin-ecommerce-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-ecommerce-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .admin-ecommerce-kpis,
+  .admin-ecommerce-result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ecommerce-actions {
+    justify-content: stretch;
+  }
+
+  .admin-ecommerce-actions .btn-primary,
+  .admin-ecommerce-actions .btn-secondary {
+    width: 100%;
+  }
+}

@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ChatWidget from "./ChatWidget";
 import ToastListener from "./ToastListener";
+import SalesCartDrawer from "./SalesCartDrawer";
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
@@ -24,6 +25,7 @@ export default function AppShell({ children }) {
       <Header />
       <main className="public-shell">{children}</main>
       <Footer />
+      <SalesCartDrawer />
       <ChatWidget />
       <ToastListener />
     </>

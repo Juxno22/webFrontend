@@ -15,6 +15,7 @@ import {
   LockKeyhole,
   Server,
   ShieldCheck,
+  ShoppingCart,
 } from "lucide-react";
 
 const links = [
@@ -30,9 +31,19 @@ const links = [
     icon: ClipboardList,
   },
   {
+    href: "/admin/ventas",
+    label: "Ventas Web",
+    icon: ShoppingCart,
+  },
+  {
     href: "/admin/productos",
     label: "Productos",
     icon: Boxes,
+  },
+  {
+    href: "/admin/ecommerce",
+    label: "Ecommerce",
+    icon: ShoppingCart,
   },
   {
     href: "/admin/catalogo-calidad",

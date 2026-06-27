@@ -15,6 +15,7 @@ import {
   LogOut,
   Server,
   ShieldCheck,
+  ShoppingCart,
 } from "lucide-react";
 import { clearAdminSession } from "../app/lib/adminApi";
 import { useAdminAuth } from "../app/hooks/useAdminAuth";
@@ -51,6 +52,21 @@ export default function AdminHomeClient() {
         </div>
 
         <div className="admin-home-grid">
+          <Link href="/admin/ventas" className="admin-home-card">
+            <div className="admin-home-icon">
+              <ShoppingCart size={34} />
+            </div>
+
+            <div>
+              <span>Ventas web</span>
+              <h2>Ventas Mercado Pago</h2>
+              <p>
+                Revisa ventas entrantes, pagos confirmados, preparación de pedidos,
+                entregas y trazabilidad de Mercado Pago.
+              </p>
+            </div>
+          </Link>
+
           <Link href="/admin/cotizaciones" className="admin-home-card">
             <div className="admin-home-icon">
               <ClipboardList size={34} />
@@ -77,6 +93,21 @@ export default function AdminHomeClient() {
               <p>
                 Revisa productos pendientes, corrige datos base y controla qué
                 productos se muestran en la página.
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/admin/ecommerce" className="admin-home-card">
+            <div className="admin-home-icon">
+              <ShoppingCart size={34} />
+            </div>
+
+            <div>
+              <span>Ventas web</span>
+              <h2>Ecommerce</h2>
+              <p>
+                Carga inventario y precios del almacén ecommerce para habilitar ventas
+                con Mercado Pago.
               </p>
             </div>
           </Link>

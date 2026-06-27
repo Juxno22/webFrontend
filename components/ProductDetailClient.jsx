@@ -12,11 +12,14 @@ import {
     PackageCheck,
     Plus,
     ShieldAlert,
+    ShoppingCart,
     Wrench,
 } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
 import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage, { getProductGallery } from "@/components/ProductMediaImage";
+import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
+import { getProductSaleInfo } from "@/app/lib/productSale";
 
 function groupCrucesByMarca(cruces = []) {
     return cruces.reduce((acc, cruce) => {
@@ -54,6 +57,7 @@ function formatAplicacion(aplicacion) {
 
 export default function ProductDetailClient({ producto }) {
     const codigoVisible = producto.codigo_andyfers || `ID-${producto.id}`;
+    const saleInfo = getProductSaleInfo(producto);
     const crucesAgrupados = groupCrucesByMarca(producto.cruces || []);
     const galeriaProducto = getProductGallery(producto);
     const [activeImage, setActiveImage] = useState(null);
@@ -198,6 +202,20 @@ export default function ProductDetailClient({ producto }) {
         );
     }
 
+    function handleAddToSalesCart() {
+        addToSalesCart(producto);
+
+        window.dispatchEvent(
+            new CustomEvent("andyfers_toast", {
+                detail: {
+                    message: `${codigoVisible} agregado al carrito`,
+                },
+            })
+        );
+
+        openSalesCartDrawer();
+    }
+
     return (
         <>
             <div className="product-detail-theme-wipe" aria-hidden="true" />
@@ -226,10 +244,26 @@ export default function ProductDetailClient({ producto }) {
                             {producto.clasif_vta && <span>{producto.clasif_vta}</span>}
                         </div>
 
+                        <div className={`detail-sale-box ${saleInfo.canSell ? "is-ready" : "is-unavailable"}`}>
+                            <span>Compra web</span>
+                            <strong>{saleInfo.formattedPrice || "Precio no disponible"}</strong>
+                            <p>{saleInfo.canSell ? saleInfo.stockLabel : saleInfo.unavailableReason}</p>
+                        </div>
+
                         <div className="detail-actions">
                             <button className="btn-primary" onClick={handleAddToQuote}>
                                 <Plus size={18} />
                                 Agregar a cotización
+                            </button>
+
+                            <button
+                                className="btn-primary detail-cart-button"
+                                onClick={handleAddToSalesCart}
+                                disabled={!saleInfo.canSell}
+                                title={!saleInfo.canSell ? saleInfo.unavailableReason : "Agregar al carrito"}
+                            >
+                                <ShoppingCart size={18} />
+                                Agregar al carrito
                             </button>
 
                             <Link href="/cotizacion" className="btn-secondary detail-secondary">
@@ -241,7 +275,9 @@ export default function ProductDetailClient({ producto }) {
                         <div className="detail-advice">
                             <ShieldAlert size={18} />
                             <span>
-                                La compatibilidad, disponibilidad y precio final serán validados por un asesor antes de procesar la venta.
+                                <span>
+                                    El pago se realiza en Mercado Pago. Andyfers valida precio y existencia desde el almacén ecommerce antes de iniciar la compra.
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -458,7 +494,7 @@ export default function ProductDetailClient({ producto }) {
 
                             <div className="availability-box">
                                 <strong>{producto.stock_total_web || 0}</strong>
-                                <span>piezas visibles para catálogo</span>
+                                <span>piezas en almacén ecommerce</span>
                             </div>
 
                             {inventarioDisponible.length > 0 ? (

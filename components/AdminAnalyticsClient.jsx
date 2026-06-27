@@ -36,6 +36,14 @@ const EVENT_FILTERS = [
   { value: "BUSQUEDA_IA_SIN_RESULTADO", label: "IA sin resultado" },
   { value: "PRODUCTO_CONSULTADO", label: "Producto consultado" },
   { value: "PRODUCTO_AGREGADO_COTIZACION", label: "Agregado a cotización" },
+  {
+    value: "PRODUCTO_AGREGADO_CARRITO_VENTA",
+    label: "Agregado a carrito venta",
+  },
+  { value: "VENTA_CHECKOUT_CREADO", label: "Checkout venta creado" },
+  { value: "VENTA_PAGO_APROBADO", label: "Pago aprobado" },
+  { value: "VENTA_PAGO_RECHAZADO", label: "Pago rechazado" },
+  { value: "VENTA_ENTREGADA", label: "Venta entregada" },
   { value: "COTIZACION_GENERADA", label: "Cotización generada" },
   { value: "WHATSAPP_CLICK", label: "Click WhatsApp" },
   { value: "CONTACTO_FORMULARIO", label: "Formulario contacto" },
@@ -55,6 +63,16 @@ function formatNumber(value) {
   const number = Number(value || 0);
 
   return new Intl.NumberFormat("es-MX").format(Number.isFinite(number) ? number : 0);
+}
+
+function formatMoney(value) {
+  const number = Number(value || 0);
+
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    minimumFractionDigits: 2,
+  }).format(Number.isFinite(number) ? number : 0);
 }
 
 function formatDate(value) {
@@ -89,10 +107,13 @@ function emptyDashboard() {
   return {
     rango: defaultDateRange(),
     kpis: {},
+    ventas_kpis: {},
     busquedas_sin_resultado: [],
     productos_mas_consultados: [],
     productos_mas_cotizados: [],
+    productos_mas_vendidos: [],
     consultas_vehiculo: [],
+    embudo_ventas: [],
   };
 }
 
@@ -102,49 +123,52 @@ function normalizeDashboardPayload(response) {
 
 function getKpis(dashboard) {
   const kpis = dashboard?.kpis || {};
+  const ventas = dashboard?.ventas_kpis || {};
 
   return [
     {
-      label: "Eventos totales",
-      value: kpis.total_eventos,
-      icon: BarChart3,
-      tone: "default",
+      label: "Importe confirmado",
+      value: formatMoney(ventas.importe_confirmado),
+      icon: TrendingUp,
+      tone: "success",
+      isFormatted: true,
     },
     {
-      label: "Búsquedas sin resultado",
-      value: kpis.busquedas_sin_resultado,
-      icon: SearchX,
-      tone: "danger",
-    },
-    {
-      label: "Productos consultados",
-      value: kpis.productos_consultados,
-      icon: Eye,
-      tone: "info",
-    },
-    {
-      label: "Agregados a cotización",
-      value: kpis.productos_agregados_cotizacion,
-      icon: ShoppingCart,
-      tone: "accent",
-    },
-    {
-      label: "Cotizaciones generadas",
-      value: kpis.cotizaciones_generadas,
-      icon: ClipboardList,
+      label: "Ventas pagadas",
+      value: ventas.ventas_pagadas,
+      icon: CheckCircle2,
       tone: "success",
     },
     {
-      label: "Clicks WhatsApp",
-      value: kpis.clicks_whatsapp,
-      icon: MessageCircle,
-      tone: "whatsapp",
+      label: "Pendientes pago",
+      value: ventas.ventas_pendientes_pago,
+      icon: CreditCard,
+      tone: "accent",
     },
     {
-      label: "Sesiones",
-      value: kpis.sesiones,
-      icon: Users,
+      label: "Piezas vendidas",
+      value: ventas.piezas_confirmadas,
+      icon: ShoppingCart,
+      tone: "info",
+    },
+    {
+      label: "Ticket promedio",
+      value: formatMoney(ventas.ticket_promedio_confirmado),
+      icon: Target,
       tone: "default",
+      isFormatted: true,
+    },
+    {
+      label: "Cotizaciones",
+      value: kpis.cotizaciones_generadas,
+      icon: ClipboardList,
+      tone: "default",
+    },
+    {
+      label: "Sin resultado",
+      value: kpis.busquedas_sin_resultado,
+      icon: SearchX,
+      tone: "danger",
     },
   ];
 }
@@ -344,8 +368,8 @@ export default function AdminAnalyticsClient() {
             <span className="eyebrow">Inteligencia comercial</span>
             <h1>Analítica comercial</h1>
             <p>
-              Búsquedas sin resultado, productos consultados, cotizaciones,
-              WhatsApp y oportunidades para ventas y compras.
+              Ventas web, pagos confirmados, productos vendidos, embudo de compra,
+              cotizaciones y búsquedas sin resultado.
             </p>
           </div>
 
@@ -451,12 +475,69 @@ export default function AdminAnalyticsClient() {
                   >
                     <div>
                       <span>{item.label}</span>
-                      <strong>{formatNumber(item.value)}</strong>
+                      <strong>{item.isFormatted ? item.value : formatNumber(item.value)}</strong>
                     </div>
                     <Icon size={25} />
                   </div>
                 );
               })}
+            </div>
+
+            <div className="admin-analytics-grid-two">
+              <AnalyticsTable
+                title="Productos más vendidos"
+                icon={TrendingUp}
+                subtitle="Ranking real de productos con venta confirmada."
+                empty={!dashboard.productos_mas_vendidos?.length}
+              >
+                <div className="admin-analytics-table-wrap">
+                  <table className="admin-analytics-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Familia</th>
+                        <th>Piezas</th>
+                        <th>Importe</th>
+                        <th>Última venta</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboard.productos_mas_vendidos.map((row) => (
+                        <tr key={`${row.producto_id}-${row.codigo_andyfers}-vendido`}>
+                          <td>
+                            <strong>{valueOrDash(row.codigo_andyfers)}</strong>
+                            <small>{valueOrDash(row.codigo_importacion)}</small>
+                          </td>
+                          <td>{valueOrDash(row.familia || row.categoria)}</td>
+                          <td>{formatNumber(row.piezas_vendidas)}</td>
+                          <td>{formatMoney(row.importe_vendido)}</td>
+                          <td>{formatDate(row.ultima_venta)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </AnalyticsTable>
+
+              <AnalyticsTable
+                title="Embudo de venta"
+                icon={Target}
+                subtitle="Carrito, checkout, pago aprobado y entrega."
+                empty={!dashboard.embudo_ventas?.length}
+              >
+                <div className="admin-analytics-funnel">
+                  {dashboard.embudo_ventas.map((row) => (
+                    <div key={row.etapa}>
+                      <strong>{row.etapa}</strong>
+                      <span>{formatNumber(row.total_eventos)} eventos</span>
+                      <small>
+                        {formatNumber(row.sesiones)} sesiones ·{" "}
+                        {formatNumber(row.piezas)} piezas · {formatMoney(row.importe)}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </AnalyticsTable>
             </div>
 
             <div className="admin-analytics-grid-two">
@@ -531,7 +612,7 @@ export default function AdminAnalyticsClient() {
               <AnalyticsTable
                 title="Productos más cotizados"
                 icon={ShoppingCart}
-                subtitle="Productos con intención comercial directa."
+                subtitle="Productos con intención comercial por cotizacion."
                 empty={!dashboard.productos_mas_cotizados?.length}
               >
                 <div className="admin-analytics-table-wrap">
@@ -695,15 +776,15 @@ export default function AdminAnalyticsClient() {
                           <strong>
                             {valueOrDash(
                               row.busqueda_original ||
-                                row.codigo_andyfers ||
-                                row.cotizacion_folio
+                              row.codigo_andyfers ||
+                              row.cotizacion_folio
                             )}
                           </strong>
                           <small>
                             {valueOrDash(
                               row.codigo_importacion ||
-                                row.familia ||
-                                row.marca_vehiculo
+                              row.familia ||
+                              row.marca_vehiculo
                             )}
                           </small>
                         </td>

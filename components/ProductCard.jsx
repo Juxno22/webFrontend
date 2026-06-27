@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Gauge, Boxes } from "lucide-react";
+import { Plus, Gauge, Boxes, ShoppingCart } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
+import { addToSalesCart, openSalesCartDrawer } from "../app/lib/salesCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
+import { getProductSaleInfo } from "../app/lib/productSale";
 
 function isValidCode(value) {
   if (!value) return false;
@@ -35,6 +37,7 @@ export default function ProductCard({ producto }) {
   const router = useRouter();
   const codigoDetalle = getProductCode(producto);
   const codigoVisible = codigoDetalle || "Sin código";
+  const saleInfo = getProductSaleInfo(producto);
 
   function handleAdd() {
     addToQuoteCart(producto);
@@ -46,6 +49,20 @@ export default function ProductCard({ producto }) {
         },
       })
     );
+  }
+
+  function handleAddToSalesCart() {
+    addToSalesCart(producto);
+
+    window.dispatchEvent(
+      new CustomEvent("andyfers_toast", {
+        detail: {
+          message: `${codigoVisible} agregado al carrito`,
+        },
+      })
+    );
+
+    openSalesCartDrawer();
   }
 
   function openProductDetail() {
@@ -110,7 +127,12 @@ export default function ProductCard({ producto }) {
           Compatibilidad y disponibilidad sujetas a validación.
         </div>
 
-        <div className="product-actions">
+        <div className={`product-sale-info ${saleInfo.canSell ? "is-ready" : "is-unavailable"}`}>
+          <strong>{saleInfo.formattedPrice || "Precio no disponible"}</strong>
+          <span>{saleInfo.canSell ? saleInfo.stockLabel : saleInfo.unavailableReason}</span>
+        </div>
+
+        <div className="product-actions product-actions-three">
           {codigoDetalle ? (
             <Link
               href={`/producto/${encodeURIComponent(codigoDetalle)}`}
@@ -127,6 +149,17 @@ export default function ProductCard({ producto }) {
           <button className="btn-card-primary" onClick={handleAdd}>
             <Plus size={16} />
             Cotizar
+          </button>
+
+          <button
+            type="button"
+            className="btn-card-cart"
+            onClick={handleAddToSalesCart}
+            disabled={!saleInfo.canSell}
+            title={!saleInfo.canSell ? saleInfo.unavailableReason : "Agregar al carrito"}
+          >
+            <ShoppingCart size={16} />
+            Carrito
           </button>
         </div>
       </div>
