@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Boxes, Gauge, Plus } from "lucide-react";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
+import { useRouter } from "next/navigation";
 
 function isValidCode(value) {
   if (!value) return false;
@@ -34,6 +35,22 @@ export default function HomeNewProductsClient({
   productos = [],
   section = null,
 }) {
+  const router = useRouter();
+
+  function openProductDetail(codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+  }
+
+  function handleProductMediaKeyDown(event, codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openProductDetail(codigoDetalle);
+    }
+  }
   if (!productos.length) return null;
 
   const kicker = section?.subtitulo || "Productos nuevos";
@@ -81,12 +98,23 @@ export default function HomeNewProductsClient({
 
               return (
                 <article
-                  className={`andy-new-product-card ${
-                    Number(producto.nuevo_web) === 1 ? "is-new-product" : ""
-                  }`}
+                  className={`andy-new-product-card ${Number(producto.nuevo_web) === 1 ? "is-new-product" : ""
+                    }`}
                   key={`${producto.id}-${index}`}
                 >
-                  <div className="andy-new-product-media">
+                  <div
+                    className={`andy-new-product-media ${codigoDetalle ? "is-clickable" : ""
+                      }`}
+                    role={codigoDetalle ? "link" : undefined}
+                    tabIndex={codigoDetalle ? 0 : undefined}
+                    aria-label={
+                      codigoDetalle ? `Ver detalle de ${codigoVisible}` : undefined
+                    }
+                    onClick={() => openProductDetail(codigoDetalle)}
+                    onKeyDown={(event) =>
+                      handleProductMediaKeyDown(event, codigoDetalle)
+                    }
+                  >
                     {Number(producto.nuevo_web) === 1 && (
                       <em className="andy-new-product-ribbon">NUEVO</em>
                     )}

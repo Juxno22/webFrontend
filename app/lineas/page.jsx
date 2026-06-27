@@ -72,20 +72,12 @@ const lineas = [
     tags: ["Diámetro", "Tipo", "Cruces", "OEM"],
   },
   {
-    title: "Radiadores",
+    title: "Tensores",
     description:
-      "Radiadores para todos los sistemas de enfriamiento.",
-    icon: TerminalSquareIcon,
-    href: "/catalogo",
-    tags: ["Radiadores", "Enfriamiento", "Motor"],
-  },
-  {
-    title: "Otras lineas",
-    description:
-      "Dale un vistazo a nuestras demas lineas.",
+      "Esenciales para mantener la tensión adecuada.",
     icon: ChartBarStackedIcon,
-    href: "/catalogo",
-    tags: ["Herrajes", "Balatas", "Tambor", "Traseras"],
+    href: "/catalogo?familia=TENSOR",
+    tags: ["Tensión", "Correas ", " Cadenas del Motor"],
   },
 ];
 
@@ -104,26 +96,13 @@ export default function LineasPage() {
 
         <div className="container lineas-page-hero-inner">
           <div>
-            <span className="eyebrow">Líneas de producto</span>
-            <h1>Explora el catálogo por línea.</h1>
-            <p>
-              Selecciona una línea para llegar al catálogo con una búsqueda más
-              enfocada. La compatibilidad y disponibilidad se validan con ventas.
-            </p>
+            <h1>Catalogo por linea.</h1>
           </div>
         </div>
       </section>
 
       <section className="lineas-list-section">
         <div className="container">
-          <div className="section-heading lineas-list-heading">
-            <span className="eyebrow">Selecciona una línea</span>
-            <h2>Componentes destacados del catálogo.</h2>
-            <p>
-              Cada tarjeta te lleva al catálogo filtrado o con una búsqueda
-              inicial para encontrar productos más rápido.
-            </p>
-          </div>
 
           <div className="lineas-list-grid">
             {lineas.map((linea) => {

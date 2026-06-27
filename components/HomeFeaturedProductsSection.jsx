@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Boxes, Gauge, Plus, Sparkles } from "lucide-react";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { useRouter } from "next/navigation";
 
 function isValidCode(value) {
   if (!value) return false;
@@ -34,6 +35,22 @@ export default function HomeFeaturedProductsSection({
   productos = [],
   section = null,
 }) {
+  const router = useRouter();
+
+  function openProductDetail(codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+  }
+
+  function handleProductMediaKeyDown(event, codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openProductDetail(codigoDetalle);
+    }
+  }
   if (!productos.length) return null;
 
   const kicker = section?.subtitulo || "Referencias recomendadas";
@@ -86,7 +103,19 @@ export default function HomeFeaturedProductsSection({
                   className="andy-new-product-card is-featured-product"
                   key={`${producto.id}-${index}`}
                 >
-                  <div className="andy-new-product-media">
+                  <div
+                    className={`andy-new-product-media ${codigoDetalle ? "is-clickable" : ""
+                      }`}
+                    role={codigoDetalle ? "link" : undefined}
+                    tabIndex={codigoDetalle ? 0 : undefined}
+                    aria-label={
+                      codigoDetalle ? `Ver detalle de ${codigoVisible}` : undefined
+                    }
+                    onClick={() => openProductDetail(codigoDetalle)}
+                    onKeyDown={(event) =>
+                      handleProductMediaKeyDown(event, codigoDetalle)
+                    }
+                  >
                     <em className="andy-new-product-ribbon featured">
                       <Sparkles size={13} />
                       DESTACADO

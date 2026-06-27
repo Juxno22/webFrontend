@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Plus, Gauge, Boxes } from "lucide-react";
 import { addToQuoteCart } from "../app/lib/quoteCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
@@ -31,6 +32,7 @@ function getProductCode(producto) {
 }
 
 export default function ProductCard({ producto }) {
+  const router = useRouter();
   const codigoDetalle = getProductCode(producto);
   const codigoVisible = codigoDetalle || "Sin código";
 
@@ -46,9 +48,33 @@ export default function ProductCard({ producto }) {
     );
   }
 
+  function openProductDetail() {
+    if (!codigoDetalle) return;
+
+    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+  }
+
+  function handleProductMediaKeyDown(event) {
+    if (!codigoDetalle) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openProductDetail();
+    }
+  }
+
   return (
     <article className="product-card">
-      <div className="product-media">
+      <div
+        className={`product-media ${codigoDetalle ? "is-clickable" : ""}`}
+        role={codigoDetalle ? "link" : undefined}
+        tabIndex={codigoDetalle ? 0 : undefined}
+        aria-label={
+          codigoDetalle ? `Ver detalle de ${codigoVisible}` : undefined
+        }
+        onClick={openProductDetail}
+        onKeyDown={handleProductMediaKeyDown}
+      >
         <div className="product-code">{codigoVisible}</div>
         <ProductMediaImage
           producto={producto}

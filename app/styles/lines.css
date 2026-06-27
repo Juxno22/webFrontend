@@ -99,8 +99,8 @@
 }
 
 .lineas-page-hero h1 {
-  max-width: 1050px;
-  margin: 0 auto 20px;
+  max-width: 2000px;
+  margin: 2px;
   color: #ffffff !important;
   font-size: clamp(3rem, 6.6vw, 7rem);
   line-height: 0.88;

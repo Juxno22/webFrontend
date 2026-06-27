@@ -48,6 +48,11 @@ const lineasMenu = [
     description: "Cruces, diámetro, material y canales",
     href: "/catalogo?familia=POLEAS",
   },
+  {
+    title: "Tensores",
+    description: "Esenciales para mantener la tensión adecuada.s",
+    href: "/catalogo?familia=TENSOR",
+  },
 ];
 
 export default function Header() {

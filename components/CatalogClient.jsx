@@ -72,14 +72,14 @@ function getProductCode(producto) {
 function shouldTrackCatalogSearch(filters = {}) {
   return Boolean(
     filters.q ||
-      filters.categoria ||
-      filters.familia ||
-      filters.armadora ||
-      filters.anio ||
-      filters.marca_auto ||
-      filters.modelo_auto ||
-      filters.motor ||
-      filters.linea
+    filters.categoria ||
+    filters.familia ||
+    filters.armadora ||
+    filters.anio ||
+    filters.marca_auto ||
+    filters.modelo_auto ||
+    filters.motor ||
+    filters.linea
   );
 }
 
@@ -290,6 +290,21 @@ export default function CatalogClient() {
     );
   }
 
+  function openProductDetail(codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+  }
+
+  function handleProductMediaKeyDown(event, codigoDetalle) {
+    if (!codigoDetalle) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openProductDetail(codigoDetalle);
+    }
+  }
+
   return (
     <section className="catalog-results">
       <div className="catalog-results-toolbar">
@@ -422,7 +437,19 @@ export default function CatalogClient() {
 
               return (
                 <article className="catalog-product-card" key={producto.id}>
-                  <div className="catalog-product-media">
+                  <div
+                    className={`catalog-product-media ${codigoDetalle ? "is-clickable" : ""
+                      }`}
+                    role={codigoDetalle ? "link" : undefined}
+                    tabIndex={codigoDetalle ? 0 : undefined}
+                    aria-label={
+                      codigoDetalle ? `Ver detalle de ${codigoVisible}` : undefined
+                    }
+                    onClick={() => openProductDetail(codigoDetalle)}
+                    onKeyDown={(event) =>
+                      handleProductMediaKeyDown(event, codigoDetalle)
+                    }
+                  >
                     <span className="catalog-product-code">{codigoVisible}</span>
                     <ProductMediaImage
                       producto={producto}
