@@ -1258,3 +1258,149 @@
     min-width: 40px !important;
   }
 }
+/* HEADER PUBLICO - ESPACIADO Y NO OVERLAP */
+.site-header {
+  z-index: 950 !important;
+}
+
+.header-inner.clean-header {
+  height: 74px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: clamp(12px, 1.2vw, 18px) !important;
+  overflow: visible !important;
+}
+
+/* Reservar espacio real para el logo y evitar que se monte con Inicio */
+.clean-header .brand-image-link,
+.brand-image-link {
+  flex: 0 0 clamp(132px, 12vw, 172px) !important;
+  width: clamp(132px, 12vw, 172px) !important;
+  max-width: clamp(132px, 12vw, 172px) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  overflow: visible !important;
+}
+
+.clean-header .brand-logo-image,
+.brand-logo-image {
+  height: 50px !important;
+  width: auto !important;
+  max-width: 158px !important;
+  object-fit: contain !important;
+}
+
+/* Navegación más compacta */
+.clean-header .desktop-nav,
+.desktop-nav {
+  flex: 0 1 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(8px, 1vw, 16px) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.desktop-nav > a,
+.lineas-nav-trigger {
+  min-height: 36px !important;
+  padding: 0 10px !important;
+  font-size: clamp(0.84rem, 0.9vw, 0.94rem) !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+}
+
+/* Quitar caja excesiva cuando está activo para que no invada el logo */
+.desktop-nav > a::before,
+.lineas-nav-trigger::before {
+  inset: 2px 1px !important;
+}
+
+.desktop-nav > a::after,
+.lineas-nav-trigger::after {
+  bottom: -9px !important;
+}
+
+/* Buscador compacto en escritorio */
+.clean-header .header-search,
+.header-search {
+  flex: 0 1 270px !important;
+  width: 270px !important;
+  max-width: 270px !important;
+  min-width: 210px !important;
+  min-height: 40px !important;
+}
+
+.header-search input {
+  font-size: 0.84rem !important;
+}
+
+.header-search button {
+  width: 31px !important;
+  height: 31px !important;
+  flex-basis: 31px !important;
+}
+
+/* Carrito estable */
+.header-actions {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+.quote-action.sales-cart-action,
+.sales-cart-action {
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+}
+
+/* Laptops: esconder buscador para que no se apriete el menú */
+@media (max-width: 1320px) {
+  .clean-header .header-search,
+  .header-search {
+    display: none !important;
+  }
+
+  .mobile-search-trigger {
+    display: inline-flex !important;
+  }
+}
+
+/* Tablets / móvil: conservar comportamiento móvil */
+@media (max-width: 980px) {
+  .header-inner.clean-header {
+    height: 72px !important;
+  }
+
+  .clean-header .brand-image-link,
+  .brand-image-link {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 150px !important;
+  }
+
+  .clean-header .brand-logo-image,
+  .brand-logo-image {
+    height: 46px !important;
+    max-width: 145px !important;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .header-search {
+    display: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .clean-header .brand-logo-image,
+  .brand-logo-image {
+    height: 40px !important;
+    max-width: 126px !important;
+  }
+}

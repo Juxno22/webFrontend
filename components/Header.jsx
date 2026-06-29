@@ -298,7 +298,7 @@ export default function Header() {
             </Link>
 
             <Link href="/pedido" onClick={closeNow}>
-              Rastrear pedido
+              Mi pedido
             </Link>
 
             <Link href="/contacto" onClick={closeNow}>
