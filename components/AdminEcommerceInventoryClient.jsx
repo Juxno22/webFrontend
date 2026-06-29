@@ -36,9 +36,10 @@ function formatDate(value) {
 
 function downloadTemplate() {
   const csv = [
-    "codigo_andyfers,codigo_importacion,existencia,multiplo_venta,precio",
-    "ATT1000,,10,1,250.00",
-    ",CODIGO-IMPORTACION-123,5,1,180.00",
+    "codigo_andyfers,codigo_importacion,descripcion,existencia,precio_interno,precio_web,multiplo_venta,mostrar_precio,disponible_web",
+    "AT1067,,TENSOR,25,380.00,459.00,1,1,1",
+    "AT1068,,TENSOR,18,410.00,499.00,1,1,1",
+    ",CODIGO-IMPORTACION-123,PRODUCTO EJEMPLO,5,180.00,229.00,1,1,1",
   ].join("\n");
 
   const blob = new Blob([csv], {
@@ -129,8 +130,7 @@ export default function AdminEcommerceInventoryClient() {
             <span className="eyebrow">Ecommerce</span>
             <h1>Inventario y precios web</h1>
             <p>
-              Actualiza existencia, precio y múltiplo del almacén ecommerce por
-              carga masiva.
+              Actualiza existencia, precio interno, precio web y múltiplo del almacén ecommerce por carga masiva.
             </p>
           </div>
 
@@ -179,8 +179,13 @@ export default function AdminEcommerceInventoryClient() {
               </div>
 
               <div>
-                <span>Sin precio</span>
-                <strong>{formatNumber(resumen.sin_precio)}</strong>
+                <span>Sin precio web</span>
+                <strong>{formatNumber(resumen.sin_precio_web ?? resumen.sin_precio)}</strong>
+              </div>
+
+              <div>
+                <span>Sin precio interno</span>
+                <strong>{formatNumber(resumen.sin_precio_interno)}</strong>
               </div>
 
               <div>
@@ -328,7 +333,8 @@ export default function AdminEcommerceInventoryClient() {
                       <th>Código importación</th>
                       <th>Estado</th>
                       <th>Existencia</th>
-                      <th>Precio</th>
+                      <th>Precio interno</th>
+                      <th>Precio web</th>
                       <th>Mensaje</th>
                     </tr>
                   </thead>
@@ -349,7 +355,8 @@ export default function AdminEcommerceInventoryClient() {
                           </span>
                         </td>
                         <td>{item.existencia ?? "—"}</td>
-                        <td>{item.precio ?? "—"}</td>
+                        <td>{item.precio_interno ?? "—"}</td>
+                        <td>{item.precio_web ?? "—"}</td>
                         <td>{item.mensaje || item.matched_by || "—"}</td>
                       </tr>
                     ))}

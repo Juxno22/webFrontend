@@ -79,13 +79,18 @@ export default function Footer() {
 
         <div>
           <h4>Contacto</h4>
-
           <p>
             {whatsapp?.valor ? `WhatsApp: ${whatsapp.valor}` : "WhatsApp pendiente"}
           </p>
-
           <p>{email?.valor ? `Correo: ${email.valor}` : "Correo pendiente"}</p>
         </div>
+
+        <nav className="footer-legal-links" aria-label="Información legal">
+          <Link href="/aviso-privacidad">Aviso de privacidad</Link>
+          <Link href="/terminos-condiciones">Términos y condiciones</Link>
+          <Link href="/politica-envios">Envíos</Link>
+          <Link href="/politica-devoluciones">Devoluciones</Link>
+        </nav>
 
         <div>
           <h4>Importante</h4>

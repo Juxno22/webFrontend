@@ -3,17 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  AlertTriangle,
-  BarChart3,
   CheckCircle2,
   ClipboardList,
   CreditCard,
-  Download,
-  Eye,
   Loader2,
   RefreshCw,
   SearchX,
   ShoppingCart,
+  Sparkles,
   Target,
   TrendingUp,
 } from "lucide-react";
