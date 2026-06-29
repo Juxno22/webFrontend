@@ -82,6 +82,14 @@ export default function AdminHomeClient() {
             </div>
           </Link>
 
+          <Link href="/admin/operacion" className="admin-home-card">
+            <Activity size={24} />
+            <div>
+              <strong>Operación diaria</strong>
+              <span>Ventas, pedidos, stock y cotizaciones por atender.</span>
+            </div>
+          </Link>
+
           <Link href="/admin/productos" className="admin-home-card">
             <div className="admin-home-icon">
               <Boxes size={34} />

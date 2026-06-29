@@ -528,3 +528,7 @@ export async function addAdminVentaNota(folio, payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export async function getAdminOperacionResumen() {
+  return adminFetch("/api/admin/operacion/resumen");
+}

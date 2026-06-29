@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   BarChart3,
   Boxes,
   ClipboardList,
@@ -26,14 +27,19 @@ const links = [
     exact: true,
   },
   {
-    href: "/admin/cotizaciones",
-    label: "Cotizaciones",
-    icon: ClipboardList,
-  },
-  {
     href: "/admin/ventas",
     label: "Ventas Web",
     icon: ShoppingCart,
+  },
+  {
+    href: "/admin/operacion",
+    label: "Operación",
+    icon: Activity,
+  },
+  {
+    href: "/admin/cotizaciones",
+    label: "Cotizaciones",
+    icon: ClipboardList,
   },
   {
     href: "/admin/productos",
