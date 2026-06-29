@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  Activity,
   BarChart3,
   Boxes,
   ClipboardList,
