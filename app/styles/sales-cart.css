@@ -735,3 +735,28 @@ body.sales-cart-open .andy-chat-speech-bubble {
     justify-content: center;
   }
 }
+
+/*CARRITO: PRECIO VISIBLE SOLO EN COMPRA*/
+.sales-cart-item-price {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+}
+
+.sales-cart-item-price span {
+  color: #bbf7d0;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.sales-cart-item-price strong {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}

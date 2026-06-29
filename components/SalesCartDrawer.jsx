@@ -15,6 +15,7 @@ import {
     removeSalesItem,
     updateSalesItemQuantity,
 } from "@/app/lib/salesCart";
+import { formatCurrency } from "@/app/lib/productSale";
 
 function getItemImage(item = {}) {
     return item.imagen_thumbnail_url || item.imagen_url || "";
@@ -22,6 +23,15 @@ function getItemImage(item = {}) {
 
 function getItemCode(item = {}) {
     return item.codigo_andyfers || item.codigo_importacion || item.product_key;
+}
+
+function getItemPrice(item = {}) {
+    return Number(
+        item.precio_venta_web ||
+        item.precio_minimo ||
+        item.precio ||
+        0
+    );
 }
 
 export default function SalesCartDrawer() {
@@ -128,6 +138,8 @@ export default function SalesCartDrawer() {
                             {items.map((item) => {
                                 const image = getItemImage(item);
                                 const code = getItemCode(item);
+                                const price = getItemPrice(item);
+                                const subtotal = price * Number(item.cantidad || 1);
 
                                 return (
                                     <article className="sales-cart-item" key={item.product_key}>
@@ -147,6 +159,13 @@ export default function SalesCartDrawer() {
                                                 {item.familia && <span>{item.familia}</span>}
                                                 {item.categoria && <span>{item.categoria}</span>}
                                             </div>
+
+                                            {price > 0 && (
+                                                <div className="sales-cart-item-price">
+                                                    <span>{formatCurrency(price)} c/u</span>
+                                                    <strong>{formatCurrency(subtotal)}</strong>
+                                                </div>
+                                            )}
 
                                             <div className="sales-cart-item-actions">
                                                 <div className="sales-cart-qty">

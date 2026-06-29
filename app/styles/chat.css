@@ -1113,3 +1113,33 @@
     height: 74px !important;
   }
 }
+/* CHATBOT: CARDS DE PRODUCTO CLICKEABLES */
+.andy-chat-product-card.is-clickable {
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.andy-chat-product-card.is-clickable:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 25, 47, 0.42) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.andy-chat-product-card.is-clickable:focus-visible {
+  outline: 2px solid var(--andy-chat-red);
+  outline-offset: 3px;
+}
+/* CHATBOT: TEXTO PRODUCTOS / CRUCES MAS LEGIBLES */
+.andy-chat-product-main strong,
+.andy-chat-product-main p,
+.andy-chat-product-main span {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.andy-chat-message.is-bot {
+  color: #ffffff !important;
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ExternalLink,
   Loader2,
@@ -34,7 +35,7 @@ function isApproximateProduct(product = {}) {
   return Boolean(
     product.busqueda_relajada_medidas ||
     product.coincidencia_aproximada ||
-    product.es_aproximado
+    product.es_aproximado,
   );
 }
 
@@ -93,14 +94,14 @@ function dispatchToast(message) {
   window.dispatchEvent(
     new CustomEvent("andyfers_toast", {
       detail: { message },
-    })
+    }),
   );
 }
 
 function HorseMascot({ active }) {
   const frames = Array.from(
     { length: 16 },
-    (_, index) => `/img/horse-clean/horse${index + 1}.png`
+    (_, index) => `/img/horse-clean/horse${index + 1}.png`,
   );
 
   const [frameIndex, setFrameIndex] = useState(0);
@@ -142,6 +143,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [messages, setMessages] = useState([
     {
       id: "welcome",
@@ -154,6 +156,21 @@ export default function ChatWidget() {
   const bodyRef = useRef(null);
   const lastBotRowRef = useRef(null);
   const loadingRowRef = useRef(null);
+
+  function openChatProductDetail(product) {
+    const code = getProductCode(product);
+
+    if (!code) return;
+
+    router.push(`/producto/${encodeURIComponent(code)}`);
+  }
+
+  function handleChatProductKeyDown(event, product) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    event.preventDefault();
+    openChatProductDetail(product);
+  }
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -345,7 +362,7 @@ export default function ChatWidget() {
     dispatchToast(
       isApproximateProduct(product)
         ? "Producto agregado para validar medidas en cotización"
-        : "Producto agregado a tu cotización"
+        : "Producto agregado a tu cotización",
     );
   }
 
@@ -402,7 +419,8 @@ export default function ChatWidget() {
         requiere_mas_datos: Boolean(data.requiere_mas_datos),
         modo_busqueda: data.intencion?.modo_busqueda,
         contexto_corto: data.contexto_corto,
-        busqueda_medidas_relajada: data.intencion?.busqueda_medidas_relajada || null,
+        busqueda_medidas_relajada:
+          data.intencion?.busqueda_medidas_relajada || null,
       },
       createdAt: new Date().toISOString(),
     };
@@ -473,7 +491,8 @@ export default function ChatWidget() {
                 : "";
 
               const relaxedSearch = getRelaxedSearchInfo(message);
-              const relaxedSearchNotice = buildRelaxedSearchNotice(relaxedSearch);
+              const relaxedSearchNotice =
+                buildRelaxedSearchNotice(relaxedSearch);
 
               return (
                 <div
@@ -486,7 +505,9 @@ export default function ChatWidget() {
                     className={`andy-chat-message ${message.role === "user" ? "is-user" : "is-bot"
                       }`}
                   >
-                    {message.role === "bot" ? renderBotText(message.text) : message.text}
+                    {message.role === "bot"
+                      ? renderBotText(message.text)
+                      : message.text}
                   </div>
 
                   {contextLabel && (
@@ -495,38 +516,44 @@ export default function ChatWidget() {
                     </div>
                   )}
 
-                  {message.role === "bot" && message.followup && !(message.products?.length > 0) && (
-                    <div className="andy-chat-followup">
-                      {message.followup.preguntas.length > 0 && (
-                        <div className="andy-chat-followup-questions">
-                          {message.followup.preguntas.map((question, questionIndex) => (
-                            <div
-                              className="andy-chat-followup-question"
-                              key={`${message.id}-q-${questionIndex}`}
-                            >
-                              {question}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                  {message.role === "bot" &&
+                    message.followup &&
+                    !(message.products?.length > 0) && (
+                      <div className="andy-chat-followup">
+                        {message.followup.preguntas.length > 0 && (
+                          <div className="andy-chat-followup-questions">
+                            {message.followup.preguntas.map(
+                              (question, questionIndex) => (
+                                <div
+                                  className="andy-chat-followup-question"
+                                  key={`${message.id}-q-${questionIndex}`}
+                                >
+                                  {question}
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        )}
 
-                      {message.followup.respuestasRapidas.length > 0 && (
-                        <div className="andy-chat-followup-actions">
-                          {message.followup.respuestasRapidas.map((reply, replyIndex) => (
-                            <button
-                              type="button"
-                              className="andy-chat-followup-btn"
-                              key={`${message.id}-r-${replyIndex}`}
-                              onClick={() => handleQuickReply(reply)}
-                              disabled={loading}
-                            >
-                              {reply}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        {message.followup.respuestasRapidas.length > 0 && (
+                          <div className="andy-chat-followup-actions">
+                            {message.followup.respuestasRapidas.map(
+                              (reply, replyIndex) => (
+                                <button
+                                  type="button"
+                                  className="andy-chat-followup-btn"
+                                  key={`${message.id}-r-${replyIndex}`}
+                                  onClick={() => handleQuickReply(reply)}
+                                  disabled={loading}
+                                >
+                                  {reply}
+                                </button>
+                              ),
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                   {message.role === "bot" &&
                     message.products?.length > 0 &&
@@ -542,7 +569,8 @@ export default function ChatWidget() {
                       {message.products.map((product) => {
                         const code = getProductCode(product);
                         const approximateProduct =
-                          isApproximateProduct(product) || Boolean(relaxedSearch?.active);
+                          isApproximateProduct(product) ||
+                          Boolean(relaxedSearch?.active);
 
                         const productForQuote = {
                           ...product,
@@ -552,8 +580,17 @@ export default function ChatWidget() {
                         return (
                           <article
                             className={`andy-chat-product-card ${approximateProduct ? "is-approximate" : ""
-                              }`}
+                              } ${code ? "is-clickable" : ""}`}
                             key={`${product.producto_id || product.id}-${code}`}
+                            role={code ? "link" : undefined} fhref={`/producto/${encodeURIComponent(code)}`}
+                            tabIndex={code ? 0 : undefined}
+                            aria-label={
+                              code ? `Ver detalle de ${code}` : undefined
+                            }
+                            onClick={() => openChatProductDetail(product)}
+                            onKeyDown={(event) =>
+                              handleChatProductKeyDown(event, product)
+                            }
                           >
                             <div className="andy-chat-product-main">
                               <strong>{code || "Sin código"}</strong>
@@ -578,6 +615,7 @@ export default function ChatWidget() {
                                   href={`/producto/${encodeURIComponent(code)}`}
                                   className="andy-chat-product-link"
                                   title="Ver detalle"
+                                  onClick={(event) => event.stopPropagation()}
                                 >
                                   <ExternalLink size={15} />
                                 </Link>
@@ -585,10 +623,15 @@ export default function ChatWidget() {
 
                               <button
                                 type="button"
-                                onClick={() => handleAddToQuote(productForQuote)}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleAddToQuote(productForQuote);
+                                }}
                               >
                                 <ShoppingBag size={15} />
-                                {approximateProduct ? "Agregar para validar" : "Agregar"}
+                                {approximateProduct
+                                  ? "Agregar para validar"
+                                  : "Agregar"}
                               </button>
                             </div>
                           </article>
@@ -633,34 +676,31 @@ export default function ChatWidget() {
             </button>
           </form>
         </section>
-      )
-      }
+      )}
 
-      {
-        !open && (
-          <button
-            type="button"
-            className="andy-chat-closed"
-            onMouseEnter={() => setMascotActive(true)}
-            onFocus={() => setMascotActive(true)}
-            onClick={() => {
-              setMascotActive(true);
-              setOpen(true);
-            }}
-            aria-label="Abrir asistente Andyfers"
-          >
-            <div className="andy-chat-speech-bubble">
-              ¿Tienes dudas sobre refacciones?
-              <br />
-              ¡Habla conmigo!
-            </div>
+      {!open && (
+        <button
+          type="button"
+          className="andy-chat-closed"
+          onMouseEnter={() => setMascotActive(true)}
+          onFocus={() => setMascotActive(true)}
+          onClick={() => {
+            setMascotActive(true);
+            setOpen(true);
+          }}
+          aria-label="Abrir asistente Andyfers"
+        >
+          <div className="andy-chat-speech-bubble">
+            ¿Tienes dudas sobre refacciones?
+            <br />
+            ¡Habla conmigo!
+          </div>
 
-            <div className="andy-chat-horse-container">
-              <HorseMascot active={mascotActive && !open} />
-            </div>
-          </button>
-        )
-      }
-    </div >
+          <div className="andy-chat-horse-container">
+            <HorseMascot active={mascotActive && !open} />
+          </div>
+        </button>
+      )}
+    </div>
   );
 }

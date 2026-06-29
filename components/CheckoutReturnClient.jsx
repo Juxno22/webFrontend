@@ -130,6 +130,18 @@ export default function CheckoutReturnClient({ type = "exito" }) {
         )}
 
         <div className="checkout-return-actions">
+          <Link
+            href={
+              folio
+                ? `/pedido?folio=${encodeURIComponent(folio)}&whatsapp=${encodeURIComponent(
+                  lastOrder?.whatsapp || ""
+                )}`
+                : "/pedido"
+            }
+            className="btn-primary"
+          >
+            Consultar mi pedido
+          </Link>
           <a
             href={`https://wa.me/?text=${encodeURIComponent(whatsappText)}`}
             className="btn-primary"

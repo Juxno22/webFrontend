@@ -99,3 +99,42 @@
     width: 100%;
   }
 }
+/* PUBLICO: OCULTAR PRECIO FUERA DEL CARRITO */
+.product-card .product-sale-info,
+.catalog-product-card .product-sale-info,
+.andy-new-product-card .product-sale-info,
+.detail-sale-box {
+  display: none !important;
+}
+
+/* CODIGO PRODUCTO: INFERIOR DERECHO */
+.product-media,
+.catalog-product-media,
+.andy-new-product-media {
+  position: relative !important;
+}
+
+.product-media .product-code,
+.catalog-product-media .catalog-product-code,
+.andy-new-product-media > span {
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+  right: 14px !important;
+  bottom: 14px !important;
+  z-index: 4 !important;
+
+  max-width: calc(100% - 28px) !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+
+  color: #ffffff !important;
+  background: #111827 !important;
+  font-size: 0.76rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22) !important;
+}

@@ -82,6 +82,7 @@ export default function Header() {
   const isCatalog = pathname?.startsWith("/catalogo") || pathname?.startsWith("/producto");
   const isQuote = pathname?.startsWith("/cotizacion");
   const isContact = pathname?.startsWith("/contacto");
+  const isOrder = pathname.startsWith("/pedido");
 
   useEffect(() => {
     function refreshCounts() {
@@ -224,6 +225,10 @@ export default function Header() {
             Cotización
           </Link>
 
+          <Link href="/pedido" className={navClass(isOrder)} onClick={closeNow}>
+            Rastrear pedido
+          </Link>
+
           <Link href="/contacto" className={navClass(isContact)} onClick={closeNow}>
             Contacto
           </Link>
@@ -232,7 +237,7 @@ export default function Header() {
         {searchForm("header-search", "header-search-input")}
 
         <div className="header-actions">
-          
+
           <button
             type="button"
             className="quote-action sales-cart-action"
@@ -290,6 +295,10 @@ export default function Header() {
 
             <Link href="/cotizacion" onClick={closeNow}>
               Mi cotización
+            </Link>
+
+            <Link href="/pedido" onClick={closeNow}>
+              Rastrear pedido
             </Link>
 
             <Link href="/contacto" onClick={closeNow}>
