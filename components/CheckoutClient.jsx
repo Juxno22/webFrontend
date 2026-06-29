@@ -18,6 +18,7 @@ import {
   removeSalesItem,
   updateSalesItemQuantity,
 } from "@/app/lib/salesCart";
+import { saveLastOrder } from "@/app/lib/orderTracking";
 
 function getItemCode(item = {}) {
   return item.codigo_andyfers || item.codigo_importacion || item.product_key;
@@ -97,9 +98,18 @@ export default function CheckoutClient() {
       });
 
       const checkoutUrl = getCheckoutUrl(response?.data?.mercado_pago);
+      const folio = response?.data?.folio;
 
       if (!checkoutUrl) {
         throw new Error("Mercado Pago no regresó una URL de checkout.");
+      }
+
+      if (folio) {
+        saveLastOrder({
+          folio,
+          whatsapp: form.whatsapp,
+          nombre_cliente: form.nombre_cliente,
+        });
       }
 
       clearSalesCart();

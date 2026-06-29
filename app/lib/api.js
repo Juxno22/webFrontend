@@ -1,76 +1,76 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export async function apiFetch(path, options = {}) {
-    const url = `${API_URL}${path}`
-    const response = await fetch(url, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
-        },
-        cache: "no-store",
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-        throw new Error(data?.error || "Error al conectar con la API");
-    }
-    return data;
+  const url = `${API_URL}${path}`
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    cache: "no-store",
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(data?.error || "Error al conectar con la API");
+  }
+  return data;
 }
 
 export async function getBackendHealth() {
-    return apiFetch("/api/health");
+  return apiFetch("/api/health");
 }
 
 export async function getDbHealth() {
-    return apiFetch("/api/db-health");
+  return apiFetch("/api/db-health");
 }
 
 export function buildQuery(params = {}) {
-    const searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams();
 
-    Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && String(value).trim() !== "") {
-            searchParams.set(key, String(value).trim());
-        }
-    });
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
 
-    return searchParams.toString();
+  return searchParams.toString();
 }
 
 export async function getCategorias() {
-    return apiFetch("/api/categorias");
+  return apiFetch("/api/categorias");
 }
 
 export async function getFamilias() {
-    return apiFetch("/api/familias");
+  return apiFetch("/api/familias");
 }
 
 export async function getArmadoras() {
-    return apiFetch("/api/armadoras");
+  return apiFetch("/api/armadoras");
 }
 
 export async function getProductos(params = {}) {
-    const query = buildQuery(params);
-    return apiFetch(`/api/productos${query ? `?${query}` : ""}`);
+  const query = buildQuery(params);
+  return apiFetch(`/api/productos${query ? `?${query}` : ""}`);
 }
 
 export async function getProducto(codigo) {
-    return apiFetch(`/api/productos/${encodeURIComponent(codigo)}`);
+  return apiFetch(`/api/productos/${encodeURIComponent(codigo)}`);
 }
 
 export async function getProductosDestacados(limit = 10) {
-    return apiFetch(`/api/productos/destacados?limit=${limit}`);
+  return apiFetch(`/api/productos/destacados?limit=${limit}`);
 }
 
-export async function crearCotizacion(payload){
-    return apiFetch("/api/cotizaciones", {
-        method: "POST",
-        body: JSON.stringify(payload),
-    });
+export async function crearCotizacion(payload) {
+  return apiFetch("/api/cotizaciones", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
-export async function getCotizacionPublica(folio){
-    return apiFetch(`/api/cotizaciones/${encodeURIComponent(folio)}/publica`);
+export async function getCotizacionPublica(folio) {
+  return apiFetch(`/api/cotizaciones/${encodeURIComponent(folio)}/publica`);
 }
 
 export async function getVehiculoAnios() {
@@ -158,6 +158,17 @@ export async function crearCheckoutVenta(payload) {
   });
 }
 
-export async function getVentaPublica(folio) {
-  return apiFetch(`/api/ventas/${encodeURIComponent(folio)}/publica`);
+export async function getVentaPublica(folio, whatsapp = "") {
+  const params = new URLSearchParams();
+
+  if (whatsapp) {
+    params.set("whatsapp", whatsapp);
+  }
+
+  const query = params.toString();
+
+  return apiFetch(
+    `/api/ventas/${encodeURIComponent(folio)}/publica${query ? `?${query}` : ""
+    }`
+  );
 }
