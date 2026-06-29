@@ -1,261 +1,219 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Activity,
+  ArrowRight,
   BarChart3,
   Boxes,
   ClipboardList,
-  FileSearch,
   FileText,
   Gauge,
-  ImagePlus,
-  ListChecks,
-  LockKeyhole,
-  LogOut,
+  MessageCircle,
   Server,
   ShieldCheck,
   ShoppingCart,
 } from "lucide-react";
-import { clearAdminSession } from "../app/lib/adminApi";
-import { useAdminAuth } from "../app/hooks/useAdminAuth";
+import { getAdminOperacionResumen } from "@/app/lib/adminApi";
+import { useAdminAuth } from "@/app/hooks/useAdminAuth";
+
+function formatNumber(value) {
+  return new Intl.NumberFormat("es-MX").format(Number(value || 0));
+}
+
+function formatMoney(value) {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+  }).format(Number(value || 0));
+}
 
 export default function AdminHomeClient() {
-  const router = useRouter();
   const { user, checking } = useAdminAuth();
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadData() {
+      try {
+        const response = await getAdminOperacionResumen();
+        setData(response.data);
+      } catch {
+        setData(null);
+      }
+    }
+
+    loadData();
+  }, [user]);
 
   if (checking) return null;
 
-  function logout() {
-    clearAdminSession();
-    router.push("/admin/login");
-  }
+  const ventas = data?.ventas || {};
+  const ecommerce = data?.ecommerce || {};
+  const cotizaciones = data?.cotizaciones || {};
 
   return (
-    <section className="admin-page">
-      <div className="container">
-        <div className="admin-topbar">
+    <section className="admin-home-os">
+      <div className="admin-home-os-hero">
+        <span>Panel interno</span>
+        <h1>Administración Andyfers</h1>
+        <p>
+          Centro de control para operación ecommerce, ventas Mercado Pago,
+          cotizaciones, inventario web y atención comercial.
+          {user ? ` Sesión: ${user.nombre} · ${user.rol}.` : ""}
+        </p>
+      </div>
+
+      <div className="admin-home-priority-grid">
+        <Link href="/admin/ventas" className="admin-home-priority-card sales">
           <div>
-            <span className="eyebrow">Panel interno</span>
-            <h1>Administración Andyfers</h1>
+            <ShoppingCart size={32} />
+            <span>Prioridad comercial</span>
+            <h2>Ventas ecommerce</h2>
             <p>
-              {user
-                ? `${user.nombre} · ${user.rol}`
-                : "Cargando usuario..."}
+              Revisa pagos confirmados, pedidos por preparar, trazabilidad
+              Mercado Pago, entregas y descuentos de inventario.
             </p>
           </div>
 
-          <button className="admin-logout" onClick={logout}>
-            <LogOut size={17} />
-            Salir
-          </button>
-        </div>
+          <strong>
+            Abrir ventas
+            <ArrowRight size={17} />
+          </strong>
+        </Link>
 
-        <div className="admin-home-grid">
-          <Link href="/admin/ventas" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ShoppingCart size={34} />
-            </div>
+        <Link href="/admin/chat" className="admin-home-priority-card chat">
+          <div>
+            <MessageCircle size={32} />
+            <span>Atención en tiempo real</span>
+            <h2>Chat clientes</h2>
+            <p>
+              Bandeja de conversaciones para compradores y cotizaciones. Será el
+              centro de atención tipo Messenger.
+            </p>
+          </div>
 
-            <div>
-              <span>Ventas web</span>
-              <h2>Ventas Mercado Pago</h2>
-              <p>
-                Revisa ventas entrantes, pagos confirmados, preparación de pedidos,
-                entregas y trazabilidad de Mercado Pago.
-              </p>
-            </div>
-          </Link>
+          <strong>
+            Abrir chat
+            <ArrowRight size={17} />
+          </strong>
+        </Link>
+      </div>
 
-          <Link href="/admin/cotizaciones" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ClipboardList size={34} />
-            </div>
+      <div className="admin-home-kpi-grid">
+        <article className="admin-home-kpi">
+          <ShoppingCart size={22} />
+          <span>Pedidos activos</span>
+          <strong>{formatNumber(ventas.pedidos_activos)}</strong>
+          <small>{formatMoney(ventas.importe_activo)}</small>
+        </article>
 
-            <div>
-              <span>Ventas</span>
-              <h2>Cotizaciones</h2>
-              <p>
-                Revisa solicitudes, cambia estados, agrega notas y copia el
-                resumen para WhatsApp.
-              </p>
-            </div>
-          </Link>
+        <article className="admin-home-kpi">
+          <Activity size={22} />
+          <span>Por preparar</span>
+          <strong>{formatNumber(ventas.pagadas)}</strong>
+          <small>Pagados esperando preparación</small>
+        </article>
 
-          <Link href="/admin/operacion" className="admin-home-card">
-            <Activity size={24} />
-            <div>
-              <strong>Operación diaria</strong>
-              <span>Ventas, pedidos, stock y cotizaciones por atender.</span>
-            </div>
-          </Link>
+        <article className="admin-home-kpi">
+          <MessageCircle size={22} />
+          <span>Cotizaciones nuevas</span>
+          <strong>{formatNumber(cotizaciones.nuevas)}</strong>
+          <small>{formatNumber(cotizaciones.abiertas)} abiertas</small>
+        </article>
 
-          <Link href="/admin/productos" className="admin-home-card">
-            <div className="admin-home-icon">
-              <Boxes size={34} />
-            </div>
+        <article className="admin-home-kpi">
+          <Boxes size={22} />
+          <span>Productos vendibles</span>
+          <strong>{formatNumber(ecommerce.vendibles)}</strong>
+          <small>{formatNumber(ecommerce.piezas_totales)} piezas</small>
+        </article>
+      </div>
 
-            <div>
-              <span>Mantenimiento</span>
-              <h2>Catálogo de productos</h2>
-              <p>
-                Revisa productos pendientes, corrige datos base y controla qué
-                productos se muestran en la página.
-              </p>
-            </div>
-          </Link>
+      <div className="admin-home-grid-os">
+        <Link href="/admin/operacion" className="admin-home-card-os">
+          <Activity size={24} />
+          <div>
+            <span>Operación</span>
+            <h3>Operación diaria</h3>
+            <p>Pedidos, stock, ventas y cotizaciones que requieren atención.</p>
+          </div>
+        </Link>
 
-          <Link href="/admin/ecommerce" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ShoppingCart size={34} />
-            </div>
+        <Link href="/admin/ecommerce" className="admin-home-card-os">
+          <ShoppingCart size={24} />
+          <div>
+            <span>Ecommerce</span>
+            <h3>Inventario web</h3>
+            <p>Carga Excel, precios web, precio interno y productos vendibles.</p>
+          </div>
+        </Link>
 
-            <div>
-              <span>Ventas web</span>
-              <h2>Ecommerce</h2>
-              <p>
-                Carga inventario y precios del almacén ecommerce para habilitar ventas
-                con Mercado Pago.
-              </p>
-            </div>
-          </Link>
+        <Link href="/admin/cotizaciones" className="admin-home-card-os">
+          <ClipboardList size={24} />
+          <div>
+            <span>Ventas</span>
+            <h3>Cotizaciones</h3>
+            <p>Solicitudes abiertas, estados, notas y seguimiento comercial.</p>
+          </div>
+        </Link>
 
-          <Link href="/admin/catalogo-calidad" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ShieldCheck size={34} />
-            </div>
+        <Link href="/admin/productos" className="admin-home-card-os">
+          <Boxes size={24} />
+          <div>
+            <span>Catálogo</span>
+            <h3>Productos</h3>
+            <p>Alta, edición, aplicaciones, cruces y datos comerciales.</p>
+          </div>
+        </Link>
 
-            <div>
-              <span>Calidad comercial</span>
-              <h2>Auditoría de catálogo</h2>
-              <p>
-                Detecta productos sin imagen, cruces, aplicaciones, stock,
-                precio o datos incompletos y prioriza pendientes comerciales.
-              </p>
-            </div>
-          </Link>
+        <Link href="/admin/catalogo-calidad" className="admin-home-card-os">
+          <ShieldCheck size={24} />
+          <div>
+            <span>Calidad</span>
+            <h3>Calidad catálogo</h3>
+            <p>Detecta productos sin imagen, stock, precio o datos clave.</p>
+          </div>
+        </Link>
 
-          <Link href="/admin/pendientes-comerciales" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ListChecks size={34} />
-            </div>
+        <Link href="/admin/analitica" className="admin-home-card-os">
+          <BarChart3 size={24} />
+          <div>
+            <span>Inteligencia</span>
+            <h3>Analítica comercial</h3>
+            <p>Búsquedas, productos consultados, ventas y oportunidades.</p>
+          </div>
+        </Link>
 
-            <div>
-              <span>Gestión comercial</span>
-              <h2>Pendientes comerciales</h2>
-              <p>
-                Atiende la cola operativa de imágenes, cruces, aplicaciones,
-                descripciones, stock y calidad del catálogo.
-              </p>
-            </div>
-          </Link>
+        <Link href="/admin/performance" className="admin-home-card-os">
+          <Gauge size={24} />
+          <div>
+            <span>Performance</span>
+            <h3>Velocidad pública</h3>
+            <p>Métricas técnicas, páginas lentas y experiencia de usuario.</p>
+          </div>
+        </Link>
 
-          <Link href="/admin/multimedia-macheo" className="admin-home-card">
-            <div className="admin-home-icon">
-              <FileSearch size={34} />
-            </div>
+        <Link href="/admin/produccion" className="admin-home-card-os">
+          <Server size={24} />
+          <div>
+            <span>Sistema</span>
+            <h3>Producción</h3>
+            <p>Variables críticas, respaldos, salud de base y despliegues.</p>
+          </div>
+        </Link>
 
-            <div>
-              <span>Cloudinary / multimedia</span>
-              <h2>Macheo multimedia</h2>
-              <p>
-                Carga reportes CSV del importador, revisa imágenes sin match,
-                ambiguas o listas para subir y genera pendientes comerciales.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/analitica" className="admin-home-card">
-            <div className="admin-home-icon">
-              <BarChart3 size={34} />
-            </div>
-
-            <div>
-              <span>Inteligencia comercial</span>
-              <h2>Analítica comercial</h2>
-              <p>
-                Consulta búsquedas sin resultado, productos más consultados,
-                cotizaciones, WhatsApp y oportunidades de mercado.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/performance" className="admin-home-card">
-            <div className="admin-home-icon">
-              <Gauge size={34} />
-            </div>
-
-            <div>
-              <span>Performance pública</span>
-              <h2>Velocidad y Core Web Vitals</h2>
-              <p>
-                Revisa páginas lentas, métricas LCP, CLS, INP, tiempos de carga
-                y señales técnicas para mejorar experiencia y SEO.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/seguridad" className="admin-home-card">
-            <div className="admin-home-icon">
-              <LockKeyhole size={34} />
-            </div>
-
-            <div>
-              <span>Seguridad admin</span>
-              <h2>Auditoría y protección</h2>
-              <p>
-                Revisa eventos de seguridad, rate limits, acciones administrativas,
-                trazabilidad de cambios y hallazgos críticos del panel admin.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/produccion" className="admin-home-card">
-            <div className="admin-home-icon">
-              <Server size={34} />
-            </div>
-
-            <div>
-              <span>Preparación producción</span>
-              <h2>Producción y respaldos</h2>
-              <p>
-                Revisa variables críticas, conexión a base, tablas necesarias,
-                respaldos manuales y checklist antes de publicar cambios.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/contenido" className="admin-home-card">
-            <div className="admin-home-icon">
-              <FileText size={34} />
-            </div>
-
-            <div>
-              <span>Contenido público</span>
-              <h2>Contenido editable</h2>
-              <p>
-                Edita textos del home, banners secundarios, líneas comerciales,
-                secciones destacadas y datos de contacto.
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/contenido/home-hero" className="admin-home-card">
-            <div className="admin-home-icon">
-              <ImagePlus size={34} />
-            </div>
-
-            <div>
-              <span>Contenido público</span>
-              <h2>Flyers del home</h2>
-              <p>
-                Edita los flyers promocionales del carrusel principal,
-                controla orden, visibilidad y URL de Cloudinary.
-              </p>
-            </div>
-          </Link>
-        </div>
+        <Link href="/admin/contenido" className="admin-home-card-os">
+          <FileText size={24} />
+          <div>
+            <span>Contenido</span>
+            <h3>Contenido web</h3>
+            <p>Home, banners, flyers, textos comerciales y secciones públicas.</p>
+          </div>
+        </Link>
       </div>
     </section>
   );

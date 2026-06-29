@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
@@ -13,6 +14,8 @@ import {
   Loader2,
   Plus,
   RefreshCw,
+  MessageCircle,
+  ShoppingCart,
   Save,
   Search,
   ShieldAlert,
@@ -20,7 +23,6 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
 import AdminExportMenu from "@/components/AdminExportMenu";
 import { getAdminUser } from "@/app/lib/adminApi";
 import {
@@ -616,7 +618,56 @@ ${action}`
           </div>
         </div>
 
-        <AdminModuleNav />
+        <div className="admin-page-hero admin-surgical-hero admin-surgical-commercial">
+          <div>
+            <span>Cola comercial</span>
+            <h1>Pendientes comerciales</h1>
+            <p>
+              Atiende oportunidades generadas por catálogo, búsquedas, productos sin
+              imagen, productos sin cruces, solicitudes manuales y tareas comerciales.
+            </p>
+          </div>
+
+          <div className="admin-page-hero-actions">
+            <Link href="/admin/chat" className="admin-primary-button">
+              <MessageCircle size={18} />
+              Chat clientes
+            </Link>
+
+            <Link href="/admin/ventas" className="admin-secondary-button">
+              <ShoppingCart size={18} />
+              Ventas ecommerce
+            </Link>
+
+            <button
+              type="button"
+              className="admin-secondary-button"
+              onClick={handleSyncAnalytics}
+              disabled={syncingAnalytics}
+            >
+              {syncingAnalytics ? (
+                <Loader2 size={18} className="admin-spin" />
+              ) : (
+                <BarChart3 size={18} />
+              )}
+              Sync analítica
+            </button>
+
+            <button
+              type="button"
+              className="admin-refresh-button"
+              onClick={handleSyncQuality}
+              disabled={syncing}
+            >
+              {syncing ? (
+                <Loader2 size={18} className="admin-spin" />
+              ) : (
+                <Sparkles size={18} />
+              )}
+              Sync calidad
+            </button>
+          </div>
+        </div>
 
         {error && <div className="alert-error admin-feedback">{error}</div>}
         {message && <div className="alert-success admin-feedback">{message}</div>}

@@ -1,254 +1,339 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
+  AlertTriangle,
+  ArrowRight,
+  BarChart3,
   CheckCircle2,
-  ClipboardList,
+  Clock3,
   CreditCard,
+  Download,
+  Eye,
   Loader2,
+  MessageCircle,
+  PackageSearch,
   RefreshCw,
+  Search,
   SearchX,
   ShoppingCart,
   Sparkles,
   Target,
   TrendingUp,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
-import AdminExportMenu from "@/components/AdminExportMenu";
-import { getAdminUser } from "@/app/lib/adminApi";
-import {
-  getAdminAnalyticsDashboard,
-  getAdminAnalyticsEventos,
-  getAdminAnalyticsOportunidades,
-  syncAdminAnalyticsOportunidades,
-  updateAdminAnalyticsOportunidad,
-} from "@/app/lib/adminAnalyticsApi";
+import { adminFetch } from "@/app/lib/adminApi";
+import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 
 const EVENT_FILTERS = [
-  { value: "", label: "Todos los eventos" },
+  { value: "", label: "Todos" },
   { value: "BUSQUEDA_CATALOGO", label: "Búsqueda catálogo" },
-  { value: "BUSQUEDA_CATALOGO_SIN_RESULTADO", label: "Catálogo sin resultado" },
+  { value: "BUSQUEDA_CATALOGO_SIN_RESULTADO", label: "Búsqueda sin resultado" },
   { value: "BUSQUEDA_IA", label: "Búsqueda IA" },
   { value: "BUSQUEDA_IA_SIN_RESULTADO", label: "IA sin resultado" },
   { value: "PRODUCTO_CONSULTADO", label: "Producto consultado" },
   { value: "PRODUCTO_AGREGADO_COTIZACION", label: "Agregado a cotización" },
-  {
-    value: "PRODUCTO_AGREGADO_CARRITO_VENTA",
-    label: "Agregado a carrito venta",
-  },
-  { value: "VENTA_CHECKOUT_CREADO", label: "Checkout venta creado" },
+  { value: "COTIZACION_GENERADA", label: "Cotización generada" },
+  { value: "PRODUCTO_AGREGADO_CARRITO_VENTA", label: "Agregado a carrito venta" },
+  { value: "VENTA_CHECKOUT_CREADO", label: "Checkout creado" },
   { value: "VENTA_PAGO_APROBADO", label: "Pago aprobado" },
   { value: "VENTA_PAGO_RECHAZADO", label: "Pago rechazado" },
   { value: "VENTA_ENTREGADA", label: "Venta entregada" },
-  { value: "COTIZACION_GENERADA", label: "Cotización generada" },
   { value: "WHATSAPP_CLICK", label: "Click WhatsApp" },
-  { value: "CONTACTO_FORMULARIO", label: "Formulario contacto" },
 ];
 
-const OPPORTUNITY_STATES = [
-  "NUEVA",
-  "EN_REVISION",
-  "SOLICITAR_IMAGEN",
-  "CREAR_PRODUCTO",
-  "COMPRAR_STOCK",
-  "DESCARTADA",
-  "RESUELTA",
-];
+function toDateInput(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function getDefaultDates() {
+  const hasta = new Date();
+  const desde = new Date();
+
+  desde.setDate(hasta.getDate() - 30);
+
+  return {
+    desde: toDateInput(desde),
+    hasta: toDateInput(hasta),
+  };
+}
+
+function buildQuery(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  return searchParams.toString();
+}
+
+async function getAnalyticsDashboard(params = {}) {
+  const query = buildQuery(params);
+
+  return adminFetch(`/api/admin/analytics/dashboard${query ? `?${query}` : ""}`);
+}
+
+async function syncAnalyticsOportunidades(params = {}) {
+  const query = buildQuery(params);
+
+  return adminFetch(
+    `/api/admin/analytics/oportunidades/sync${query ? `?${query}` : ""}`,
+    {
+      method: "POST",
+    }
+  );
+}
 
 function formatNumber(value) {
-  const number = Number(value || 0);
-
-  return new Intl.NumberFormat("es-MX").format(Number.isFinite(number) ? number : 0);
+  return new Intl.NumberFormat("es-MX").format(Number(value || 0));
 }
 
 function formatMoney(value) {
-  const number = Number(value || 0);
-
   return new Intl.NumberFormat("es-MX", {
     style: "currency",
     currency: "MXN",
-    minimumFractionDigits: 2,
-  }).format(Number.isFinite(number) ? number : 0);
+  }).format(Number(value || 0));
 }
 
 function formatDate(value) {
   if (!value) return "—";
 
-  try {
-    return new Intl.DateTimeFormat("es-MX", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(value));
-  } catch {
-    return "—";
+  return new Intl.DateTimeFormat("es-MX", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
+function getNumber(value) {
+  const parsed = Number(value || 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function pickArray(data, keys = []) {
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key];
   }
+
+  return [];
 }
 
-function toIsoDate(date) {
-  return date.toISOString().slice(0, 10);
+function pickObject(data, keys = []) {
+  for (const key of keys) {
+    if (data?.[key] && typeof data[key] === "object") return data[key];
+  }
+
+  return {};
 }
 
-function defaultDateRange() {
-  const hasta = new Date();
-  const desde = new Date();
-  desde.setDate(hasta.getDate() - 30);
-
-  return {
-    desde: toIsoDate(desde),
-    hasta: toIsoDate(hasta),
-  };
+function getProductCode(item = {}) {
+  return item.codigo_andyfers || item.codigo_importacion || item.codigo || "—";
 }
 
-function emptyDashboard() {
-  return {
-    rango: defaultDateRange(),
-    kpis: {},
-    ventas_kpis: {},
-    busquedas_sin_resultado: [],
-    productos_mas_consultados: [],
-    productos_mas_cotizados: [],
-    productos_mas_vendidos: [],
-    consultas_vehiculo: [],
-    embudo_ventas: [],
-  };
-}
-
-function normalizeDashboardPayload(response) {
-  return response?.data || emptyDashboard();
-}
-
-function getKpis(dashboard) {
-  const kpis = dashboard?.kpis || {};
-  const ventas = dashboard?.ventas_kpis || {};
-
-  return [
-    {
-      label: "Importe confirmado",
-      value: formatMoney(ventas.importe_confirmado),
-      icon: TrendingUp,
-      tone: "success",
-      isFormatted: true,
-    },
-    {
-      label: "Ventas pagadas",
-      value: ventas.ventas_pagadas,
-      icon: CheckCircle2,
-      tone: "success",
-    },
-    {
-      label: "Pendientes pago",
-      value: ventas.ventas_pendientes_pago,
-      icon: CreditCard,
-      tone: "accent",
-    },
-    {
-      label: "Piezas vendidas",
-      value: ventas.piezas_confirmadas,
-      icon: ShoppingCart,
-      tone: "info",
-    },
-    {
-      label: "Ticket promedio",
-      value: formatMoney(ventas.ticket_promedio_confirmado),
-      icon: Target,
-      tone: "default",
-      isFormatted: true,
-    },
-    {
-      label: "Cotizaciones",
-      value: kpis.cotizaciones_generadas,
-      icon: ClipboardList,
-      tone: "default",
-    },
-    {
-      label: "Sin resultado",
-      value: kpis.busquedas_sin_resultado,
-      icon: SearchX,
-      tone: "danger",
-    },
-  ];
-}
-
-function valueOrDash(value) {
-  if (value === null || value === undefined || value === "") return "—";
-
-  return value;
-}
-
-function opportunityTone(priority) {
-  const value = String(priority || "").toUpperCase();
-
-  if (value === "ALTA") return "high";
-  if (value === "MEDIA") return "medium";
-  if (value === "BAJA") return "low";
-
-  return "neutral";
-}
-
-function EventBadge({ evento }) {
-  return <span className="admin-analytics-event-badge">{evento || "—"}</span>;
-}
-
-function AnalyticsTable({ title, icon: Icon, children, empty, subtitle }) {
+function getProductDescription(item = {}) {
   return (
-    <article className="admin-analytics-panel">
-      <div className="admin-analytics-panel-head">
-        <div>
-          <span className="eyebrow">Analítica</span>
-          <h2>
-            {Icon && <Icon size={20} />}
-            {title}
-          </h2>
-          {subtitle && <p>{subtitle}</p>}
-        </div>
-      </div>
-
-      {empty ? <div className="admin-empty">Sin datos en el periodo.</div> : children}
-    </article>
+    item.descripcion_producto ||
+    item.descripcion ||
+    item.familia ||
+    item.categoria_nombre ||
+    "Producto sin descripción"
   );
 }
 
-export default function AdminAnalyticsClient() {
-  const router = useRouter();
-  const initialRange = useMemo(() => defaultDateRange(), []);
+function getSearchText(item = {}) {
+  return item.query_text || item.busqueda || item.texto_busqueda || item.termino || "—";
+}
 
-  const [user, setUser] = useState(null);
+function getDailyLabel(item = {}) {
+  return item.fecha || item.dia || item.date || "—";
+}
+
+export default function AdminAnalyticsClient() {
+  const { checking } = useAdminAuth();
+
+  const defaults = useMemo(() => getDefaultDates(), []);
+
   const [filters, setFilters] = useState({
-    desde: initialRange.desde,
-    hasta: initialRange.hasta,
-    limit: 10,
+    desde: defaults.desde,
+    hasta: defaults.hasta,
     evento: "",
-    q: "",
+    limit: 10,
   });
-  const [dashboard, setDashboard] = useState(emptyDashboard());
-  const [events, setEvents] = useState([]);
-  const [opportunities, setOpportunities] = useState([]);
+
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
-  const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
 
-  const kpis = useMemo(() => getKpis(dashboard), [dashboard]);
+  const dashboard = data?.data || data || {};
 
-  useEffect(() => {
-    const currentUser = getAdminUser();
+  const ventasKpis = pickObject(dashboard, ["ventas_kpis", "ventas", "sales"]);
+  const kpis = pickObject(dashboard, ["kpis", "resumen", "summary"]);
 
-    if (!currentUser) {
-      router.push("/admin/login");
-      return;
+  const productosVendidos = pickArray(dashboard, [
+    "productos_mas_vendidos",
+    "top_productos_vendidos",
+    "productos_vendidos",
+  ]);
+
+  const productosConsultados = pickArray(dashboard, [
+    "productos_mas_consultados",
+    "top_productos_consultados",
+    "consultados",
+  ]);
+
+  const productosCotizados = pickArray(dashboard, [
+    "productos_mas_cotizados",
+    "top_productos_cotizados",
+    "cotizados",
+  ]);
+
+  const busquedasSinResultado = pickArray(dashboard, [
+    "busquedas_sin_resultado",
+    "sin_resultado",
+    "searches_without_results",
+  ]);
+
+  const oportunidades = pickArray(dashboard, [
+    "oportunidades",
+    "oportunidades_comerciales",
+    "commercial_tasks",
+  ]);
+
+  const embudoVentas = pickArray(dashboard, [
+    "embudo_ventas",
+    "funnel",
+    "ventas_embudo",
+  ]);
+
+  const resumenDiario = pickArray(dashboard, [
+    "resumen_diario",
+    "daily",
+    "serie_diaria",
+  ]);
+
+  const metricas = useMemo(() => {
+    const importeConfirmado =
+      getNumber(ventasKpis.importe_confirmado) ||
+      getNumber(ventasKpis.importe_pagado) ||
+      getNumber(ventasKpis.total_pagado);
+
+    const ventasPagadas =
+      getNumber(ventasKpis.ventas_pagadas) ||
+      getNumber(ventasKpis.pagadas) ||
+      getNumber(ventasKpis.pagos_aprobados);
+
+    const pendientesPago =
+      getNumber(ventasKpis.pendientes_pago) ||
+      getNumber(ventasKpis.pendiente_pago);
+
+    const piezasVendidas =
+      getNumber(ventasKpis.piezas_vendidas) ||
+      getNumber(ventasKpis.cantidad_vendida) ||
+      getNumber(ventasKpis.total_piezas);
+
+    const ticketPromedio =
+      getNumber(ventasKpis.ticket_promedio) ||
+      (ventasPagadas > 0 ? importeConfirmado / ventasPagadas : 0);
+
+    return [
+      {
+        label: "Importe confirmado",
+        value: formatMoney(importeConfirmado),
+        hint: "Pagos aprobados",
+        icon: CreditCard,
+        formatted: true,
+      },
+      {
+        label: "Ventas pagadas",
+        value: ventasPagadas,
+        hint: "Pedidos con pago aprobado",
+        icon: ShoppingCart,
+      },
+      {
+        label: "Pendientes pago",
+        value: pendientesPago,
+        hint: "Checkouts sin confirmar",
+        icon: Clock3,
+      },
+      {
+        label: "Piezas vendidas",
+        value: piezasVendidas,
+        hint: "Cantidad vendida",
+        icon: PackageSearch,
+      },
+      {
+        label: "Ticket promedio",
+        value: formatMoney(ticketPromedio),
+        hint: "Promedio por venta pagada",
+        icon: TrendingUp,
+        formatted: true,
+      },
+      {
+        label: "Cotizaciones",
+        value: getNumber(kpis.cotizaciones_generadas || kpis.cotizaciones),
+        hint: "Solicitudes generadas",
+        icon: Target,
+      },
+    ];
+  }, [ventasKpis, kpis]);
+
+  async function loadData(nextFilters = filters) {
+    try {
+      setLoading(true);
+      setError("");
+      setMessage("");
+
+      const response = await getAnalyticsDashboard(nextFilters);
+
+      setData(response.data || response);
+      setLastUpdatedAt(new Date());
+    } catch (err) {
+      setError(err.message || "No se pudo cargar analítica comercial.");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    setUser(currentUser);
-  }, [router]);
+  async function syncOportunidades() {
+    try {
+      setSyncing(true);
+      setError("");
+      setMessage("");
+
+      const response = await syncAnalyticsOportunidades({
+        desde: filters.desde,
+        hasta: filters.hasta,
+        limit: filters.limit,
+      });
+
+      const total =
+        response?.data?.creadas ||
+        response?.data?.procesadas ||
+        response?.creadas ||
+        response?.procesadas ||
+        0;
+
+      setMessage(`Oportunidades sincronizadas: ${formatNumber(total)}.`);
+
+      await loadData(filters);
+    } catch (err) {
+      setError(err.message || "No se pudieron sincronizar oportunidades.");
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   useEffect(() => {
-    if (!user) return;
-
-    loadAnalytics();
+    if (!checking) {
+      loadData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [checking]);
 
   function updateFilter(name, value) {
     setFilters((current) => ({
@@ -257,545 +342,469 @@ export default function AdminAnalyticsClient() {
     }));
   }
 
-  function buildRequestParams() {
-    return {
-      desde: filters.desde,
-      hasta: filters.hasta,
-      limit: filters.limit,
-    };
-  }
-
-  async function loadAnalytics(nextFilters = filters) {
-    try {
-      setLoading(true);
-      setError("");
-      setMessage("");
-
-      const baseParams = {
-        desde: nextFilters.desde,
-        hasta: nextFilters.hasta,
-        limit: nextFilters.limit,
-      };
-
-      const eventsParams = {
-        ...baseParams,
-        evento: nextFilters.evento,
-        q: nextFilters.q,
-        limit: 80,
-      };
-
-      const [dashboardResponse, eventsResponse, opportunitiesResponse] =
-        await Promise.all([
-          getAdminAnalyticsDashboard(baseParams),
-          getAdminAnalyticsEventos(eventsParams),
-          getAdminAnalyticsOportunidades({ limit: 80 }),
-        ]);
-
-      setDashboard(normalizeDashboardPayload(dashboardResponse));
-      setEvents(eventsResponse?.data || []);
-      setOpportunities(opportunitiesResponse?.data || []);
-    } catch (err) {
-      setError(err.message || "No se pudo cargar la analítica comercial.");
-      setDashboard(emptyDashboard());
-      setEvents([]);
-      setOpportunities([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleSubmit(event) {
+  function submitFilters(event) {
     event.preventDefault();
-    await loadAnalytics(filters);
+    loadData(filters);
   }
 
-  async function handleSyncOpportunities() {
-    try {
-      setSyncing(true);
-      setError("");
-      setMessage("");
-
-      const response = await syncAdminAnalyticsOportunidades(buildRequestParams());
-
-      setMessage(
-        response?.message || "Oportunidades sincronizadas correctamente."
-      );
-
-      const opportunitiesResponse = await getAdminAnalyticsOportunidades({
-        limit: 80,
-      });
-
-      setOpportunities(opportunitiesResponse?.data || []);
-    } catch (err) {
-      setError(err.message || "No se pudieron sincronizar oportunidades.");
-    } finally {
-      setSyncing(false);
-    }
-  }
-
-  async function changeOpportunityState(item, estado) {
-    if (!item?.id) return;
-
-    try {
-      setUpdatingId(item.id);
-      setError("");
-      setMessage("");
-
-      await updateAdminAnalyticsOportunidad(item.id, { estado });
-
-      setOpportunities((current) =>
-        current.map((opportunity) =>
-          opportunity.id === item.id ? { ...opportunity, estado } : opportunity
-        )
-      );
-
-      setMessage("Oportunidad actualizada correctamente.");
-    } catch (err) {
-      setError(err.message || "No se pudo actualizar la oportunidad.");
-    } finally {
-      setUpdatingId(null);
-    }
-  }
+  if (checking) return null;
 
   return (
-    <section className="admin-page">
-      <div className="container">
-        <div className="admin-topbar">
-          <div>
-            <span className="eyebrow">Inteligencia comercial</span>
-            <h1>Analítica comercial</h1>
-            <p>
-              Ventas web, pagos confirmados, productos vendidos, embudo de compra,
-              cotizaciones y búsquedas sin resultado.
-            </p>
-          </div>
-
-          <div className="admin-analytics-topbar-actions">
-            <AdminExportMenu
-              context="analytics"
-              filters={filters}
-              onError={setError}
-            />
-
-            <button
-              className="admin-logout"
-              type="button"
-              onClick={() => loadAnalytics(filters)}
-              disabled={loading}
-            >
-              {loading ? <Loader2 size={17} className="spin-icon" /> : <RefreshCw size={17} />}
-              Recargar
-            </button>
-          </div>
+    <section className="admin-workspace admin-analytics-os">
+      <div className="admin-page-hero">
+        <div>
+          <span>Inteligencia comercial</span>
+          <h1>Analítica comercial</h1>
+          <p>
+            Mide búsquedas, productos consultados, cotizaciones, carrito,
+            ventas ecommerce y oportunidades comerciales para mejorar catálogo,
+            inventario y atención.
+          </p>
         </div>
 
-        <AdminModuleNav />
+        <div className="admin-page-hero-actions">
+          <Link href="/admin/ventas" className="admin-primary-button">
+            <ShoppingCart size={18} />
+            Ventas ecommerce
+          </Link>
 
-        {error && <div className="alert-error admin-feedback">{error}</div>}
-        {message && <div className="alert-success admin-feedback">{message}</div>}
+          <Link href="/admin/chat" className="admin-secondary-button">
+            <MessageCircle size={18} />
+            Chat clientes
+          </Link>
 
-        <form className="admin-analytics-toolbar" onSubmit={handleSubmit}>
-          <label>
-            Desde
-            <input
-              type="date"
-              value={filters.desde}
-              onChange={(event) => updateFilter("desde", event.target.value)}
-            />
-          </label>
-
-          <label>
-            Hasta
-            <input
-              type="date"
-              value={filters.hasta}
-              onChange={(event) => updateFilter("hasta", event.target.value)}
-            />
-          </label>
-
-          <label>
-            Top
-            <select
-              value={filters.limit}
-              onChange={(event) => updateFilter("limit", event.target.value)}
-            >
-              <option value="10">Top 10</option>
-              <option value="25">Top 25</option>
-              <option value="50">Top 50</option>
-              <option value="100">Top 100</option>
-            </select>
-          </label>
-
-          <label>
-            Evento reciente
-            <select
-              value={filters.evento}
-              onChange={(event) => updateFilter("evento", event.target.value)}
-            >
-              {EVENT_FILTERS.map((item) => (
-                <option value={item.value} key={item.value || "all"}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="admin-analytics-search-field">
-            Buscar en eventos
-            <input
-              value={filters.q}
-              placeholder="Código, búsqueda, familia, vehículo..."
-              onChange={(event) => updateFilter("q", event.target.value)}
-            />
-          </label>
-
-          <button className="admin-clean-button" type="submit" disabled={loading}>
-            Consultar
+          <button
+            type="button"
+            className="admin-secondary-button"
+            onClick={syncOportunidades}
+            disabled={syncing}
+          >
+            {syncing ? <Loader2 size={18} className="admin-spin" /> : <Sparkles size={18} />}
+            Sincronizar
           </button>
-        </form>
 
-        {loading ? (
-          <div className="admin-analytics-loading">
-            <Loader2 size={24} className="spin-icon" />
-            Cargando analítica comercial...
-          </div>
-        ) : (
-          <>
-            <div className="admin-analytics-kpi-grid">
-              {kpis.map((item) => {
-                const Icon = item.icon;
+          <button
+            type="button"
+            className="admin-refresh-button"
+            onClick={() => loadData()}
+            disabled={loading}
+          >
+            {loading ? <Loader2 size={18} className="admin-spin" /> : <RefreshCw size={18} />}
+            Actualizar
+          </button>
+        </div>
+      </div>
 
-                return (
-                  <div
-                    className={`admin-analytics-kpi-card tone-${item.tone}`}
-                    key={item.label}
-                  >
-                    <div>
-                      <span>{item.label}</span>
-                      <strong>{item.isFormatted ? item.value : formatNumber(item.value)}</strong>
-                    </div>
-                    <Icon size={25} />
-                  </div>
-                );
-              })}
-            </div>
+      {lastUpdatedAt && (
+        <p className="admin-updated">
+          Última actualización: {formatDate(lastUpdatedAt)}
+        </p>
+      )}
 
-            <div className="admin-analytics-grid-two">
-              <AnalyticsTable
-                title="Productos más vendidos"
-                icon={TrendingUp}
-                subtitle="Ranking real de productos con venta confirmada."
-                empty={!dashboard.productos_mas_vendidos?.length}
-              >
-                <div className="admin-analytics-table-wrap">
-                  <table className="admin-analytics-table">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Familia</th>
-                        <th>Piezas</th>
-                        <th>Importe</th>
-                        <th>Última venta</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.productos_mas_vendidos.map((row) => (
-                        <tr key={`${row.producto_id}-${row.codigo_andyfers}-vendido`}>
-                          <td>
-                            <strong>{valueOrDash(row.codigo_andyfers)}</strong>
-                            <small>{valueOrDash(row.codigo_importacion)}</small>
-                          </td>
-                          <td>{valueOrDash(row.familia || row.categoria)}</td>
-                          <td>{formatNumber(row.piezas_vendidas)}</td>
-                          <td>{formatMoney(row.importe_vendido)}</td>
-                          <td>{formatDate(row.ultima_venta)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnalyticsTable>
+      {error && (
+        <div className="admin-alert">
+          <AlertTriangle size={18} />
+          {error}
+        </div>
+      )}
 
-              <AnalyticsTable
-                title="Embudo de venta"
-                icon={Target}
-                subtitle="Carrito, checkout, pago aprobado y entrega."
-                empty={!dashboard.embudo_ventas?.length}
-              >
-                <div className="admin-analytics-funnel">
-                  {dashboard.embudo_ventas.map((row) => (
-                    <div key={row.etapa}>
-                      <strong>{row.etapa}</strong>
-                      <span>{formatNumber(row.total_eventos)} eventos</span>
-                      <small>
-                        {formatNumber(row.sesiones)} sesiones ·{" "}
-                        {formatNumber(row.piezas)} piezas · {formatMoney(row.importe)}
-                      </small>
-                    </div>
-                  ))}
-                </div>
-              </AnalyticsTable>
-            </div>
+      {message && (
+        <div className="admin-analytics-success">
+          <CheckCircle2 size={18} />
+          {message}
+        </div>
+      )}
 
-            <div className="admin-analytics-grid-two">
-              <AnalyticsTable
-                title="Búsquedas sin resultado"
-                icon={SearchX}
-                subtitle="Lo que el cliente pide y el catálogo no está resolviendo."
-                empty={!dashboard.busquedas_sin_resultado?.length}
-              >
-                <div className="admin-analytics-table-wrap">
-                  <table className="admin-analytics-table">
-                    <thead>
-                      <tr>
-                        <th>Búsqueda</th>
-                        <th>Veces</th>
-                        <th>Sesiones</th>
-                        <th>Última</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.busquedas_sin_resultado.map((row) => (
-                        <tr key={row.busqueda_normalizada}>
-                          <td>
-                            <strong>{row.busqueda_normalizada}</strong>
-                            <small>{valueOrDash(row.ejemplo_busqueda)}</small>
-                          </td>
-                          <td>{formatNumber(row.total_busquedas)}</td>
-                          <td>{formatNumber(row.sesiones)}</td>
-                          <td>{formatDate(row.ultima_busqueda)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnalyticsTable>
+      <form className="admin-analytics-filters" onSubmit={submitFilters}>
+        <label>
+          Desde
+          <input
+            type="date"
+            value={filters.desde}
+            onChange={(event) => updateFilter("desde", event.target.value)}
+          />
+        </label>
 
-              <AnalyticsTable
-                title="Productos más consultados"
-                icon={TrendingUp}
-                subtitle="Demanda real por detalle de producto."
-                empty={!dashboard.productos_mas_consultados?.length}
-              >
-                <div className="admin-analytics-table-wrap">
-                  <table className="admin-analytics-table">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Familia</th>
-                        <th>Consultas</th>
-                        <th>Última</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.productos_mas_consultados.map((row) => (
-                        <tr key={`${row.producto_id}-${row.codigo_andyfers}`}>
-                          <td>
-                            <strong>{valueOrDash(row.codigo_andyfers)}</strong>
-                            <small>{valueOrDash(row.codigo_importacion)}</small>
-                          </td>
-                          <td>{valueOrDash(row.familia)}</td>
-                          <td>{formatNumber(row.total_consultas)}</td>
-                          <td>{formatDate(row.ultima_consulta)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnalyticsTable>
-            </div>
+        <label>
+          Hasta
+          <input
+            type="date"
+            value={filters.hasta}
+            onChange={(event) => updateFilter("hasta", event.target.value)}
+          />
+        </label>
 
-            <div className="admin-analytics-grid-two">
-              <AnalyticsTable
-                title="Productos más cotizados"
-                icon={ShoppingCart}
-                subtitle="Productos con intención comercial por cotizacion."
-                empty={!dashboard.productos_mas_cotizados?.length}
-              >
-                <div className="admin-analytics-table-wrap">
-                  <table className="admin-analytics-table">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Familia</th>
-                        <th>Veces</th>
-                        <th>Cantidad</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.productos_mas_cotizados.map((row) => (
-                        <tr key={`${row.producto_id}-${row.codigo_andyfers}-cotizado`}>
-                          <td>
-                            <strong>{valueOrDash(row.codigo_andyfers)}</strong>
-                            <small>{valueOrDash(row.codigo_importacion)}</small>
-                          </td>
-                          <td>{valueOrDash(row.familia)}</td>
-                          <td>{formatNumber(row.veces_agregado)}</td>
-                          <td>{formatNumber(row.cantidad_total)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnalyticsTable>
+        <label>
+          Evento
+          <select
+            value={filters.evento}
+            onChange={(event) => updateFilter("evento", event.target.value)}
+          >
+            {EVENT_FILTERS.map((event) => (
+              <option key={event.value || "todos"} value={event.value}>
+                {event.label}
+              </option>
+            ))}
+          </select>
+        </label>
 
-              <AnalyticsTable
-                title="Consultas por vehículo"
-                icon={Target}
-                subtitle="Marca, modelo, año y motor más buscados."
-                empty={!dashboard.consultas_vehiculo?.length}
-              >
-                <div className="admin-analytics-table-wrap">
-                  <table className="admin-analytics-table">
-                    <thead>
-                      <tr>
-                        <th>Vehículo</th>
-                        <th>Consultas</th>
-                        <th>Sin resultado</th>
-                        <th>Última</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.consultas_vehiculo.map((row) => (
-                        <tr
-                          key={`${row.marca_vehiculo}-${row.modelo_vehiculo}-${row.anio_vehiculo}-${row.motor_vehiculo}`}
-                        >
-                          <td>
-                            <strong>
-                              {row.marca_vehiculo} {row.modelo_vehiculo}
-                            </strong>
-                            <small>
-                              {row.anio_vehiculo} · {row.motor_vehiculo}
-                            </small>
-                          </td>
-                          <td>{formatNumber(row.total_consultas)}</td>
-                          <td>{formatNumber(row.consultas_sin_resultado)}</td>
-                          <td>{formatDate(row.ultima_consulta)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnalyticsTable>
-            </div>
+        <label>
+          Límite
+          <select
+            value={filters.limit}
+            onChange={(event) => updateFilter("limit", event.target.value)}
+          >
+            <option value="10">10 registros</option>
+            <option value="20">20 registros</option>
+            <option value="50">50 registros</option>
+          </select>
+        </label>
 
-            <article className="admin-analytics-panel">
-              <div className="admin-analytics-panel-head with-action">
+        <button className="admin-primary-button" type="submit" disabled={loading}>
+          {loading ? <Loader2 size={17} className="admin-spin" /> : <Search size={17} />}
+          Aplicar
+        </button>
+      </form>
+
+      {loading && !data ? (
+        <div className="admin-loading-panel">
+          <Loader2 size={34} className="admin-spin" />
+          <strong>Cargando analítica comercial...</strong>
+        </div>
+      ) : (
+        <>
+          <section className="admin-kpi-grid admin-analytics-kpi-grid">
+            {metricas.map((metric) => {
+              const Icon = metric.icon;
+
+              return (
+                <article className="admin-kpi-card" key={metric.label}>
+                  <Icon size={22} />
+                  <span>{metric.label}</span>
+                  <strong>
+                    {metric.formatted ? metric.value : formatNumber(metric.value)}
+                  </strong>
+                  <small>{metric.hint}</small>
+                </article>
+              );
+            })}
+          </section>
+
+          <section className="admin-home-priority-grid">
+            <article className="admin-home-priority-card sales">
+              <div>
+                <ShoppingCart size={34} />
+                <span>Embudo ecommerce</span>
+                <h2>Ventas web</h2>
+                <p>
+                  Sigue el camino desde carrito y checkout hasta pago aprobado,
+                  entrega y oportunidades de recuperación.
+                </p>
+              </div>
+
+              <Link href="/admin/ventas">
+                <strong>
+                  Abrir ventas
+                  <ArrowRight size={17} />
+                </strong>
+              </Link>
+            </article>
+
+            <article className="admin-home-priority-card chat">
+              <div>
+                <MessageCircle size={34} />
+                <span>Atención comercial</span>
+                <h2>Chat y cotización</h2>
+                <p>
+                  Detecta productos buscados, cotizados o sin resultado para
+                  alimentar el chat y mejorar conversión.
+                </p>
+              </div>
+
+              <Link href="/admin/chat">
+                <strong>
+                  Abrir chat
+                  <ArrowRight size={17} />
+                </strong>
+              </Link>
+            </article>
+          </section>
+
+          <section className="admin-panels-grid">
+            <article className="admin-panel">
+              <div className="admin-panel-head">
                 <div>
-                  <span className="eyebrow">Compras y ventas</span>
-                  <h2>
-                    <Sparkles size={20} />
-                    Oportunidades de mercado
-                  </h2>
-                  <p>
-                    Sincroniza búsquedas repetidas sin resultado para decidir si se
-                    crea producto, se pide imagen o se revisa inventario.
-                  </p>
+                  <span>Ventas</span>
+                  <h2>Embudo de venta</h2>
+                  <p>Eventos principales del flujo ecommerce.</p>
+                </div>
+              </div>
+
+              <div className="admin-analytics-funnel">
+                {embudoVentas.length > 0 ? (
+                  embudoVentas.map((item, index) => (
+                    <div key={`${item.evento || item.estado || index}`}>
+                      <span>{item.label || item.evento || item.estado || `Paso ${index + 1}`}</span>
+                      <strong>
+                        {formatNumber(item.total || item.cantidad || item.valor)}
+                      </strong>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    No hay embudo disponible todavía.
+                  </div>
+                )}
+              </div>
+            </article>
+
+            <article className="admin-panel">
+              <div className="admin-panel-head">
+                <div>
+                  <span>Ecommerce</span>
+                  <h2>Productos más vendidos</h2>
+                  <p>Productos con pago confirmado.</p>
+                </div>
+              </div>
+
+              <div className="admin-analytics-list">
+                {productosVendidos.length > 0 ? (
+                  productosVendidos.map((item, index) => (
+                    <div key={`${getProductCode(item)}-${index}`}>
+                      <strong>{getProductCode(item)}</strong>
+                      <p>{getProductDescription(item)}</p>
+                      <span>
+                        {formatNumber(item.piezas || item.cantidad || item.total_piezas)} pzas ·{" "}
+                        {formatMoney(item.importe || item.total || item.venta_total)}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    Todavía no hay productos vendidos.
+                  </div>
+                )}
+              </div>
+            </article>
+          </section>
+
+          <section className="admin-panels-grid">
+            <article className="admin-panel">
+              <div className="admin-panel-head">
+                <div>
+                  <span>Interés catálogo</span>
+                  <h2>Productos más consultados</h2>
+                  <p>Lo que más revisan los clientes.</p>
+                </div>
+              </div>
+
+              <div className="admin-analytics-list">
+                {productosConsultados.length > 0 ? (
+                  productosConsultados.map((item, index) => (
+                    <div key={`${getProductCode(item)}-${index}`}>
+                      <strong>{getProductCode(item)}</strong>
+                      <p>{getProductDescription(item)}</p>
+                      <span>
+                        {formatNumber(
+                          item.total_consultas ||
+                            item.consultas ||
+                            item.total ||
+                            item.eventos
+                        )}{" "}
+                        consultas
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    Sin productos consultados en este periodo.
+                  </div>
+                )}
+              </div>
+            </article>
+
+            <article className="admin-panel">
+              <div className="admin-panel-head">
+                <div>
+                  <span>Cotización</span>
+                  <h2>Productos más cotizados</h2>
+                  <p>Productos que pasan a intención comercial.</p>
+                </div>
+              </div>
+
+              <div className="admin-analytics-list">
+                {productosCotizados.length > 0 ? (
+                  productosCotizados.map((item, index) => (
+                    <div key={`${getProductCode(item)}-${index}`}>
+                      <strong>{getProductCode(item)}</strong>
+                      <p>{getProductDescription(item)}</p>
+                      <span>
+                        {formatNumber(
+                          item.cotizaciones ||
+                            item.total_cotizaciones ||
+                            item.total ||
+                            item.eventos
+                        )}{" "}
+                        cotizaciones
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    Sin productos cotizados en este periodo.
+                  </div>
+                )}
+              </div>
+            </article>
+          </section>
+
+          <section className="admin-panels-grid">
+            <article className="admin-panel">
+              <div className="admin-panel-head">
+                <div>
+                  <span>Oportunidades</span>
+                  <h2>Oportunidades comerciales</h2>
+                  <p>Productos o búsquedas que requieren revisión.</p>
                 </div>
 
                 <button
-                  className="admin-primary-link"
                   type="button"
-                  onClick={handleSyncOpportunities}
+                  className="admin-secondary-button"
+                  onClick={syncOportunidades}
                   disabled={syncing}
                 >
-                  {syncing ? <Loader2 size={17} className="spin-icon" /> : <RefreshCw size={17} />}
-                  Sincronizar
+                  {syncing ? <Loader2 size={15} className="admin-spin" /> : <Sparkles size={15} />}
+                  Sync
                 </button>
               </div>
 
-              {!opportunities.length ? (
-                <div className="admin-empty">No hay oportunidades registradas.</div>
-              ) : (
-                <div className="admin-analytics-opportunities">
-                  {opportunities.map((item) => (
-                    <div className="admin-analytics-opportunity" key={item.id}>
-                      <div>
-                        <div className="admin-analytics-opportunity-headline">
-                          <span
-                            className={`admin-analytics-priority ${opportunityTone(item.prioridad)}`}
-                          >
-                            {item.prioridad || "MEDIA"}
-                          </span>
-                          <strong>{item.titulo}</strong>
-                        </div>
-
-                        <p>{item.descripcion}</p>
-
-                        <small>
-                          {formatNumber(item.total_eventos)} eventos · Score {formatNumber(item.score)} · Último {formatDate(item.ultimo_evento)}
-                        </small>
-                      </div>
-
-                      <label>
-                        Estado
-                        <select
-                          value={item.estado || "NUEVA"}
-                          disabled={updatingId === item.id}
-                          onChange={(event) =>
-                            changeOpportunityState(item, event.target.value)
-                          }
-                        >
-                          {OPPORTUNITY_STATES.map((state) => (
-                            <option value={state} key={state}>
-                              {state}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+              <div className="admin-analytics-list">
+                {oportunidades.length > 0 ? (
+                  oportunidades.map((item, index) => (
+                    <div key={`${item.id || item.clave || index}`}>
+                      <strong>{item.titulo || item.codigo_andyfers || item.tipo || "Oportunidad"}</strong>
+                      <p>{item.descripcion || item.detalle || item.mensaje || "Sin descripción"}</p>
+                      <span>
+                        {item.prioridad || "MEDIA"} · {item.estado || "NUEVO"}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              )}
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    No hay oportunidades pendientes en este periodo.
+                  </div>
+                )}
+              </div>
             </article>
 
-            <AnalyticsTable
-              title="Eventos recientes"
-              icon={CheckCircle2}
-              subtitle="Bitácora operativa de los eventos comerciales registrados."
-              empty={!events.length}
-            >
-              <div className="admin-analytics-table-wrap">
-                <table className="admin-analytics-table recent-events">
-                  <thead>
-                    <tr>
-                      <th>Evento</th>
-                      <th>Búsqueda / Producto</th>
-                      <th>Resultado</th>
-                      <th>Fecha</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {events.map((row) => (
-                      <tr key={row.id}>
-                        <td><EventBadge evento={row.evento} /></td>
-                        <td>
-                          <strong>
-                            {valueOrDash(
-                              row.busqueda_original ||
-                              row.codigo_andyfers ||
-                              row.cotizacion_folio
-                            )}
-                          </strong>
-                          <small>
-                            {valueOrDash(
-                              row.codigo_importacion ||
-                              row.familia ||
-                              row.marca_vehiculo
-                            )}
-                          </small>
-                        </td>
-                        <td>{valueOrDash(row.resultado_estado)}</td>
-                        <td>{formatDate(row.fecha_evento)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <article className="admin-panel">
+              <div className="admin-panel-head">
+                <div>
+                  <span>Catálogo</span>
+                  <h2>Búsquedas sin resultado</h2>
+                  <p>Qué está buscando el cliente y no encuentra.</p>
+                </div>
               </div>
-            </AnalyticsTable>
-          </>
-        )}
-      </div>
+
+              <div className="admin-analytics-list">
+                {busquedasSinResultado.length > 0 ? (
+                  busquedasSinResultado.map((item, index) => (
+                    <div key={`${getSearchText(item)}-${index}`}>
+                      <strong>{getSearchText(item)}</strong>
+                      <p>
+                        {item.origen || item.canal || "Búsqueda"} ·{" "}
+                        {formatDate(item.ultima_vez || item.fecha_evento || item.created_at)}
+                      </p>
+                      <span>
+                        {formatNumber(item.total || item.veces || item.eventos || 1)} intento(s)
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-empty-mini-os">
+                    No hay búsquedas sin resultado.
+                  </div>
+                )}
+              </div>
+            </article>
+          </section>
+
+          <section className="admin-panel">
+            <div className="admin-panel-head">
+              <div>
+                <span>Serie diaria</span>
+                <h2>Resumen por día</h2>
+                <p>Búsquedas, productos, cotizaciones y ventas por fecha.</p>
+              </div>
+
+              <button type="button" className="admin-secondary-button">
+                <Download size={15} />
+                Exportar próximamente
+              </button>
+            </div>
+
+            <div className="admin-table-wrap">
+              <table className="admin-table admin-analytics-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Búsquedas</th>
+                    <th>Sin resultado</th>
+                    <th>Consultados</th>
+                    <th>Cotizaciones</th>
+                    <th>Ventas</th>
+                    <th>Importe</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {resumenDiario.length > 0 ? (
+                    resumenDiario.map((item, index) => (
+                      <tr key={`${getDailyLabel(item)}-${index}`}>
+                        <td>
+                          <strong>{getDailyLabel(item)}</strong>
+                        </td>
+                        <td>
+                          {formatNumber(
+                            item.busquedas ||
+                              item.busquedas_con_resultado ||
+                              item.total_busquedas
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(
+                            item.busquedas_sin_resultado || item.sin_resultado
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(
+                            item.productos_consultados || item.consultados
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(
+                            item.cotizaciones_generadas || item.cotizaciones
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(item.ventas_pagadas || item.ventas || item.pagadas)}
+                        </td>
+                        <td>
+                          {formatMoney(item.importe_confirmado || item.importe || item.total)}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={7}>No hay resumen diario para este periodo.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
     </section>
   );
 }

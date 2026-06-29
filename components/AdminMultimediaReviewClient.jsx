@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -10,6 +11,8 @@ import {
   ListChecks,
   Loader2,
   RefreshCw,
+  MessageCircle,
+  ShoppingCart,
   Search,
   Trash2,
   UploadCloud,
@@ -290,7 +293,47 @@ export default function AdminMultimediaReviewClient() {
           </button>
         </div>
 
-        <AdminModuleNav />
+        <div className="admin-page-hero admin-surgical-hero admin-surgical-media">
+          <div>
+            <span>Multimedia catálogo</span>
+            <h1>Macheo multimedia</h1>
+            <p>
+              Carga reportes, relaciona imágenes con productos, genera pendientes
+              comerciales y mejora la calidad visual del catálogo público.
+            </p>
+          </div>
+
+          <div className="admin-page-hero-actions">
+            <Link href="/admin/pendientes-comerciales" className="admin-primary-button">
+              <FileSpreadsheet size={18} />
+              Pendientes
+            </Link>
+
+            <Link href="/admin/ventas" className="admin-secondary-button">
+              <ShoppingCart size={18} />
+              Ventas ecommerce
+            </Link>
+
+            <Link href="/admin/chat" className="admin-secondary-button">
+              <MessageCircle size={18} />
+              Chat clientes
+            </Link>
+
+            <button
+              type="button"
+              className="admin-refresh-button"
+              onClick={loadBase}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 size={18} className="admin-spin" />
+              ) : (
+                <RefreshCw size={18} />
+              )}
+              Actualizar
+            </button>
+          </div>
+        </div>
 
         {error && <div className="alert-error admin-feedback">{error}</div>}
         {message && <div className="alert-success admin-feedback">{message}</div>}

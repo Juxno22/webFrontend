@@ -1,37 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  LogOut, Search, ClipboardList, ArrowRight,
+  AlertTriangle,
+  ArrowRight,
   Car,
+  ClipboardList,
+  Clock3,
+  Loader2,
   Mail,
   MapPin,
+  MessageCircle,
   Phone,
+  RefreshCw,
+  Search,
+  ShoppingCart,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
 import {
-  clearAdminSession,
   getAdminCotizaciones,
-  getAdminUser,
-} from "../app/lib/adminApi";
-import { useAdminAuth } from "../app/hooks/useAdminAuth";
+  getAdminCotizacionesResumen,
+} from "@/app/lib/adminApi";
+import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 
 const ESTADOS = [
-  "",
-  "NUEVA",
-  "EN_REVISION",
-  "CONTACTADO",
-  "COTIZADO",
-  "EN_PROCESO",
-  "CERRADO",
-  "CANCELADO",
-  "REQUIERE_DATOS",
+  { value: "", label: "Todos" },
+  { value: "NUEVA", label: "Nueva" },
+  { value: "EN_REVISION", label: "En revisión" },
+  { value: "CONTACTADO", label: "Contactado" },
+  { value: "COTIZADO", label: "Cotizado" },
+  { value: "EN_PROCESO", label: "En proceso" },
+  { value: "REQUIERE_DATOS", label: "Requiere datos" },
+  { value: "CERRADO", label: "Cerrado" },
+  { value: "CANCELADO", label: "Cancelado" },
 ];
 
 function formatDate(value) {
-  if (!value) return "-";
+  if (!value) return "—";
 
   return new Intl.DateTimeFormat("es-MX", {
     dateStyle: "medium",
@@ -39,74 +44,105 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-export default function AdminCotizacionesClient() {
-  const router = useRouter();
+function formatNumber(value) {
+  return new Intl.NumberFormat("es-MX").format(Number(value || 0));
+}
 
-  const [user, setUser] = useState(null);
+function getEstadoLabel(estado) {
+  return ESTADOS.find((item) => item.value === estado)?.label || estado || "—";
+}
+
+function getVehicleLabel(item = {}) {
+  return [
+    item.marca_vehiculo,
+    item.modelo_vehiculo,
+    item.anio_vehiculo,
+    item.motor_vehiculo,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function getLocationLabel(item = {}) {
+  return [item.ciudad, item.estado_cliente].filter(Boolean).join(", ");
+}
+
+export default function AdminCotizacionesClient() {
+  const { checking } = useAdminAuth();
+
   const [cotizaciones, setCotizaciones] = useState([]);
+  const [summary, setSummary] = useState(null);
   const [pagination, setPagination] = useState(null);
 
   const [filters, setFilters] = useState({
     q: "",
     estado: "",
     page: 1,
+    limit: 20,
   });
 
   const [loading, setLoading] = useState(true);
+  const [silentLoading, setSilentLoading] = useState(false);
   const [error, setError] = useState("");
   const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
 
   const totalText = useMemo(() => {
-    if (!pagination) return "";
+    if (!pagination) return "0 cotizaciones";
 
-    return `${pagination.total} cotización${pagination.total === 1 ? "" : "es"}`;
+    return `${formatNumber(pagination.total)} cotización${
+      Number(pagination.total) === 1 ? "" : "es"
+    }`;
   }, [pagination]);
 
   const lastUpdatedText = useMemo(() => {
     if (!lastUpdatedAt) return "";
 
-    const seconds = Math.max(0, Math.floor((Date.now() - lastUpdatedAt.getTime()) / 1000));
+    const seconds = Math.max(
+      0,
+      Math.floor((Date.now() - lastUpdatedAt.getTime()) / 1000)
+    );
 
     return `Actualizado hace ${seconds} seg`;
   }, [lastUpdatedAt, cotizaciones]);
 
-  useEffect(() => {
-    const currentUser = getAdminUser();
-
-    if (!currentUser) {
-      router.push("/admin/login");
-      return;
-    }
-
-    setUser(currentUser);
-  }, [router]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    async function loadData({ silent = false } = {}) {
+  const loadData = useCallback(
+    async ({ silent = false, nextFilters = filters } = {}) => {
       try {
-        if (!silent) setLoading(true);
+        if (silent) {
+          setSilentLoading(true);
+        } else {
+          setLoading(true);
+        }
+
         setError("");
 
-        const response = await getAdminCotizaciones({
-          q: filters.q,
-          estado: filters.estado,
-          page: filters.page,
-          limit: 20,
-        });
+        const [listResponse, summaryResponse] = await Promise.all([
+          getAdminCotizaciones(nextFilters),
+          getAdminCotizacionesResumen(nextFilters),
+        ]);
 
-        setCotizaciones(response.data || []);
-        setPagination(response.pagination || null);
+        setCotizaciones(listResponse.data || []);
+        setPagination(listResponse.pagination || null);
+        setSummary(summaryResponse.data || null);
         setLastUpdatedAt(new Date());
       } catch (err) {
         setError(err.message || "No se pudieron cargar cotizaciones.");
       } finally {
-        if (!silent) setLoading(false);
+        setLoading(false);
+        setSilentLoading(false);
       }
-    }
+    },
+    [filters]
+  );
 
-    loadData();
+  useEffect(() => {
+    if (!checking) {
+      loadData();
+    }
+  }, [checking, loadData]);
+
+  useEffect(() => {
+    if (checking) return;
 
     const interval = window.setInterval(() => {
       if (!document.hidden) {
@@ -115,12 +151,7 @@ export default function AdminCotizacionesClient() {
     }, 60_000);
 
     return () => window.clearInterval(interval);
-  }, [user, filters]);
-
-  function logout() {
-    clearAdminSession();
-    router.push("/admin/login");
-  }
+  }, [checking, loadData]);
 
   function updateFilter(name, value) {
     setFilters((current) => ({
@@ -130,144 +161,274 @@ export default function AdminCotizacionesClient() {
     }));
   }
 
-  function goToPage(page) {
-    setFilters((current) => ({
-      ...current,
-      page,
-    }));
+  function submitFilters(event) {
+    event.preventDefault();
+
+    const nextFilters = {
+      ...filters,
+      page: 1,
+    };
+
+    setFilters(nextFilters);
+    loadData({ nextFilters });
   }
 
-  return (
-    <section className="admin-page">
-      <div className="container">
-        <div className="admin-topbar">
-          <div>
-            <span className="eyebrow">Panel de ventas</span>
-            <h1>Cotizaciones</h1>
-            <p>{user ? `${user.nombre} · ${user.rol}` : "Cargando usuario..."}</p>
-          </div>
+  function goToPage(page) {
+    const nextFilters = {
+      ...filters,
+      page,
+    };
 
-          <button className="admin-logout" onClick={logout}>
-            <LogOut size={17} />
-            Salir
+    setFilters(nextFilters);
+    loadData({ nextFilters });
+  }
+
+  if (checking) return null;
+
+  return (
+    <section className="admin-workspace admin-quotes-os">
+      <div className="admin-page-hero">
+        <div>
+          <span>Atención comercial</span>
+          <h1>Cotizaciones</h1>
+          <p>
+            Bandeja de solicitudes comerciales. Revisa clientes, productos,
+            vehículo, estado y prepara el flujo que después conectaremos con el
+            chat en tiempo real.
+          </p>
+        </div>
+
+        <div className="admin-page-hero-actions">
+          <Link href="/admin/chat" className="admin-primary-button">
+            <MessageCircle size={18} />
+            Chat clientes
+          </Link>
+
+          <Link href="/admin/ventas" className="admin-secondary-button">
+            <ShoppingCart size={18} />
+            Ventas ecommerce
+          </Link>
+
+          <button
+            type="button"
+            className="admin-refresh-button"
+            onClick={() => loadData()}
+            disabled={loading || silentLoading}
+          >
+            {loading || silentLoading ? (
+              <Loader2 size={18} className="admin-spin" />
+            ) : (
+              <RefreshCw size={18} />
+            )}
+            Actualizar
           </button>
         </div>
-        <AdminModuleNav />
+      </div>
 
-        <div className="admin-toolbar">
-          <div className="admin-search">
-            <Search size={18} />
+      <div className="admin-kpi-grid admin-quotes-kpi-grid">
+        <article className="admin-kpi-card">
+          <ClipboardList size={22} />
+          <span>Total</span>
+          <strong>{formatNumber(summary?.total)}</strong>
+          <small>{totalText}</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <AlertTriangle size={22} />
+          <span>Nuevas</span>
+          <strong>{formatNumber(summary?.nuevas)}</strong>
+          <small>Sin revisar</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Clock3 size={22} />
+          <span>Pendientes</span>
+          <strong>{formatNumber(summary?.pendientes)}</strong>
+          <small>Requieren seguimiento</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <MessageCircle size={22} />
+          <span>Nuevas hoy</span>
+          <strong>{formatNumber(summary?.nuevas_hoy)}</strong>
+          <small>Entrantes del día</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <ClipboardList size={22} />
+          <span>Cotizadas</span>
+          <strong>{formatNumber(summary?.cotizado)}</strong>
+          <small>Con respuesta comercial</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <ArrowRight size={22} />
+          <span>En proceso</span>
+          <strong>{formatNumber(summary?.en_proceso)}</strong>
+          <small>Seguimiento activo</small>
+        </article>
+      </div>
+
+      <form className="admin-quotes-filters" onSubmit={submitFilters}>
+        <label>
+          Buscar
+          <div>
+            <Search size={16} />
             <input
               type="search"
               value={filters.q}
               onChange={(event) => updateFilter("q", event.target.value)}
-              placeholder="Buscar por folio, cliente, WhatsApp..."
+              placeholder="Folio, cliente, WhatsApp, correo o vehículo"
             />
           </div>
+        </label>
 
+        <label>
+          Estado
           <select
             value={filters.estado}
             onChange={(event) => updateFilter("estado", event.target.value)}
           >
             {ESTADOS.map((estado) => (
-              <option key={estado || "TODOS"} value={estado}>
-                {estado || "Todos los estados"}
+              <option key={estado.value || "TODOS"} value={estado.value}>
+                {estado.label}
               </option>
             ))}
           </select>
+        </label>
 
-          <div className="admin-toolbar-summary">
-            <strong>{totalText}</strong>
-            {lastUpdatedText && <small>{lastUpdatedText}</small>}
+        <button className="admin-primary-button" type="submit" disabled={loading}>
+          {loading ? <Loader2 size={17} className="admin-spin" /> : null}
+          Filtrar
+        </button>
+
+        <div className="admin-quotes-filter-summary">
+          <strong>{totalText}</strong>
+          {lastUpdatedText && <small>{lastUpdatedText}</small>}
+        </div>
+      </form>
+
+      {error && (
+        <div className="admin-alert">
+          <AlertTriangle size={18} />
+          {error}
+        </div>
+      )}
+
+      <section className="admin-panel">
+        <div className="admin-panel-head">
+          <div>
+            <span>Bandeja comercial</span>
+            <h2>Solicitudes de cotización</h2>
+            <p>
+              Las cotizaciones nuevas se destacan visualmente para que ventas las
+              atienda primero.
+            </p>
           </div>
+
+          <Link href="/admin/chat">
+            Ir al chat
+            <ArrowRight size={15} />
+          </Link>
         </div>
 
-        {error && <div className="alert-error">{error}</div>}
+        {loading ? (
+          <div className="admin-loading-panel">
+            <Loader2 size={34} className="admin-spin" />
+            <strong>Cargando cotizaciones...</strong>
+          </div>
+        ) : cotizaciones.length > 0 ? (
+          <div className="admin-quotes-list">
+            {cotizaciones.map((item) => {
+              const vehicle = getVehicleLabel(item);
+              const location = getLocationLabel(item);
+              const isNueva = item.estado === "NUEVA";
 
-        <div className="admin-list">
-          {loading ? (
-            <div className="admin-empty">Cargando cotizaciones...</div>
-          ) : cotizaciones.length > 0 ? (
-            cotizaciones.map((item) => (
-              <Link
-                href={`/admin/cotizaciones/${encodeURIComponent(item.folio)}`}
-                className={`admin-quote-card admin-quote-card-expanded ${item.estado === "NUEVA" ? "is-nueva" : ""}`}
-                key={item.id}
-              >
-                <div className="admin-quote-icon">
-                  <ClipboardList size={28} />
-                </div>
-
-                <div className="admin-quote-main">
-                  <div className="admin-quote-head">
-                    <strong>{item.folio}</strong>
-
-                    <span className={`quote-status status-${item.estado}`}>
-                      {item.estado}
-                    </span>
+              return (
+                <Link
+                  href={`/admin/cotizaciones/${encodeURIComponent(item.folio)}`}
+                  className={`admin-quote-card-os ${
+                    isNueva ? "is-nueva" : ""
+                  }`}
+                  key={item.id}
+                >
+                  <div className="admin-quote-card-icon">
+                    <ClipboardList size={24} />
                   </div>
 
-                  <h3>{item.nombre_cliente}</h3>
+                  <div className="admin-quote-card-main">
+                    <div className="admin-quote-card-head">
+                      <div>
+                        <strong>{item.folio}</strong>
+                        <small>{formatDate(item.created_at)}</small>
+                      </div>
 
-                  <div className="admin-quote-detail-grid">
-                    <span>
-                      <Phone size={15} />
-                      {item.whatsapp || "Sin WhatsApp"}
-                    </span>
+                      <mark
+                        className={`admin-status-pill status-${item.estado}`}
+                      >
+                        {getEstadoLabel(item.estado)}
+                      </mark>
+                    </div>
 
-                    <span>
-                      <ClipboardList size={15} />
-                      {item.total_items} producto
-                      {Number(item.total_items) === 1 ? "" : "s"} · {item.total_piezas} pieza
-                      {Number(item.total_piezas) === 1 ? "" : "s"}
-                    </span>
+                    <h3>{item.nombre_cliente}</h3>
 
-                    {item.correo && (
+                    <div className="admin-quote-card-meta">
                       <span>
-                        <Mail size={15} />
-                        {item.correo}
+                        <Phone size={15} />
+                        {item.whatsapp || "Sin WhatsApp"}
                       </span>
-                    )}
 
-                    {(item.ciudad || item.estado_cliente) && (
                       <span>
-                        <MapPin size={15} />
-                        {[item.ciudad, item.estado_cliente].filter(Boolean).join(", ")}
+                        <ClipboardList size={15} />
+                        {formatNumber(item.total_items)} producto
+                        {Number(item.total_items) === 1 ? "" : "s"} ·{" "}
+                        {formatNumber(item.total_piezas)} pieza
+                        {Number(item.total_piezas) === 1 ? "" : "s"}
                       </span>
-                    )}
 
-                    {(item.marca_vehiculo ||
-                      item.modelo_vehiculo ||
-                      item.anio_vehiculo ||
-                      item.motor_vehiculo) && (
-                        <span className="admin-quote-vehicle">
-                          <Car size={15} />
-                          {[item.marca_vehiculo, item.modelo_vehiculo, item.anio_vehiculo, item.motor_vehiculo]
-                            .filter(Boolean)
-                            .join(" ")}
+                      {item.correo && (
+                        <span>
+                          <Mail size={15} />
+                          {item.correo}
                         </span>
                       )}
-                  </div>
-                </div>
 
-                <div className="admin-quote-side">
-                  <div className="admin-quote-date">{formatDate(item.created_at)}</div>
+                      {location && (
+                        <span>
+                          <MapPin size={15} />
+                          {location}
+                        </span>
+                      )}
 
-                  <div className="admin-quote-view">
-                    Ver detalle
-                    <ArrowRight size={16} />
+                      {vehicle && (
+                        <span className="admin-quote-vehicle">
+                          <Car size={15} />
+                          {vehicle}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="admin-empty">No hay cotizaciones con esos filtros.</div>
-          )}
-        </div>
+
+                  <div className="admin-quote-card-side">
+                    {isNueva && <span className="admin-quote-new-dot" />}
+                    <strong>Ver detalle</strong>
+                    <ArrowRight size={17} />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="admin-loading-panel">
+            <ClipboardList size={34} />
+            <strong>No hay cotizaciones con esos filtros.</strong>
+          </div>
+        )}
 
         {pagination && pagination.total_pages > 1 && (
-          <div className="pagination">
+          <div className="admin-sales-pagination">
             <button
+              type="button"
               disabled={pagination.page <= 1}
               onClick={() => goToPage(pagination.page - 1)}
             >
@@ -279,6 +440,7 @@ export default function AdminCotizacionesClient() {
             </span>
 
             <button
+              type="button"
               disabled={pagination.page >= pagination.total_pages}
               onClick={() => goToPage(pagination.page + 1)}
             >
@@ -286,7 +448,7 @@ export default function AdminCotizacionesClient() {
             </button>
           </div>
         )}
-      </div>
+      </section>
     </section>
   );
 }

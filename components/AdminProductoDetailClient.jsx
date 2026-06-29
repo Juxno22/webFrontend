@@ -1,26 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Boxes,
+  Car,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Globe2,
+  Image,
+  Loader2,
+  PackageSearch,
+  Save,
+  ShieldCheck,
+  ShoppingCart,
+  Star,
+  Trash2,
+  WandSparkles,
+} from "lucide-react";
 import {
   deleteAdminProducto,
   getAdminProducto,
   getAdminProductoCategorias,
-  getAdminUser,
   updateAdminProducto,
-} from "../app/lib/adminApi";
-import AdminModuleNav from "@/components/AdminModuleNav";
+} from "@/app/lib/adminApi";
+import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 import AdminProductMediaManager from "@/components/AdminProductMediaManager";
-import AdminProductOpsManager from "./AdminProductOpsManager";
+import AdminProductOpsManager from "@/components/AdminProductOpsManager";
 import AdminProductoFormFields, {
   buildProductoPayload,
   normalizeProductoToForm,
 } from "@/components/AdminProductoFormFields";
 
+function formatNumber(value) {
+  return new Intl.NumberFormat("es-MX").format(Number(value || 0));
+}
+
+function boolNumber(value) {
+  return Number(value) === 1;
+}
+
+function getProductCode(producto = {}) {
+  return (
+    producto.codigo_andyfers ||
+    producto.codigo_importacion ||
+    `Producto #${producto.id}`
+  );
+}
+
+function getRevisionLabel(value) {
+  switch (value) {
+    case "OK":
+      return "Correcto";
+    case "SIN_CODIGO_VALIDO":
+      return "Sin código válido";
+    case "SIN_DESCRIPCION":
+      return "Sin descripción";
+    case "SIN_FAMILIA":
+      return "Sin familia";
+    case "SIN_ARMADORA":
+      return "Sin armadora";
+    default:
+      return value || "Sin revisión";
+  }
+}
+
+function showToast(message) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent("andyfers_toast", {
+      detail: { message },
+    })
+  );
+}
+
 export default function AdminProductoDetailClient({ id }) {
-  const router = useRouter();
+  const { checking } = useAdminAuth();
 
   const [producto, setProducto] = useState(null);
   const [categorias, setCategorias] = useState([]);
@@ -30,6 +89,18 @@ export default function AdminProductoDetailClient({ id }) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
+
+  const productCode = useMemo(() => getProductCode(producto || {}), [producto]);
+
+  const publicProductHref = useMemo(() => {
+    if (!producto) return null;
+
+    const code = producto.codigo_andyfers || producto.codigo_importacion;
+
+    if (!code) return null;
+
+    return `/producto/${encodeURIComponent(code)}`;
+  }, [producto]);
 
   async function loadProduct() {
     try {
@@ -54,15 +125,11 @@ export default function AdminProductoDetailClient({ id }) {
   }
 
   useEffect(() => {
-    const user = getAdminUser();
-
-    if (!user) {
-      router.push("/admin/login");
-      return;
+    if (!checking) {
+      loadProduct();
     }
-
-    loadProduct();
-  }, [id, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checking, id]);
 
   function updateForm(name, value) {
     setForm((current) => ({
@@ -82,13 +149,7 @@ export default function AdminProductoDetailClient({ id }) {
 
       await updateAdminProducto(id, payload);
 
-      window.dispatchEvent(
-        new CustomEvent("andyfers_toast", {
-          detail: {
-            message: "Producto actualizado correctamente.",
-          },
-        })
-      );
+      showToast("Producto actualizado correctamente.");
 
       await loadProduct();
     } catch (err) {
@@ -111,15 +172,9 @@ export default function AdminProductoDetailClient({ id }) {
 
       await deleteAdminProducto(id);
 
-      window.dispatchEvent(
-        new CustomEvent("andyfers_toast", {
-          detail: {
-            message: "Producto desactivado correctamente.",
-          },
-        })
-      );
+      showToast("Producto desactivado correctamente.");
 
-      router.push("/admin/productos");
+      window.location.href = "/admin/productos";
     } catch (err) {
       setError(err.message || "No se pudo desactivar el producto.");
     } finally {
@@ -127,11 +182,12 @@ export default function AdminProductoDetailClient({ id }) {
     }
   }
 
-  if (loading) {
+  if (checking || loading) {
     return (
-      <section className="admin-page">
-        <div className="container">
-          <div className="admin-empty">Cargando producto...</div>
+      <section className="admin-workspace">
+        <div className="admin-loading-panel">
+          <Loader2 size={34} className="admin-spin" />
+          <strong>Cargando producto...</strong>
         </div>
       </section>
     );
@@ -139,79 +195,137 @@ export default function AdminProductoDetailClient({ id }) {
 
   if (error && !producto) {
     return (
-      <section className="admin-page">
-        <div className="container">
-          <div className="admin-empty">
-            <h1>No se pudo cargar</h1>
-            <p>{error}</p>
-            <Link href="/admin/productos" className="btn-primary">
-              Volver
-            </Link>
-          </div>
+      <section className="admin-workspace">
+        <div className="admin-loading-panel">
+          <AlertTriangle size={34} />
+          <strong>No se pudo cargar el producto.</strong>
+          <p>{error}</p>
+
+          <Link href="/admin/productos" className="admin-primary-button">
+            Volver a productos
+          </Link>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="admin-page">
-      <div className="container">
-        <AdminModuleNav />
-
-        <Link href="/admin/productos" className="admin-back">
-          <ArrowLeft size={17} />
-          Volver a productos
-        </Link>
-
-        <div className="admin-detail-header">
-          <div>
-            <span className="eyebrow">Editar producto</span>
-            <h1>
-              {producto.codigo_andyfers ||
-                producto.codigo_importacion ||
-                `Producto #${producto.id}`}
-            </h1>
-            <p>
-              {producto.categoria_nombre || "Sin categoría"} ·{" "}
-              {producto.estado_revision || "SIN_REVISION"}
-            </p>
-          </div>
-
-          <div className="admin-detail-status-stack">
-            <span
-              className={`admin-product-status status-${producto.estado_revision}`}
-            >
-              {producto.estado_revision}
-            </span>
-
-            <span
-              className={`admin-product-web ${Number(producto.visible_publico) === 1 ? "visible" : "hidden"
-                }`}
-            >
-              {Number(producto.visible_publico) === 1
-                ? "Visible público"
-                : `No visible: ${producto.motivo_visibilidad || "NO_VISIBLE"}`}
-            </span>
-          </div>
+    <section className="admin-workspace admin-product-detail-os">
+      <div className="admin-page-hero">
+        <div>
+          <span>Edición de producto</span>
+          <h1>{productCode}</h1>
+          <p>
+            Mantén datos comerciales, visibilidad web, multimedia, cruces,
+            atributos y aplicaciones vehiculares desde una sola pantalla.
+          </p>
         </div>
 
-        {error && <div className="alert-error">{error}</div>}
+        <div className="admin-page-hero-actions">
+          <Link href="/admin/productos" className="admin-secondary-button">
+            <ArrowLeft size={18} />
+            Volver
+          </Link>
 
-        <div className="admin-product-edit-layout">
-          <form className="admin-panel admin-product-form" onSubmit={saveProduct}>
-            <div className="admin-panel-title-row">
+          <Link href="/admin/ecommerce" className="admin-secondary-button">
+            <ShoppingCart size={18} />
+            Inventario web
+          </Link>
+
+          {publicProductHref && (
+            <Link
+              href={publicProductHref}
+              target="_blank"
+              className="admin-primary-button"
+            >
+              <Eye size={18} />
+              Ver público
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {error && (
+        <div className="admin-alert">
+          <AlertTriangle size={18} />
+          {error}
+        </div>
+      )}
+
+      <section className="admin-product-detail-summary">
+        <article className="admin-kpi-card">
+          <ShieldCheck size={22} />
+          <span>Revisión</span>
+          <strong>{getRevisionLabel(producto.estado_revision)}</strong>
+          <small>{producto.estado_revision || "SIN_REVISION"}</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          {boolNumber(producto.visible_publico) ? (
+            <Eye size={22} />
+          ) : (
+            <EyeOff size={22} />
+          )}
+          <span>Visibilidad pública</span>
+          <strong>
+            {boolNumber(producto.visible_publico) ? "Visible" : "No visible"}
+          </strong>
+          <small>{producto.motivo_visibilidad || "SIN_ESTADO"}</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Image size={22} />
+          <span>Multimedia</span>
+          <strong>{formatNumber(producto.multimedia?.length)}</strong>
+          <small>Imágenes registradas</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Car size={22} />
+          <span>Aplicaciones</span>
+          <strong>{formatNumber(producto.aplicaciones?.length)}</strong>
+          <small>Vehículos relacionados</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <PackageSearch size={22} />
+          <span>Cruces</span>
+          <strong>{formatNumber(producto.cruces?.length)}</strong>
+          <small>Equivalencias</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Boxes size={22} />
+          <span>Atributos</span>
+          <strong>{formatNumber(producto.atributos?.length)}</strong>
+          <small>Datos técnicos</small>
+        </article>
+      </section>
+
+      <div className="admin-product-detail-layout-os">
+        <main className="admin-product-detail-main-os">
+          <form className="admin-panel admin-product-edit-form-os" onSubmit={saveProduct}>
+            <div className="admin-panel-head">
               <div>
-                <span className="eyebrow">Mantenimiento</span>
+                <span>Mantenimiento</span>
                 <h2>Datos principales</h2>
+                <p>
+                  Información base que se usa en catálogo público, búsquedas,
+                  cotizaciones y ecommerce.
+                </p>
               </div>
 
               <button
                 type="button"
-                className="admin-small-action danger"
+                className="admin-danger-button"
                 onClick={handleDeleteProduct}
                 disabled={deleting}
               >
-                <Trash2 size={16} />
+                {deleting ? (
+                  <Loader2 size={16} className="admin-spin" />
+                ) : (
+                  <Trash2 size={16} />
+                )}
                 {deleting ? "Desactivando..." : "Desactivar"}
               </button>
             </div>
@@ -222,72 +336,132 @@ export default function AdminProductoDetailClient({ id }) {
               updateForm={updateForm}
             />
 
-            <button className="btn-primary full" disabled={saving}>
-              <Save size={17} />
+            <button className="admin-primary-button admin-product-save-os" disabled={saving}>
+              {saving ? (
+                <Loader2 size={17} className="admin-spin" />
+              ) : (
+                <Save size={17} />
+              )}
               {saving ? "Guardando..." : "Guardar cambios"}
             </button>
           </form>
 
-          <aside className="admin-detail-side">
-            <article className="admin-panel">
-              <h2>Resumen operativo</h2>
+          <AdminProductOpsManager
+            productoId={producto.id}
+            atributos={producto.atributos || []}
+            cruces={producto.cruces || []}
+            aplicaciones={producto.aplicaciones || []}
+            onRefresh={loadProduct}
+          />
 
-              <div className="admin-mini-list">
-                <div>
-                  <strong>{producto.atributos?.length || 0}</strong>
-                  <span>Atributos registrados</span>
-                </div>
+          <AdminProductMediaManager
+            productoId={producto.id}
+            multimedia={producto.multimedia || []}
+            onRefresh={loadProduct}
+          />
+        </main>
 
-                <div>
-                  <strong>{producto.cruces?.length || 0}</strong>
-                  <span>Cruces registrados</span>
-                </div>
-
-                <div>
-                  <strong>{producto.aplicaciones?.length || 0}</strong>
-                  <span>Aplicaciones vehiculares</span>
-                </div>
-
-                <div>
-                  <strong>{producto.multimedia?.length || 0}</strong>
-                  <span>Multimedia registrada</span>
-                </div>
+        <aside className="admin-product-detail-side-os">
+          <article className="admin-panel">
+            <div className="admin-panel-head">
+              <div>
+                <span>Estado web</span>
+                <h2>Publicación</h2>
+                <p>Resumen rápido de cómo se comporta este producto en web.</p>
               </div>
-            </article>
+            </div>
 
-            <article className="admin-panel">
-              <h2>Visibilidad pública</h2>
-
-              <div className="admin-mini-list">
-                <div>
-                  <strong>
-                    {Number(producto.visible_publico) === 1 ? "Visible" : "No visible"}
-                  </strong>
-                  <span>{producto.motivo_visibilidad || "SIN_ESTADO"}</span>
-                </div>
-
-                <div>
-                  <strong>{producto.estado_revision || "SIN_REVISION"}</strong>
-                  <span>Estado de revisión</span>
-                </div>
+            <div className="admin-product-state-list-os">
+              <div>
+                <Globe2 size={18} />
+                <span>Activo web</span>
+                <strong>{boolNumber(producto.activo_web) ? "Sí" : "No"}</strong>
               </div>
-            </article>
-          </aside>
-        </div>
 
-        <AdminProductOpsManager
-          productoId={producto.id}
-          atributos={producto.atributos || []}
-          cruces={producto.cruces || []}
-          aplicaciones={producto.aplicaciones || []}
-          onRefresh={loadProduct}
-        />
+              <div>
+                <Eye size={18} />
+                <span>Visible catálogo</span>
+                <strong>
+                  {boolNumber(producto.visible_catalogo) ? "Sí" : "No"}
+                </strong>
+              </div>
 
-        <AdminProductMediaManager
-          productoId={producto.id}
-          multimedia={producto.multimedia || []}
-          onRefresh={loadProduct}
-        />
+              <div>
+                <Star size={18} />
+                <span>Destacado</span>
+                <strong>{boolNumber(producto.destacado) ? "Sí" : "No"}</strong>
+              </div>
+
+              <div>
+                <WandSparkles size={18} />
+                <span>Nuevo web</span>
+                <strong>{boolNumber(producto.nuevo_web) ? "Sí" : "No"}</strong>
+              </div>
+
+              <div>
+                <CheckCircle2 size={18} />
+                <span>Activo interno</span>
+                <strong>{boolNumber(producto.activo) ? "Sí" : "No"}</strong>
+              </div>
+            </div>
+          </article>
+
+          <article className="admin-panel">
+            <div className="admin-panel-head">
+              <div>
+                <span>Producto</span>
+                <h2>Resumen comercial</h2>
+              </div>
+            </div>
+
+            <div className="admin-product-commercial-os">
+              <div>
+                <span>Código Andyfers</span>
+                <strong>{producto.codigo_andyfers || "—"}</strong>
+              </div>
+
+              <div>
+                <span>Código importación</span>
+                <strong>{producto.codigo_importacion || "—"}</strong>
+              </div>
+
+              <div>
+                <span>Categoría</span>
+                <strong>{producto.categoria_nombre || "—"}</strong>
+              </div>
+
+              <div>
+                <span>Familia</span>
+                <strong>{producto.familia || "—"}</strong>
+              </div>
+
+              <div>
+                <span>Armadora</span>
+                <strong>{producto.armadora || "—"}</strong>
+              </div>
+
+              <div>
+                <span>Marca producto</span>
+                <strong>{producto.marca_producto || "—"}</strong>
+              </div>
+            </div>
+          </article>
+
+          <article className="admin-panel admin-product-help-os">
+            <WandSparkles size={26} />
+            <span>Flujo recomendado</span>
+            <h2>Antes de venderlo</h2>
+            <p>
+              Confirma código, descripción, multimedia, activo web, visible en
+              catálogo y después carga existencia/precio web desde Inventario
+              ecommerce.
+            </p>
+
+            <Link href="/admin/ecommerce" className="admin-secondary-button">
+              Ir a inventario web
+            </Link>
+          </article>
+        </aside>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -13,6 +14,7 @@ import {
   FileWarning,
   ImageOff,
   Loader2,
+  MessageCircle,
   PackageCheck,
   RefreshCw,
   Search,
@@ -23,7 +25,6 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
 import AdminExportMenu from "@/components/AdminExportMenu";
 import { getAdminUser } from "@/app/lib/adminApi";
 import {
@@ -482,7 +483,47 @@ export default function AdminCatalogQualityClient() {
           </div>
         </div>
 
-        <AdminModuleNav />
+        <div className="admin-page-hero admin-surgical-hero admin-surgical-quality">
+          <div>
+            <span>Control de calidad</span>
+            <h1>Calidad del catálogo</h1>
+            <p>
+              Revisa productos incompletos, visibilidad pública, imágenes, cruces,
+              aplicaciones, stock, precio web y oportunidades comerciales detectadas.
+            </p>
+          </div>
+
+          <div className="admin-page-hero-actions">
+            <Link href="/admin/productos" className="admin-primary-button">
+              <Boxes size={18} />
+              Productos
+            </Link>
+
+            <Link href="/admin/ecommerce" className="admin-secondary-button">
+              <ShoppingCart size={18} />
+              Inventario web
+            </Link>
+
+            <Link href="/admin/chat" className="admin-secondary-button">
+              <MessageCircle size={18} />
+              Chat clientes
+            </Link>
+
+            <button
+              type="button"
+              className="admin-refresh-button"
+              onClick={refreshAll}
+              disabled={loading || productsLoading || opportunitiesLoading}
+            >
+              {loading || productsLoading || opportunitiesLoading ? (
+                <Loader2 size={18} className="admin-spin" />
+              ) : (
+                <RefreshCw size={18} />
+              )}
+              Actualizar
+            </button>
+          </div>
+        </div>
 
         {error && <div className="alert-error admin-feedback">{error}</div>}
         {message && <div className="alert-success admin-feedback">{message}</div>}
@@ -864,27 +905,27 @@ function CatalogClosePanel({ cierre = emptyCierre(), onApplyIssue }) {
       </article>
 
       <div className="admin-quality-close-metrics">
-        <button type="button" onClick={() => onApplyIssue("")}> 
+        <button type="button" onClick={() => onApplyIssue("")}>
           <span>Publicados web</span>
           <strong>{formatNumber(kpis.publicados_web)}</strong>
         </button>
-        <button type="button" onClick={() => onApplyIssue("VISIBLE_INCOMPLETO")}> 
+        <button type="button" onClick={() => onApplyIssue("VISIBLE_INCOMPLETO")}>
           <span>Visibles incompletos</span>
           <strong>{formatNumber(kpis.visibles_incompletos)}</strong>
         </button>
-        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN")}> 
+        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN")}>
           <span>Sin imagen</span>
           <strong>{formatNumber(kpis.sin_imagen)}</strong>
         </button>
-        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN_PRINCIPAL")}> 
+        <button type="button" onClick={() => onApplyIssue("SIN_IMAGEN_PRINCIPAL")}>
           <span>Sin principal</span>
           <strong>{formatNumber(kpis.sin_imagen_principal)}</strong>
         </button>
-        <button type="button" onClick={() => onApplyIssue("COTIZADO_SIN_IMAGEN")}> 
+        <button type="button" onClick={() => onApplyIssue("COTIZADO_SIN_IMAGEN")}>
           <span>Cotizados sin imagen</span>
           <strong>{formatNumber(kpis.cotizados_sin_imagen)}</strong>
         </button>
-        <button type="button" onClick={() => onApplyIssue("CODIGO_SOSPECHOSO")}> 
+        <button type="button" onClick={() => onApplyIssue("CODIGO_SOSPECHOSO")}>
           <span>Código sospechoso</span>
           <strong>{formatNumber(kpis.codigo_sospechoso)}</strong>
         </button>

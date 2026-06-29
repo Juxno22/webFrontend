@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -15,12 +16,13 @@ import {
   PlayCircle,
   RefreshCw,
   Rocket,
+  MessageCircle,
+  ShoppingCart,
   Server,
   ShieldAlert,
   Trash2,
   XCircle,
 } from "lucide-react";
-import AdminModuleNav from "./AdminModuleNav";
 import {
   cleanAdminProductionBackups,
   createAdminProductionBackup,
@@ -353,9 +355,9 @@ export default function AdminProductionClient() {
   return (
     <section className="admin-page admin-production-page">
       <div className="container">
-        <div className="admin-detail-header admin-production-hero">
+        <div className="admin-page-hero admin-surgical-hero admin-surgical-production">
           <div>
-            <span className="eyebrow">Preparación producción</span>
+            <span>Producción</span>
             <h1>Producción, respaldos y despliegues</h1>
             <p>
               Valida variables, base de datos, tablas críticas, respaldos y checklist
@@ -363,13 +365,37 @@ export default function AdminProductionClient() {
             </p>
           </div>
 
-          <div className={`admin-production-status ${summary?.status || "LOADING"}`}>
-            <Server size={22} />
-            <span>{loading ? "Cargando" : statusLabel(summary?.status)}</span>
+          <div className="admin-page-hero-actions">
+            <div className={`admin-production-status ${summary?.status || "LOADING"}`}>
+              <Server size={22} />
+              <span>{loading ? "Cargando" : statusLabel(summary?.status)}</span>
+            </div>
+
+            <Link href="/admin/ventas" className="admin-primary-button">
+              <ShoppingCart size={18} />
+              Ventas ecommerce
+            </Link>
+
+            <Link href="/admin/chat" className="admin-secondary-button">
+              <MessageCircle size={18} />
+              Chat clientes
+            </Link>
+
+            <button
+              className="admin-refresh-button"
+              type="button"
+              onClick={() => loadData()}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 size={17} className="admin-spin" />
+              ) : (
+                <RefreshCw size={17} />
+              )}
+              Recargar
+            </button>
           </div>
         </div>
-
-        <AdminModuleNav />
 
         {error ? <div className="admin-alert danger">{error}</div> : null}
         {message ? <div className="admin-alert success">{message}</div> : null}

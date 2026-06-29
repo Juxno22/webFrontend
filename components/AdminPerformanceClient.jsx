@@ -10,10 +10,12 @@ import {
   Gauge,
   MonitorSmartphone,
   RefreshCw,
+  MessageCircle,
+  ShoppingCart,
+  Loader2,
   Timer,
   TrendingDown,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
 import { clearAdminSession, getAdminUser } from "@/app/lib/adminApi";
 import {
   getAdminPerformanceEventos,
@@ -188,7 +190,42 @@ export default function AdminPerformanceClient() {
           </button>
         </div>
 
-        <AdminModuleNav />
+        <div className="admin-page-hero admin-surgical-hero admin-surgical-performance">
+          <div>
+            <span>Experiencia pública</span>
+            <h1>Performance pública</h1>
+            <p>
+              Monitorea velocidad, Core Web Vitals, páginas lentas, dispositivos,
+              navegación pública y puntos que afectan conversión ecommerce.
+            </p>
+          </div>
+
+          <div className="admin-page-hero-actions">
+            <Link href="/admin/ventas" className="admin-primary-button">
+              <ShoppingCart size={18} />
+              Ventas ecommerce
+            </Link>
+
+            <Link href="/admin/chat" className="admin-secondary-button">
+              <MessageCircle size={18} />
+              Chat clientes
+            </Link>
+
+            <button
+              type="button"
+              className="admin-refresh-button"
+              onClick={loadData}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 size={18} className="admin-spin" />
+              ) : (
+                <RefreshCw size={18} />
+              )}
+              Actualizar
+            </button>
+          </div>
+        </div>
 
         <div className="admin-performance-toolbar">
           <div className="admin-filter-group">

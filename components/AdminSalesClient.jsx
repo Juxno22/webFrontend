@@ -1,21 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
+  ArrowRight,
   CheckCircle2,
   Clock3,
   CreditCard,
   Eye,
   Loader2,
+  MessageCircle,
   PackageCheck,
   RefreshCw,
   Search,
+  ShoppingCart,
   Truck,
   X,
   XCircle,
 } from "lucide-react";
-import AdminModuleNav from "@/components/AdminModuleNav";
 import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 import {
   addAdminVentaNota,
@@ -59,12 +62,11 @@ function formatDate(value) {
 
 function getEstadoLabel(estado) {
   const found = ESTADOS.find((item) => item.value === estado);
-
   return found?.label || estado || "—";
 }
 
 function getStatusClass(estado) {
-  return `status-${String(estado || "").toLowerCase()}`;
+  return `status-${String(estado || "")}`;
 }
 
 function getPrimaryIcon(estado) {
@@ -154,6 +156,7 @@ export default function AdminSalesClient() {
     if (!checking) {
       loadData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checking]);
 
   function updateFilter(name, value) {
@@ -221,265 +224,281 @@ export default function AdminSalesClient() {
   if (checking) return null;
 
   return (
-    <section className="admin-page admin-sales-page">
-      <div className="container">
-        <div className="admin-topbar">
-          <div>
-            <span className="eyebrow">Ventas web</span>
-            <h1>Ventas entrantes</h1>
-            <p>
-              Monitorea pagos de Mercado Pago, pedidos pagados y preparación de
-              entregas.
-            </p>
-          </div>
+    <section className="admin-workspace admin-sales-os">
+      <div className="admin-page-hero">
+        <div>
+          <span>Prioridad ecommerce</span>
+          <h1>Ventas Mercado Pago</h1>
+          <p>
+            Control operativo de compras web, pagos confirmados, preparación,
+            entregas, trazabilidad de Mercado Pago y descuento de inventario.
+          </p>
+        </div>
+
+        <div className="admin-page-hero-actions">
+          <Link href="/admin/operacion" className="admin-secondary-button">
+            <ArrowRight size={18} />
+            Operación diaria
+          </Link>
+
+          <Link href="/admin/chat" className="admin-secondary-button">
+            <MessageCircle size={18} />
+            Chat clientes
+          </Link>
 
           <button
-            className="admin-logout"
+            className="admin-refresh-button"
             type="button"
             onClick={() => loadData()}
             disabled={loading}
           >
-            <RefreshCw size={17} />
+            {loading ? <Loader2 size={18} className="admin-spin" /> : <RefreshCw size={18} />}
             Actualizar
           </button>
         </div>
+      </div>
 
-        <AdminModuleNav />
+      {error && (
+        <div className="admin-alert">
+          <AlertTriangle size={18} />
+          {error}
+        </div>
+      )}
 
-        {error && (
-          <div className="admin-sales-alert">
-            <AlertTriangle size={18} />
-            {error}
+      <div className="admin-kpi-grid admin-sales-kpi-grid">
+        <article className="admin-kpi-card">
+          <CreditCard size={22} />
+          <span>Total ventas</span>
+          <strong>{formatNumber(summary?.total)}</strong>
+          <small>Registros creados</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Clock3 size={22} />
+          <span>Pendientes pago</span>
+          <strong>{formatNumber(summary?.pendiente_pago)}</strong>
+          <small>Esperando Mercado Pago</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <CheckCircle2 size={22} />
+          <span>Pagadas</span>
+          <strong>{formatNumber(summary?.pagadas)}</strong>
+          <small>Listas para preparar</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <PackageCheck size={22} />
+          <span>Requieren atención</span>
+          <strong>{formatNumber(summary?.requieren_atencion)}</strong>
+          <small>Operación pendiente</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <Truck size={22} />
+          <span>Entregadas</span>
+          <strong>{formatNumber(summary?.entregadas)}</strong>
+          <small>Pedidos cerrados</small>
+        </article>
+
+        <article className="admin-kpi-card">
+          <ShoppingCart size={22} />
+          <span>Importe confirmado</span>
+          <strong>{formatMoney(summary?.importe_confirmado)}</strong>
+          <small>Pagos aprobados</small>
+        </article>
+      </div>
+
+      <form className="admin-sales-filters" onSubmit={submitFilters}>
+        <label>
+          Buscar
+          <div>
+            <Search size={16} />
+            <input
+              type="search"
+              value={filters.q}
+              onChange={(event) => updateFilter("q", event.target.value)}
+              placeholder="Folio, cliente, WhatsApp, pago o producto"
+            />
           </div>
-        )}
+        </label>
 
-        <div className="admin-sales-kpis">
-          <article>
-            <CreditCard size={22} />
-            <span>Total ventas</span>
-            <strong>{formatNumber(summary?.total)}</strong>
-          </article>
+        <label>
+          Estado
+          <select
+            value={filters.estado}
+            onChange={(event) => updateFilter("estado", event.target.value)}
+          >
+            {ESTADOS.map((item) => (
+              <option key={item.value || "todos"} value={item.value}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </label>
 
-          <article>
-            <Clock3 size={22} />
-            <span>Pendientes pago</span>
-            <strong>{formatNumber(summary?.pendiente_pago)}</strong>
-          </article>
+        <label>
+          Desde
+          <input
+            type="date"
+            value={filters.desde}
+            onChange={(event) => updateFilter("desde", event.target.value)}
+          />
+        </label>
 
-          <article>
-            <CheckCircle2 size={22} />
-            <span>Pagadas</span>
-            <strong>{formatNumber(summary?.pagadas)}</strong>
-          </article>
+        <label>
+          Hasta
+          <input
+            type="date"
+            value={filters.hasta}
+            onChange={(event) => updateFilter("hasta", event.target.value)}
+          />
+        </label>
 
-          <article>
-            <PackageCheck size={22} />
-            <span>Requieren atención</span>
-            <strong>{formatNumber(summary?.requieren_atencion)}</strong>
-          </article>
+        <button className="admin-primary-button" type="submit" disabled={loading}>
+          {loading ? <Loader2 size={17} className="admin-spin" /> : null}
+          Filtrar
+        </button>
+      </form>
 
-          <article>
-            <Truck size={22} />
-            <span>Entregadas</span>
-            <strong>{formatNumber(summary?.entregadas)}</strong>
-          </article>
-
-          <article>
-            <CreditCard size={22} />
-            <span>Importe confirmado</span>
-            <strong>{formatMoney(summary?.importe_confirmado)}</strong>
-          </article>
-        </div>
-
-        <form className="admin-sales-filters" onSubmit={submitFilters}>
-          <label>
-            Buscar
+      <div className="admin-sales-layout">
+        <article className="admin-panel admin-sales-main-panel">
+          <div className="admin-panel-head">
             <div>
-              <Search size={16} />
-              <input
-                type="search"
-                value={filters.q}
-                onChange={(event) => updateFilter("q", event.target.value)}
-                placeholder="Folio, cliente, WhatsApp, pago o producto"
-              />
+              <span>Ventas ecommerce</span>
+              <h2>Pedidos recientes</h2>
+              <p>Abre un pedido para cambiar estado, revisar productos o agregar notas.</p>
             </div>
-          </label>
+          </div>
 
-          <label>
-            Estado
-            <select
-              value={filters.estado}
-              onChange={(event) => updateFilter("estado", event.target.value)}
-            >
-              {ESTADOS.map((item) => (
-                <option key={item.value || "todos"} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="admin-table-wrap">
+            <table className="admin-table admin-sales-table">
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Total</th>
+                  <th>Piezas</th>
+                  <th>Pago</th>
+                  <th>Fecha</th>
+                  <th></th>
+                </tr>
+              </thead>
 
-          <label>
-            Desde
-            <input
-              type="date"
-              value={filters.desde}
-              onChange={(event) => updateFilter("desde", event.target.value)}
-            />
-          </label>
+              <tbody>
+                {ventas.map((venta) => {
+                  const Icon = getPrimaryIcon(venta.estado);
 
-          <label>
-            Hasta
-            <input
-              type="date"
-              value={filters.hasta}
-              onChange={(event) => updateFilter("hasta", event.target.value)}
-            />
-          </label>
+                  return (
+                    <tr key={venta.id}>
+                      <td>
+                        <strong>{venta.folio}</strong>
+                      </td>
 
-          <button className="btn-primary" type="submit" disabled={loading}>
-            {loading ? <Loader2 size={17} className="admin-sales-spin" /> : null}
-            Filtrar
-          </button>
-        </form>
+                      <td>
+                        <span>{venta.nombre_cliente}</span>
+                        <small>{venta.whatsapp}</small>
+                      </td>
 
-        <div className="admin-sales-layout">
-          <article className="admin-sales-card">
-            <div className="admin-sales-card-head">
-              <div>
-                <span>Ventas</span>
-                <h2>Pedidos recientes</h2>
-              </div>
-            </div>
+                      <td>
+                        <span className={`admin-status-pill ${getStatusClass(venta.estado)}`}>
+                          <Icon size={14} />
+                          {getEstadoLabel(venta.estado)}
+                        </span>
+                      </td>
 
-            <div className="admin-sales-table-wrap">
-              <table className="admin-sales-table">
-                <thead>
-                  <tr>
-                    <th>Folio</th>
-                    <th>Cliente</th>
-                    <th>Estado</th>
-                    <th>Total</th>
-                    <th>Piezas</th>
-                    <th>Pago</th>
-                    <th>Fecha</th>
-                    <th></th>
-                  </tr>
-                </thead>
+                      <td>{formatMoney(venta.total)}</td>
+                      <td>{formatNumber(venta.total_piezas)}</td>
 
-                <tbody>
-                  {ventas.map((venta) => {
-                    const Icon = getPrimaryIcon(venta.estado);
+                      <td>
+                        <span>{venta.mp_payment_status || "—"}</span>
+                        <small>{venta.mp_payment_id || "sin pago"}</small>
+                      </td>
 
-                    return (
-                      <tr key={venta.id}>
-                        <td>
-                          <strong>{venta.folio}</strong>
-                        </td>
-                        <td>
-                          <span>{venta.nombre_cliente}</span>
-                          <small>{venta.whatsapp}</small>
-                        </td>
-                        <td>
-                          <span
-                            className={`admin-sale-status ${getStatusClass(
-                              venta.estado
-                            )}`}
-                          >
-                            <Icon size={14} />
-                            {getEstadoLabel(venta.estado)}
-                          </span>
-                        </td>
-                        <td>{formatMoney(venta.total)}</td>
-                        <td>{formatNumber(venta.total_piezas)}</td>
-                        <td>
-                          <span>{venta.mp_payment_status || "—"}</span>
-                          <small>{venta.mp_payment_id || "sin pago"}</small>
-                        </td>
-                        <td>{formatDate(venta.created_at)}</td>
-                        <td>
-                          <button
-                            className="admin-sales-view"
-                            type="button"
-                            onClick={() => loadVenta(venta.folio)}
-                          >
-                            <Eye size={15} />
-                            Ver
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                      <td>{formatDate(venta.created_at)}</td>
 
-                  {!ventas.length && (
-                    <tr>
-                      <td colSpan={8}>No hay ventas con esos filtros.</td>
+                      <td>
+                        <button
+                          className="admin-sales-view"
+                          type="button"
+                          onClick={() => loadVenta(venta.folio)}
+                        >
+                          <Eye size={15} />
+                          Ver
+                        </button>
+                      </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  );
+                })}
+
+                {!ventas.length && (
+                  <tr>
+                    <td colSpan={8}>No hay ventas con esos filtros.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {pagination && pagination.total_pages > 1 && (
+            <div className="admin-sales-pagination">
+              <button
+                type="button"
+                disabled={pagination.page <= 1}
+                onClick={() => {
+                  const next = { ...filters, page: pagination.page - 1 };
+                  setFilters(next);
+                  loadData(next);
+                }}
+              >
+                Anterior
+              </button>
+
+              <span>
+                Página {pagination.page} de {pagination.total_pages}
+              </span>
+
+              <button
+                type="button"
+                disabled={pagination.page >= pagination.total_pages}
+                onClick={() => {
+                  const next = { ...filters, page: pagination.page + 1 };
+                  setFilters(next);
+                  loadData(next);
+                }}
+              >
+                Siguiente
+              </button>
             </div>
+          )}
+        </article>
 
-            {pagination && pagination.total_pages > 1 && (
-              <div className="admin-sales-pagination">
-                <button
-                  type="button"
-                  disabled={pagination.page <= 1}
-                  onClick={() => {
-                    const next = { ...filters, page: pagination.page - 1 };
-                    setFilters(next);
-                    loadData(next);
-                  }}
-                >
-                  Anterior
-                </button>
+        <article className="admin-panel">
+          <div className="admin-panel-head">
+            <div>
+              <span>Ranking</span>
+              <h2>Productos vendidos</h2>
+              <p>Productos con pago confirmado.</p>
+            </div>
+          </div>
 
+          <div className="admin-sales-top-products">
+            {(summary?.top_productos || []).map((item, index) => (
+              <div key={`${item.codigo_andyfers}-${index}`}>
+                <strong>{item.codigo_andyfers || item.codigo_importacion}</strong>
+                <p>{item.descripcion_producto}</p>
                 <span>
-                  Página {pagination.page} de {pagination.total_pages}
+                  {formatNumber(item.piezas)} pzas · {formatMoney(item.importe)}
                 </span>
-
-                <button
-                  type="button"
-                  disabled={pagination.page >= pagination.total_pages}
-                  onClick={() => {
-                    const next = { ...filters, page: pagination.page + 1 };
-                    setFilters(next);
-                    loadData(next);
-                  }}
-                >
-                  Siguiente
-                </button>
               </div>
+            ))}
+
+            {!summary?.top_productos?.length && (
+              <p className="admin-sales-empty-small">Todavía no hay productos pagados.</p>
             )}
-          </article>
-
-          <article className="admin-sales-card">
-            <div className="admin-sales-card-head">
-              <div>
-                <span>Ranking</span>
-                <h2>Productos vendidos</h2>
-              </div>
-            </div>
-
-            <div className="admin-sales-top-products">
-              {(summary?.top_productos || []).map((item, index) => (
-                <div key={`${item.codigo_andyfers}-${index}`}>
-                  <strong>{item.codigo_andyfers || item.codigo_importacion}</strong>
-                  <p>{item.descripcion_producto}</p>
-                  <span>
-                    {formatNumber(item.piezas)} pzas · {formatMoney(item.importe)}
-                  </span>
-                </div>
-              ))}
-
-              {!summary?.top_productos?.length && (
-                <p className="admin-sales-empty-small">
-                  Todavía no hay productos pagados.
-                </p>
-              )}
-            </div>
-          </article>
-        </div>
+          </div>
+        </article>
       </div>
 
       {selected && (
@@ -505,7 +524,7 @@ export default function AdminSalesClient() {
 
             {selectedLoading ? (
               <div className="admin-sale-modal-loading">
-                <Loader2 size={28} className="admin-sales-spin" />
+                <Loader2 size={28} className="admin-spin" />
                 Cargando venta...
               </div>
             ) : (
@@ -552,14 +571,11 @@ export default function AdminSalesClient() {
                   <div className="admin-sale-items">
                     {selected.items?.map((item) => (
                       <div key={item.id}>
-                        <strong>
-                          {item.codigo_andyfers || item.codigo_importacion}
-                        </strong>
+                        <strong>{item.codigo_andyfers || item.codigo_importacion}</strong>
                         <p>{item.descripcion_producto}</p>
                         <span>
                           {formatNumber(item.cantidad)} pza(s) ·{" "}
-                          {formatMoney(item.precio_unitario)} ·{" "}
-                          {formatMoney(item.subtotal)}
+                          {formatMoney(item.precio_unitario)} · {formatMoney(item.subtotal)}
                         </span>
                       </div>
                     ))}
@@ -589,13 +605,11 @@ export default function AdminSalesClient() {
                     />
 
                     <button
-                      className="btn-primary"
+                      className="admin-primary-button"
                       type="submit"
                       disabled={updatingStatus || !nextStatus}
                     >
-                      {updatingStatus ? (
-                        <Loader2 size={17} className="admin-sales-spin" />
-                      ) : null}
+                      {updatingStatus ? <Loader2 size={17} className="admin-spin" /> : null}
                       Actualizar estado
                     </button>
                   </form>
@@ -612,7 +626,7 @@ export default function AdminSalesClient() {
                   />
 
                   <button
-                    className="btn-secondary"
+                    className="admin-secondary-button"
                     type="submit"
                     disabled={updatingStatus || !newNote.trim()}
                   >
@@ -648,9 +662,7 @@ export default function AdminSalesClient() {
                         <div key={item.id}>
                           <strong>
                             {item.tipo || "evento"} ·{" "}
-                            {Number(item.procesado) === 1
-                              ? "procesado"
-                              : "pendiente"}
+                            {Number(item.procesado) === 1 ? "procesado" : "pendiente"}
                           </strong>
                           <p>{item.error_proceso || item.mp_payment_id || "Sin error"}</p>
                           <span>{formatDate(item.created_at)}</span>

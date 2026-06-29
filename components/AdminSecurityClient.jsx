@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -8,11 +9,12 @@ import {
   Filter,
   LockKeyhole,
   RefreshCw,
+  MessageCircle,
+  ShoppingCart,
   ShieldAlert,
   ShieldCheck,
   UserCog,
 } from "lucide-react";
-import AdminModuleNav from "./AdminModuleNav";
 import {
   createAdminSecurityManualEvent,
   getAdminAuditLogs,
@@ -234,21 +236,38 @@ export default function AdminSecurityClient() {
 
   return (
     <main className="admin-security-page">
-      <AdminModuleNav />
 
-      <section className="admin-security-hero">
+      <section className="admin-page-hero admin-surgical-hero admin-surgical-security">
         <div>
-          <span className="admin-security-eyebrow">M11.1B</span>
+          <span>Seguridad interna</span>
           <h1>Seguridad y auditoría admin</h1>
           <p>
-            Revisa eventos de seguridad, rate limits, acciones administrativas y acciones críticas con confirmación fuerte.
+            Revisa eventos de seguridad, rate limits, acciones administrativas,
+            acciones críticas y trazabilidad del panel interno.
           </p>
         </div>
 
-        <button type="button" className="admin-security-refresh" onClick={() => loadData(filters)} disabled={loading}>
-          <RefreshCw size={17} />
-          Actualizar
-        </button>
+        <div className="admin-page-hero-actions">
+          <Link href="/admin/ventas" className="admin-primary-button">
+            <ShoppingCart size={18} />
+            Ventas ecommerce
+          </Link>
+
+          <Link href="/admin/chat" className="admin-secondary-button">
+            <MessageCircle size={18} />
+            Chat clientes
+          </Link>
+
+          <button
+            type="button"
+            className="admin-refresh-button"
+            onClick={() => loadData(filters)}
+            disabled={loading}
+          >
+            <RefreshCw size={17} />
+            Actualizar
+          </button>
+        </div>
       </section>
 
       {error ? <div className="admin-security-alert"><AlertTriangle size={18} /> {error}</div> : null}
