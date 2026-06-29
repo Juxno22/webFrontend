@@ -91,14 +91,6 @@ export default function Footer() {
           <Link href="/politica-envios">Envíos</Link>
           <Link href="/politica-devoluciones">Devoluciones</Link>
         </nav>
-
-        <div>
-          <h4>Importante</h4>
-          <p>
-            La disponibilidad, compatibilidad y precio final serán validados por
-            un asesor de ventas.
-          </p>
-        </div>
       </div>
 
       <div className="footer-bottom">
