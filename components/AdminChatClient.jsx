@@ -517,12 +517,7 @@ export default function AdminChatClient() {
     <section className="admin-workspace admin-chat-os admin-chat-whatsapp">
       <div className="admin-page-hero admin-chat-hero">
         <div>
-          <span>Atención comercial</span>
           <h1>Chat de cotizaciones</h1>
-          <p>
-            Bandeja tipo WhatsApp para responder clientes, validar productos y
-            cerrar conversaciones comerciales.
-          </p>
         </div>
 
         <div className="admin-page-hero-actions">
