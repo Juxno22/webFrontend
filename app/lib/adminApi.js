@@ -575,7 +575,13 @@ export async function getAdminChatConversaciones(params = {}) {
   return adminFetch(
     buildAdminPath("/api/admin/chat/conversaciones", {
       q: params.q,
+      bandeja: params.bandeja,
       estado: params.estado,
+      prioridad: params.prioridad,
+      cierre_motivo: params.cierre_motivo,
+      no_leidos: params.no_leidos ? "1" : "",
+      desde: params.desde,
+      hasta: params.hasta,
       limit: params.limit || 50,
       offset: params.offset,
     })

@@ -38,6 +38,12 @@ const ESTADOS_CHAT = [
   { value: "CERRADO", label: "Cerrados" },
 ];
 
+const BANDEJAS_CHAT = [
+  { value: "ACTUAL", label: "Atención actual" },
+  { value: "HISTORIAL", label: "Historial cerrado" },
+  { value: "TODOS", label: "Todos" },
+];
+
 const PRIORIDADES_CHAT = [
   { value: "BAJA", label: "Baja" },
   { value: "MEDIA", label: "Media" },
@@ -245,10 +251,18 @@ export default function AdminChatClient() {
 
   const [filters, setFilters] = useState({
     q: "",
+    bandeja: "ACTUAL",
     estado: "",
+    prioridad: "",
+    cierre_motivo: "",
+    no_leidos: false,
+    desde: "",
+    hasta: "",
     limit: 50,
-  });
+    offset: 0,
+  })
 
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [summary, setSummary] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [selectedId, setSelectedId] = useState("");
@@ -299,13 +313,18 @@ export default function AdminChatClient() {
   }, [selectedId]);
 
   const loadConversations = useCallback(
-    async ({ keepSelected = true, silent = false } = {}) => {
+    async ({
+      keepSelected = true,
+      silent = false,
+      filtersOverride = null,
+    } = {}) => {
       try {
         if (!silent) setLoadingList(true);
 
         setError("");
 
-        const response = await getAdminChatConversaciones(filters);
+        const activeFilters = filtersOverride || filters;
+        const response = await getAdminChatConversaciones(activeFilters);
         const list = response.data || [];
 
         setConversations(list);
@@ -336,6 +355,12 @@ export default function AdminChatClient() {
 
         if (currentSelectedId && !selectedStillExists && list.length > 0) {
           setSelectedId(String(list[0].id));
+        }
+
+        if (currentSelectedId && !selectedStillExists && list.length === 0) {
+          setSelectedId("");
+          setSelected(null);
+          setMessages([]);
         }
       } catch (err) {
         setError(err.message || "No se pudieron cargar conversaciones.");
@@ -489,9 +514,69 @@ export default function AdminChatClient() {
     }));
   }
 
+  function applyFilterPatch(patch) {
+    const nextFilters = {
+      ...filters,
+      ...patch,
+      offset: 0,
+    };
+
+    setFilters(nextFilters);
+
+    loadConversations({
+      keepSelected: true,
+      filtersOverride: nextFilters,
+    });
+  }
+
+  function clearAdvancedFilters() {
+    const nextFilters = {
+      ...filters,
+      prioridad: "",
+      cierre_motivo: "",
+      no_leidos: false,
+      desde: "",
+      hasta: "",
+      offset: 0,
+    };
+
+    setFilters(nextFilters);
+
+    loadConversations({
+      keepSelected: true,
+      filtersOverride: nextFilters,
+    });
+  }
+
+  function clearAllFilters() {
+    const nextFilters = {
+      q: "",
+      bandeja: "ACTUAL",
+      estado: "",
+      prioridad: "",
+      cierre_motivo: "",
+      no_leidos: false,
+      desde: "",
+      hasta: "",
+      limit: 50,
+      offset: 0,
+    };
+
+    setFilters(nextFilters);
+
+    loadConversations({
+      keepSelected: false,
+      filtersOverride: nextFilters,
+    });
+  }
+
   async function submitFilters(event) {
     event.preventDefault();
-    await loadConversations({ keepSelected: true });
+
+    await loadConversations({
+      keepSelected: true,
+      filtersOverride: filters,
+    });
   }
 
   async function refreshAll() {
@@ -765,13 +850,13 @@ export default function AdminChatClient() {
 
           <div className="admin-chat-mini-summary">
             <div>
-              <strong>{formatNumber(summary?.abiertos)}</strong>
-              <span>Abiertos</span>
+              <strong>{formatNumber(summary?.actuales)}</strong>
+              <span>Actuales</span>
             </div>
 
             <div>
-              <strong>{formatNumber(summary?.atendiendo)}</strong>
-              <span>Atendiendo</span>
+              <strong>{formatNumber(summary?.cerrados)}</strong>
+              <span>Historial</span>
             </div>
 
             <div>
@@ -781,6 +866,24 @@ export default function AdminChatClient() {
           </div>
 
           <form className="admin-chat-filters" onSubmit={submitFilters}>
+            <div className="admin-chat-inbox-tabs">
+              {BANDEJAS_CHAT.map((item) => (
+                <button
+                  type="button"
+                  key={item.value}
+                  className={filters.bandeja === item.value ? "is-active" : ""}
+                  onClick={() =>
+                    applyFilterPatch({
+                      bandeja: item.value,
+                      estado: "",
+                    })
+                  }
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
             <label>
               Buscar
               <div>
@@ -800,21 +903,114 @@ export default function AdminChatClient() {
                   type="button"
                   key={item.value || "TODOS"}
                   className={filters.estado === item.value ? "is-active" : ""}
-                  onClick={() => {
-                    updateFilter("estado", item.value);
-                    window.setTimeout(() => {
-                      loadConversations({ keepSelected: true });
-                    }, 0);
-                  }}
+                  onClick={() =>
+                    applyFilterPatch({
+                      estado: item.value,
+                      bandeja: item.value === "CERRADO" ? "HISTORIAL" : filters.bandeja,
+                    })
+                  }
                 >
                   {item.label}
                 </button>
               ))}
             </div>
 
-            <button className="admin-primary-button" type="submit">
-              Filtrar
-            </button>
+            <div className="admin-chat-filter-actions">
+              <button
+                type="button"
+                className={filters.no_leidos ? "is-active" : ""}
+                onClick={() =>
+                  applyFilterPatch({
+                    no_leidos: !filters.no_leidos,
+                  })
+                }
+              >
+                Solo no leídos
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowAdvancedFilters((current) => !current)}
+              >
+                {showAdvancedFilters ? "Ocultar filtros" : "Más filtros"}
+              </button>
+            </div>
+
+            {showAdvancedFilters && (
+              <div className="admin-chat-advanced-filters">
+                <label>
+                  Prioridad
+                  <select
+                    value={filters.prioridad}
+                    onChange={(event) => updateFilter("prioridad", event.target.value)}
+                  >
+                    <option value="">Todas</option>
+                    {PRIORIDADES_CHAT.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Motivo cierre
+                  <select
+                    value={filters.cierre_motivo}
+                    onChange={(event) =>
+                      updateFilter("cierre_motivo", event.target.value)
+                    }
+                  >
+                    <option value="">Todos</option>
+                    {CIERRE_MOTIVOS_CHAT.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Desde
+                  <input
+                    type="date"
+                    value={filters.desde}
+                    onChange={(event) => updateFilter("desde", event.target.value)}
+                  />
+                </label>
+
+                <label>
+                  Hasta
+                  <input
+                    type="date"
+                    value={filters.hasta}
+                    onChange={(event) => updateFilter("hasta", event.target.value)}
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  className="admin-chat-clear-filters"
+                  onClick={clearAdvancedFilters}
+                >
+                  Limpiar avanzados
+                </button>
+              </div>
+            )}
+
+            <div className="admin-chat-submit-row">
+              <button className="admin-primary-button" type="submit">
+                Filtrar
+              </button>
+
+              <button
+                type="button"
+                className="admin-secondary-button"
+                onClick={clearAllFilters}
+              >
+                Limpiar
+              </button>
+            </div>
           </form>
 
           <div className="admin-chat-list">
@@ -848,6 +1044,12 @@ export default function AdminChatClient() {
                           className={`admin-status-pill status-${conversation.estado}`}
                         >
                           {getEstadoLabel(conversation.estado)}
+                        </mark>
+
+                        <mark
+                          className={`admin-priority-pill priority-${conversation.prioridad || "MEDIA"}`}
+                        >
+                          {getPriorityLabel(conversation.prioridad)}
                         </mark>
                       </div>
 
