@@ -58,34 +58,23 @@ function saveChatSoundPreference(enabled) {
   window.localStorage.setItem(CHAT_SOUND_KEY, enabled ? "1" : "0");
 }
 
+const CHAT_NOTIFICATION_SOUND_SRC = "/sonido/notificacion.mp3";
+
 function playAdminChatSound() {
   if (typeof window === "undefined") return;
 
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audio = new Audio(CHAT_NOTIFICATION_SOUND_SRC);
 
-    if (!AudioContext) return;
+    audio.volume = 0.75;
+    audio.currentTime = 0;
 
-    const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
+    const playPromise = audio.play();
 
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(880, context.currentTime);
-
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.24);
-
-    oscillator.connect(gain);
-    gain.connect(context.destination);
-
-    oscillator.start(context.currentTime);
-    oscillator.stop(context.currentTime + 0.26);
-
-    window.setTimeout(() => {
-      context.close().catch(() => { });
-    }, 420);
+    if (playPromise?.catch) {
+      playPromise.catch(() => {
+      });
+    }
   } catch { }
 }
 
@@ -338,19 +327,31 @@ export default function AdminShell({ children }) {
       applyChatSummary(event.detail?.summary);
     }
 
+    function handleDirectChatMessage() {
+      setChatPulse(true);
+
+      if (chatPulseTimeoutRef.current) {
+        window.clearTimeout(chatPulseTimeoutRef.current);
+      }
+
+      chatPulseTimeoutRef.current = window.setTimeout(() => {
+        setChatPulse(false);
+      }, 1800);
+
+      if (chatSoundEnabled) {
+        playAdminChatSound();
+      }
+    }
+
     window.addEventListener("focus", handleFocus);
-    window.addEventListener(
-      "andyfers_admin_chat_summary_updated",
-      handleExternalSummary
-    );
+    window.addEventListener("andyfers_admin_chat_summary_updated", handleExternalSummary);
+    window.addEventListener("andyfers_admin_chat_new_message", handleDirectChatMessage);
 
     return () => {
       window.clearInterval(interval);
       window.removeEventListener("focus", handleFocus);
-      window.removeEventListener(
-        "andyfers_admin_chat_summary_updated",
-        handleExternalSummary
-      );
+      window.removeEventListener("andyfers_admin_chat_summary_updated", handleExternalSummary);
+      window.removeEventListener("andyfers_admin_chat_new_message", handleDirectChatMessage);
     };
   }, [applyChatSummary, checking, isLogin, loadChatSummary, user]);
 

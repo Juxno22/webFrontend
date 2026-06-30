@@ -1238,6 +1238,124 @@
   border-color: rgba(148, 163, 184, 0.28);
 }
 
+.admin-chat-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(12px);
+}
+
+.admin-chat-operational-modal {
+  width: min(540px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at top left, rgba(255, 25, 47, 0.18), transparent 18rem),
+    #1b1c1f;
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.56),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.admin-chat-operational-head {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-chat-operational-head span {
+  color: #ff3e4f;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.admin-chat-operational-head strong {
+  color: #ffffff;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.admin-chat-operational-modal label {
+  display: grid;
+  gap: 8px;
+  color: #dbeafe;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.admin-chat-operational-modal select,
+.admin-chat-operational-modal textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.075);
+  outline: none;
+  font: inherit;
+}
+
+.admin-chat-operational-modal select {
+  min-height: 48px;
+  border-radius: 16px;
+  padding: 0 14px;
+}
+
+.admin-chat-operational-modal textarea {
+  min-height: 120px;
+  resize: vertical;
+  border-radius: 18px;
+  padding: 13px 14px;
+  line-height: 1.45;
+}
+
+.admin-chat-operational-modal select:focus,
+.admin-chat-operational-modal textarea:focus {
+  border-color: rgba(255, 25, 47, 0.46);
+  box-shadow: 0 0 0 3px rgba(255, 25, 47, 0.12);
+}
+
+.admin-chat-operational-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.admin-chat-operational-actions .admin-secondary-button,
+.admin-chat-operational-actions .admin-primary-button {
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 0 18px;
+}
+
+@media (max-width: 560px) {
+  .admin-chat-operational-modal {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .admin-chat-operational-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-chat-operational-actions .admin-secondary-button,
+  .admin-chat-operational-actions .admin-primary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 640px) {
   .admin-chat-whatsapp .admin-chat-mini-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;

@@ -392,6 +392,21 @@ export default function AdminChatClient() {
 
         if (incremental) {
           if (incomingMessages.length > 0) {
+            const hasClientMessages = incomingMessages.some(
+              (message) => message.emisor_tipo === "CLIENTE"
+            );
+
+            if (hasClientMessages) {
+              window.dispatchEvent(
+                new CustomEvent("andyfers_admin_chat_new_message", {
+                  detail: {
+                    conversation_id: id,
+                    messages: incomingMessages,
+                  },
+                })
+              );
+            }
+
             setMessages((current) => {
               const merged = mergeMessages(current, incomingMessages);
               lastMessageIdRef.current = getLastMessageId(merged);
@@ -1179,126 +1194,130 @@ export default function AdminChatClient() {
               </section>
 
               {closeDraft.open && (
-                <section className="admin-chat-operational-panel">
-                  <div>
-                    <span>Cerrar conversación</span>
-                    <strong>Selecciona motivo de cierre</strong>
-                  </div>
+                <div className="admin-chat-modal-backdrop">
+                  <section className="admin-chat-operational-modal">
+                    <div className="admin-chat-operational-head">
+                      <span>Cerrar conversación</span>
+                      <strong>Selecciona motivo de cierre</strong>
+                    </div>
 
-                  <label>
-                    Motivo
-                    <select
-                      value={closeDraft.motivo}
-                      onChange={(event) =>
-                        setCloseDraft((current) => ({
-                          ...current,
-                          motivo: event.target.value,
-                        }))
-                      }
-                    >
-                      {CIERRE_MOTIVOS_CHAT.map((item) => (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                    <label>
+                      Motivo
+                      <select
+                        value={closeDraft.motivo}
+                        onChange={(event) =>
+                          setCloseDraft((current) => ({
+                            ...current,
+                            motivo: event.target.value,
+                          }))
+                        }
+                      >
+                        {CIERRE_MOTIVOS_CHAT.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
 
-                  <label>
-                    Nota de cierre
-                    <textarea
-                      value={closeDraft.nota}
-                      onChange={(event) =>
-                        setCloseDraft((current) => ({
-                          ...current,
-                          nota: event.target.value,
-                        }))
-                      }
-                      placeholder="Ej. Se envió cotización por WhatsApp, pendiente confirmación del cliente..."
-                      rows={3}
-                    />
-                  </label>
+                    <label>
+                      Nota de cierre
+                      <textarea
+                        value={closeDraft.nota}
+                        onChange={(event) =>
+                          setCloseDraft((current) => ({
+                            ...current,
+                            nota: event.target.value,
+                          }))
+                        }
+                        placeholder="Ej. Se envió cotización por WhatsApp, pendiente confirmación del cliente..."
+                        rows={4}
+                      />
+                    </label>
 
-                  <div className="admin-chat-operational-actions">
-                    <button
-                      type="button"
-                      className="admin-secondary-button"
-                      onClick={() =>
-                        setCloseDraft({
-                          open: false,
-                          motivo: "COTIZACION_ENVIADA",
-                          nota: "",
-                        })
-                      }
-                      disabled={changingStatus}
-                    >
-                      Cancelar
-                    </button>
+                    <div className="admin-chat-operational-actions">
+                      <button
+                        type="button"
+                        className="admin-secondary-button"
+                        onClick={() =>
+                          setCloseDraft({
+                            open: false,
+                            motivo: "COTIZACION_ENVIADA",
+                            nota: "",
+                          })
+                        }
+                        disabled={changingStatus}
+                      >
+                        Cancelar
+                      </button>
 
-                    <button
-                      type="button"
-                      className="admin-secondary-button danger"
-                      onClick={confirmCloseConversation}
-                      disabled={changingStatus}
-                    >
-                      Cerrar conversación
-                    </button>
-                  </div>
-                </section>
+                      <button
+                        type="button"
+                        className="admin-secondary-button danger"
+                        onClick={confirmCloseConversation}
+                        disabled={changingStatus}
+                      >
+                        Cerrar conversación
+                      </button>
+                    </div>
+                  </section>
+                </div>
               )}
 
               {reopenDraft.open && (
-                <section className="admin-chat-operational-panel">
-                  <div>
-                    <span>Reabrir conversación</span>
-                    <strong>Indica motivo de reapertura</strong>
-                  </div>
+                <div className="admin-chat-modal-backdrop">
+                  <section className="admin-chat-operational-modal">
+                    <div className="admin-chat-operational-head">
+                      <span>Reabrir conversación</span>
+                      <strong>Indica motivo de reapertura</strong>
+                    </div>
 
-                  <label>
-                    Motivo
-                    <select
-                      value={reopenDraft.motivo}
-                      onChange={(event) =>
-                        setReopenDraft((current) => ({
-                          ...current,
-                          motivo: event.target.value,
-                        }))
-                      }
-                    >
-                      {REAPERTURA_MOTIVOS_CHAT.map((item) => (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                    <label>
+                      Motivo
+                      <select
+                        value={reopenDraft.motivo}
+                        onChange={(event) =>
+                          setReopenDraft((current) => ({
+                            ...current,
+                            motivo: event.target.value,
+                          }))
+                        }
+                      >
+                        {REAPERTURA_MOTIVOS_CHAT.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
 
-                  <div className="admin-chat-operational-actions">
-                    <button
-                      type="button"
-                      className="admin-secondary-button"
-                      onClick={() =>
-                        setReopenDraft({
-                          open: false,
-                          estado: "ABIERTO",
-                          motivo: "Cliente volvió a escribir",
-                        })
-                      }
-                      disabled={changingStatus}
-                    >
-                      Cancelar
-                    </button>
+                    <div className="admin-chat-operational-actions">
+                      <button
+                        type="button"
+                        className="admin-secondary-button"
+                        onClick={() =>
+                          setReopenDraft({
+                            open: false,
+                            estado: "ABIERTO",
+                            motivo: "Cliente volvió a escribir",
+                          })
+                        }
+                        disabled={changingStatus}
+                      >
+                        Cancelar
+                      </button>
 
-                    <button
-                      type="button"
-                      className="admin-primary-button"
-                      onClick={confirmReopenConversation}
-                      disabled={changingStatus}
-                    >
-                      Reabrir conversación
-                    </button>
-                  </div>
-                </section>
+                      <button
+                        type="button"
+                        className="admin-primary-button"
+                        onClick={confirmReopenConversation}
+                        disabled={changingStatus}
+                      >
+                        Reabrir conversación
+                      </button>
+                    </div>
+                  </section>
+                </div>
               )}
 
               <section className="admin-chat-messages">
