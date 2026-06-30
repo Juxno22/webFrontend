@@ -3495,3 +3495,106 @@
   background: rgba(255, 255, 255, 0.065) !important;
   color: #ffffff !important;
 }
+
+/* Notificaciones chat admin */
+.admin-os-priority-card,
+.admin-os-nav a,
+.admin-os-top-secondary {
+  position: relative;
+}
+
+.admin-chat-nav-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 7px;
+  color: #ffffff;
+  background: var(--admin-red);
+  border: 2px solid rgba(5, 6, 8, 0.96);
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 950;
+  box-shadow: 0 10px 24px rgba(255, 25, 47, 0.38);
+}
+
+.admin-chat-nav-mini-badge {
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 7px;
+  color: #ffffff;
+  background: var(--admin-red);
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 950;
+  box-shadow: 0 8px 18px rgba(255, 25, 47, 0.32);
+}
+
+.admin-os-top-chat-badge {
+  min-width: 21px;
+  height: 21px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 7px;
+  color: #ffffff;
+  background: var(--admin-red);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.admin-os-top-secondary.has-chat-unread {
+  background: rgba(255, 25, 47, 0.2);
+  border-color: rgba(255, 25, 47, 0.45) !important;
+}
+
+.admin-os-chat-sound-toggle.is-on {
+  color: #ffffff;
+  background: rgba(34, 197, 94, 0.16) !important;
+  border-color: rgba(34, 197, 94, 0.32) !important;
+}
+
+.admin-os-chat-sound-toggle.is-on svg {
+  color: var(--admin-green);
+}
+
+.has-chat-pulse {
+  animation: adminChatPulse 1.15s ease-in-out 2;
+}
+
+@keyframes adminChatPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(255, 25, 47, 0);
+  }
+
+  40% {
+    box-shadow: 0 0 0 4px rgba(255, 25, 47, 0.16);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(255, 25, 47, 0);
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-os-top-chat-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+  }
+
+  .admin-os-chat-sound-toggle span {
+    display: none !important;
+  }
+}

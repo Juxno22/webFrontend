@@ -37,20 +37,42 @@ export function clearAdminSession() {
 export async function adminFetch(path, options = {}) {
   const token = getAdminToken();
 
+  const headers = {
+    ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(options.headers || {}),
+  };
+
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
+    headers,
     cache: "no-store",
   });
 
   const data = await response.json().catch(() => null);
 
-  if (!response.ok) {
-    throw new Error(data?.error || "Error en petición admin.");
+  if (response.status === 401 || response.status === 403) {
+    clearAdminSession();
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("andyfers_admin_session_expired"));
+    }
+
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      data?.mensaje ||
+      "Tu sesión expiró. Vuelve a iniciar sesión."
+    );
+  }
+
+  if (!response.ok || data?.ok === false) {
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      data?.mensaje ||
+      "Error en petición admin."
+    );
   }
 
   return data;
@@ -63,12 +85,22 @@ export async function adminLogin(payload) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+    cache: "no-store",
   });
 
   const data = await response.json().catch(() => null);
 
-  if (!response.ok) {
-    throw new Error(data?.error || "No se pudo iniciar sesión.");
+  if (!response.ok || data?.ok === false) {
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      data?.mensaje ||
+      "No se pudo iniciar sesión."
+    );
+  }
+
+  if (!data?.token || !data?.user) {
+    throw new Error("La API no regresó una sesión administrativa válida.");
   }
 
   saveAdminSession(data.token, data.user);
@@ -200,8 +232,8 @@ async function m62bParseResponse(response) {
   if (!response.ok || payload.ok === false) {
     throw new Error(
       payload.error ||
-        payload.message ||
-        "No se pudo completar la operación."
+      payload.message ||
+      "No se pudo completar la operación."
     );
   }
 
@@ -269,6 +301,12 @@ function buildAdminQuery(params = {}) {
   });
 
   return searchParams.toString();
+}
+
+function buildAdminPath(path, params = {}) {
+  const query = buildAdminQuery(params);
+
+  return `${path}${query ? `?${query}` : ""}`;
 }
 
 /* ADMIN CONTENIDO EDITABLE API */
@@ -534,34 +572,51 @@ export async function getAdminOperacionResumen() {
 }
 
 export async function getAdminChatConversaciones(params = {}) {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && String(value).trim() !== "") {
-      searchParams.set(key, String(value).trim());
-    }
-  });
-
-  const query = searchParams.toString();
-
-  return adminFetch(`/api/admin/chat/conversaciones${query ? `?${query}` : ""}`);
+  return adminFetch(
+    buildAdminPath("/api/admin/chat/conversaciones", {
+      q: params.q,
+      estado: params.estado,
+      limit: params.limit || 50,
+      offset: params.offset,
+    })
+  );
 }
 
 export async function getAdminChatConversacion(id, params = {}) {
-  const searchParams = new URLSearchParams();
+  if (!id) {
+    throw new Error("Falta el ID de la conversación.");
+  }
 
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && String(value).trim() !== "") {
-      searchParams.set(key, String(value).trim());
-    }
+  return adminFetch(
+    buildAdminPath(`/api/admin/chat/conversaciones/${encodeURIComponent(id)}`, {
+      after_id: params.after_id,
+      limit: params.limit,
+    })
+  );
+}
+
+export async function getAdminChatSummary() {
+  const response = await getAdminChatConversaciones({
+    limit: 1,
   });
 
-  const query = searchParams.toString();
-
-  return adminFetch(`/api/admin/chat/conversaciones/${id}${query ? `?${query}` : ""}`);
+  return {
+    ok: response.ok,
+    summary: response.summary || {
+      total: 0,
+      abiertos: 0,
+      atendiendo: 0,
+      cerrados: 0,
+      no_leidos_admin: 0,
+    },
+  };
 }
 
 export async function createAdminChatFromCotizacion(folio) {
+  if (!folio) {
+    throw new Error("Falta el folio de cotización.");
+  }
+
   return adminFetch(
     `/api/admin/chat/conversaciones/from-cotizacion/${encodeURIComponent(folio)}`,
     {
@@ -571,15 +626,42 @@ export async function createAdminChatFromCotizacion(folio) {
 }
 
 export async function sendAdminChatMensaje(id, mensaje) {
-  return adminFetch(`/api/admin/chat/conversaciones/${id}/mensajes`, {
-    method: "POST",
-    body: JSON.stringify({ mensaje }),
-  });
+  const clean = String(mensaje || "").trim();
+
+  if (!id) {
+    throw new Error("Falta el ID de la conversación.");
+  }
+
+  if (!clean) {
+    throw new Error("El mensaje no puede ir vacío.");
+  }
+
+  return adminFetch(
+    `/api/admin/chat/conversaciones/${encodeURIComponent(id)}/mensajes`,
+    {
+      method: "POST",
+      body: JSON.stringify({ mensaje: clean }),
+    }
+  );
 }
 
 export async function updateAdminChatEstado(id, estado) {
-  return adminFetch(`/api/admin/chat/conversaciones/${id}/estado`, {
-    method: "PATCH",
-    body: JSON.stringify({ estado }),
-  });
+  if (!id) {
+    throw new Error("Falta el ID de la conversación.");
+  }
+
+  const allowed = new Set(["ABIERTO", "ATENDIENDO", "CERRADO"]);
+  const cleanEstado = String(estado || "").trim().toUpperCase();
+
+  if (!allowed.has(cleanEstado)) {
+    throw new Error("Estado de chat inválido.");
+  }
+
+  return adminFetch(
+    `/api/admin/chat/conversaciones/${encodeURIComponent(id)}/estado`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ estado: cleanEstado }),
+    }
+  );
 }

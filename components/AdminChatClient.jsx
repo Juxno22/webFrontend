@@ -250,6 +250,14 @@ export default function AdminChatClient() {
         setConversations(list);
         setSummary(response.summary || null);
 
+        window.dispatchEvent(
+          new CustomEvent("andyfers_admin_chat_summary_updated", {
+            detail: {
+              summary: response.summary || null,
+            },
+          })
+        );
+
         const currentSelectedId = selectedIdRef.current;
         const selectedStillExists = list.some(
           (item) => String(item.id) === String(currentSelectedId)
@@ -652,9 +660,8 @@ export default function AdminChatClient() {
                   <button
                     type="button"
                     key={conversation.id}
-                    className={`admin-chat-conversation ${
-                      active ? "is-active" : ""
-                    } ${unread > 0 ? "has-unread" : ""}`}
+                    className={`admin-chat-conversation ${active ? "is-active" : ""
+                      } ${unread > 0 ? "has-unread" : ""}`}
                     onClick={() => setSelectedId(String(conversation.id))}
                   >
                     <div className="admin-chat-avatar">
@@ -681,7 +688,7 @@ export default function AdminChatClient() {
                         {getReferenceLabel(conversation)} ·{" "}
                         {formatTime(
                           conversation.last_message_at ||
-                            conversation.created_at
+                          conversation.created_at
                         )}
                       </span>
                     </div>
@@ -921,7 +928,7 @@ export default function AdminChatClient() {
                   <strong>
                     {formatDate(
                       activeConversation.last_message_at ||
-                        activeConversation.created_at
+                      activeConversation.created_at
                     )}
                   </strong>
                 </div>
