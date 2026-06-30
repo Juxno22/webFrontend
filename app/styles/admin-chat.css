@@ -471,3 +471,133 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-chat-layout {
+  grid-template-columns: 360px minmax(0, 1fr) 310px;
+}
+
+.admin-chat-meta-panel {
+  min-width: 0;
+  border-radius: 28px;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-line);
+  overflow: hidden;
+  padding: 16px;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.admin-chat-avatar.large {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+}
+
+.admin-chat-meta-head {
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-chat-meta-head h3 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.admin-chat-meta-head p {
+  color: var(--admin-muted);
+  margin: 0;
+  font-weight: 850;
+}
+
+.admin-chat-meta-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-chat-meta-list div {
+  padding: 12px;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid var(--admin-line);
+}
+
+.admin-chat-meta-list span {
+  display: block;
+  color: var(--admin-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 950;
+  margin-bottom: 5px;
+}
+
+.admin-chat-meta-list strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.admin-chat-meta-actions {
+  display: grid;
+  gap: 9px;
+}
+
+.admin-chat-meta-actions .admin-secondary-button {
+  width: 100%;
+}
+
+.admin-chat-meta-empty {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--admin-muted);
+}
+
+.admin-chat-meta-empty svg {
+  color: var(--admin-red);
+}
+
+.admin-chat-meta-empty strong {
+  color: #ffffff;
+}
+
+.admin-chat-meta-empty p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.admin-chat-closed {
+  padding: 14px;
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.14);
+  border-top: 1px solid rgba(245, 158, 11, 0.24);
+  font-weight: 900;
+  text-align: center;
+}
+
+@media (max-width: 1480px) {
+  .admin-chat-layout {
+    grid-template-columns: 340px minmax(0, 1fr);
+  }
+
+  .admin-chat-meta-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 980px) {
+  .admin-chat-layout {
+    grid-template-columns: 1fr;
+  }
+}
