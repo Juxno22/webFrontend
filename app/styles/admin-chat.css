@@ -871,6 +871,98 @@
   flex: 0 0 auto !important;
 }
 
+.admin-chat-whatsapp .admin-chat-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.admin-chat-whatsapp .admin-chat-sidebar-head {
+  flex: 0 0 auto !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary {
+  flex: 0 0 auto !important;
+  padding: 10px 12px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary div {
+  min-height: 56px !important;
+  max-height: 64px !important;
+  padding: 8px 10px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary strong {
+  font-size: 0.95rem !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary span {
+  margin-top: 4px !important;
+  font-size: 0.68rem !important;
+}
+
+.admin-chat-whatsapp .admin-chat-filters {
+  flex: 0 0 auto !important;
+  padding: 12px !important;
+  gap: 10px !important;
+  border-bottom: 1px solid var(--admin-line);
+  margin: 0 !important;
+}
+
+.admin-chat-whatsapp .admin-chat-filters label {
+  gap: 6px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-filters label > div {
+  min-height: 38px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-filters input {
+  min-height: 38px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-tabs {
+  gap: 6px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-tabs button {
+  min-height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 0.72rem !important;
+}
+
+.admin-chat-whatsapp .admin-chat-filters .admin-primary-button {
+  min-height: 40px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-list {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 10px !important;
+  margin: 0 !important;
+  border-top: 0 !important;
+}
+
+.admin-chat-whatsapp .admin-chat-conversation {
+  margin-bottom: 8px !important;
+  min-height: 82px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-conversation-main p {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.admin-chat-whatsapp .admin-chat-conversation-main span {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 @media (max-width: 640px) {
   .admin-chat-whatsapp .admin-chat-mini-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
