@@ -532,3 +532,44 @@ export async function addAdminVentaNota(folio, payload) {
 export async function getAdminOperacionResumen() {
   return adminFetch("/api/admin/operacion/resumen");
 }
+
+export async function getAdminChatConversaciones(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/chat/conversaciones${query ? `?${query}` : ""}`);
+}
+
+export async function getAdminChatConversacion(id) {
+  return adminFetch(`/api/admin/chat/conversaciones/${id}`);
+}
+
+export async function createAdminChatFromCotizacion(folio) {
+  return adminFetch(
+    `/api/admin/chat/conversaciones/from-cotizacion/${encodeURIComponent(folio)}`,
+    {
+      method: "POST",
+    }
+  );
+}
+
+export async function sendAdminChatMensaje(id, mensaje) {
+  return adminFetch(`/api/admin/chat/conversaciones/${id}/mensajes`, {
+    method: "POST",
+    body: JSON.stringify({ mensaje }),
+  });
+}
+
+export async function updateAdminChatEstado(id, estado) {
+  return adminFetch(`/api/admin/chat/conversaciones/${id}/estado`, {
+    method: "PATCH",
+    body: JSON.stringify({ estado }),
+  });
+}

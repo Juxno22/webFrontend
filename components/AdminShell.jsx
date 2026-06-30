@@ -232,7 +232,6 @@ export default function AdminShell({ children }) {
           <div className="admin-os-brand-mark">A</div>
           <div>
             <strong>Andyfers</strong>
-            <span>Admin OS</span>
           </div>
         </div>
 

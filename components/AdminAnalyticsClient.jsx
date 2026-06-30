@@ -353,7 +353,6 @@ export default function AdminAnalyticsClient() {
     <section className="admin-workspace admin-analytics-os">
       <div className="admin-page-hero">
         <div>
-          <span>Inteligencia comercial</span>
           <h1>Analítica comercial</h1>
           <p>
             Mide búsquedas, productos consultados, cotizaciones, carrito,
@@ -494,7 +493,6 @@ export default function AdminAnalyticsClient() {
             <article className="admin-home-priority-card sales">
               <div>
                 <ShoppingCart size={34} />
-                <span>Embudo ecommerce</span>
                 <h2>Ventas web</h2>
                 <p>
                   Sigue el camino desde carrito y checkout hasta pago aprobado,
@@ -513,7 +511,6 @@ export default function AdminAnalyticsClient() {
             <article className="admin-home-priority-card chat">
               <div>
                 <MessageCircle size={34} />
-                <span>Atención comercial</span>
                 <h2>Chat y cotización</h2>
                 <p>
                   Detecta productos buscados, cotizados o sin resultado para

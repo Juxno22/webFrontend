@@ -25,6 +25,7 @@ import {
   addCotizacionEvento,
   getAdminCotizacion,
   updateCotizacionEstado,
+  createAdminChatFromCotizacion,
 } from "@/app/lib/adminApi";
 import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 
@@ -88,11 +89,9 @@ function buildWhatsappMessage(cotizacion) {
 
   const productos = items
     .map((item, index) => {
-      return `${index + 1}. ${
-        item.descripcion_producto || "Producto"
-      }\nCódigo: ${
-        item.codigo_andyfers || item.codigo_importacion || "-"
-      }\nCantidad: ${item.cantidad || 1}`;
+      return `${index + 1}. ${item.descripcion_producto || "Producto"
+        }\nCódigo: ${item.codigo_andyfers || item.codigo_importacion || "-"
+        }\nCantidad: ${item.cantidad || 1}`;
     })
     .join("\n\n");
 
@@ -122,6 +121,7 @@ export default function AdminCotizacionDetailClient({ folio }) {
   const [savingNota, setSavingNota] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [creatingChat, setCreatingChat] = useState(false);
 
   const whatsappMessage = useMemo(() => {
     if (!cotizacion) return "";
@@ -260,6 +260,29 @@ export default function AdminCotizacionDetailClient({ folio }) {
     );
   }
 
+  async function openOrCreateChat() {
+    if (!cotizacion?.folio) return;
+
+    try {
+      setCreatingChat(true);
+      setError("");
+
+      const response = await createAdminChatFromCotizacion(cotizacion.folio);
+      const conversationId = response.data?.id;
+
+      if (conversationId) {
+        window.location.href = `/admin/chat?id=${conversationId}`;
+        return;
+      }
+
+      window.location.href = `/admin/chat?folio=${encodeURIComponent(cotizacion.folio)}`;
+    } catch (err) {
+      setError(err.message || "No se pudo crear el chat.");
+    } finally {
+      setCreatingChat(false);
+    }
+  }
+
   return (
     <section className="admin-workspace admin-quote-detail-os">
       <div className="admin-page-hero">
@@ -278,13 +301,19 @@ export default function AdminCotizacionDetailClient({ folio }) {
             Volver
           </Link>
 
-          <Link
-            href={`/admin/chat?folio=${encodeURIComponent(cotizacion.folio)}`}
+          <button
+            type="button"
             className="admin-primary-button"
+            onClick={openOrCreateChat}
+            disabled={creatingChat}
           >
-            <MessageCircle size={18} />
-            Chat clientes
-          </Link>
+            {creatingChat ? (
+              <Loader2 size={18} className="admin-spin" />
+            ) : (
+              <MessageCircle size={18} />
+            )}
+            {creatingChat ? "Creando chat..." : "Chat clientes"}
+          </button>
 
           <Link href="/admin/ventas" className="admin-secondary-button">
             <ShoppingCart size={18} />

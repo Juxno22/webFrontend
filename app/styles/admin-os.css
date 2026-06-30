@@ -3346,3 +3346,152 @@
     width: 100%;
   }
 }
+
+.admin-product-detail-os .admin-product-ops-panel,
+.admin-product-detail-os .admin-ops-card,
+.admin-product-detail-os .admin-ops-card-wide {
+  background: rgba(255, 255, 255, 0.065) !important;
+  border: 1px solid var(--admin-line) !important;
+  color: #ffffff !important;
+}
+
+.admin-product-detail-os .admin-ops-create-form,
+.admin-product-detail-os .admin-ops-form-grid,
+.admin-product-detail-os .admin-ops-vehicle-grid,
+.admin-product-detail-os .admin-ops-checks,
+.admin-product-detail-os .admin-ops-card form,
+.admin-product-detail-os .admin-ops-card .form,
+.admin-product-detail-os .admin-ops-card > div,
+.admin-product-detail-os .admin-ops-card-wide form,
+.admin-product-detail-os .admin-ops-card-wide .form {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+.admin-product-detail-os .admin-ops-create-form {
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  border: 1px solid var(--admin-line) !important;
+}
+
+.admin-product-detail-os .admin-ops-card input,
+.admin-product-detail-os .admin-ops-card select,
+.admin-product-detail-os .admin-ops-card textarea,
+.admin-product-detail-os .admin-ops-card-wide input,
+.admin-product-detail-os .admin-ops-card-wide select,
+.admin-product-detail-os .admin-ops-card-wide textarea,
+.admin-product-detail-os .admin-ops-create-form input,
+.admin-product-detail-os .admin-ops-create-form select,
+.admin-product-detail-os .admin-ops-create-form textarea {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border: 1px solid var(--admin-line) !important;
+  border-radius: 14px !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.admin-product-detail-os .admin-ops-card input::placeholder,
+.admin-product-detail-os .admin-ops-card textarea::placeholder,
+.admin-product-detail-os .admin-ops-card-wide input::placeholder,
+.admin-product-detail-os .admin-ops-card-wide textarea::placeholder,
+.admin-product-detail-os .admin-ops-create-form input::placeholder,
+.admin-product-detail-os .admin-ops-create-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.46) !important;
+}
+
+.admin-product-detail-os .admin-ops-card select option,
+.admin-product-detail-os .admin-ops-card-wide select option,
+.admin-product-detail-os .admin-ops-create-form select option {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+.admin-product-detail-os .admin-ops-card label,
+.admin-product-detail-os .admin-ops-card-wide label,
+.admin-product-detail-os .admin-ops-create-form label,
+.admin-product-detail-os .admin-ops-checks label {
+  color: #ffffff !important;
+}
+
+.admin-product-detail-os .admin-ops-checks label {
+  min-height: 42px !important;
+  padding: 9px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border: 1px solid var(--admin-line) !important;
+}
+
+.admin-product-detail-os .admin-ops-checks input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  accent-color: var(--admin-red) !important;
+}
+
+.admin-product-detail-os .admin-ops-row,
+.admin-product-detail-os .admin-op-empty {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border: 1px solid var(--admin-line) !important;
+}
+
+.admin-product-detail-os .admin-op-empty {
+  color: var(--admin-muted) !important;
+  text-align: center !important;
+  font-weight: 900 !important;
+}
+
+.admin-product-detail-os .admin-ops-title h3,
+.admin-product-detail-os .admin-ops-card h3,
+.admin-product-detail-os .admin-ops-card-wide h3 {
+  color: #ffffff !important;
+}
+
+.admin-product-detail-os .admin-ops-title p,
+.admin-product-detail-os .admin-ops-card p,
+.admin-product-detail-os .admin-ops-card-wide p {
+  color: var(--admin-muted) !important;
+}
+
+.admin-product-detail-os .admin-op-btn,
+.admin-product-detail-os .admin-op-btn-primary,
+.admin-product-detail-os .admin-op-btn-danger {
+  min-height: 38px !important;
+  border-radius: 999px !important;
+  font-weight: 950 !important;
+}
+
+.admin-product-detail-os .admin-op-btn-primary {
+  color: #ffffff !important;
+  background: var(--admin-red) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.admin-product-detail-os .admin-op-btn:not(.admin-op-btn-primary):not(.admin-op-btn-danger) {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border: 1px solid var(--admin-line) !important;
+}
+
+.admin-product-detail-os .admin-op-btn-danger {
+  color: #fecaca !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  border: 1px solid rgba(239, 68, 68, 0.24) !important;
+}
+
+.admin-product-detail-os .admin-ops-card *:not(option),
+.admin-product-detail-os .admin-ops-card-wide *:not(option) {
+  border-color: var(--admin-line);
+}
+
+.admin-product-detail-os .admin-ops-card [style*="background: white"],
+.admin-product-detail-os .admin-ops-card [style*="background:#fff"],
+.admin-product-detail-os .admin-ops-card [style*="background-color: white"],
+.admin-product-detail-os .admin-ops-card-wide [style*="background: white"],
+.admin-product-detail-os .admin-ops-card-wide [style*="background:#fff"],
+.admin-product-detail-os .admin-ops-card-wide [style*="background-color: white"] {
+  background: rgba(255, 255, 255, 0.065) !important;
+  color: #ffffff !important;
+}

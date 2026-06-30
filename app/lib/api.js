@@ -172,3 +172,21 @@ export async function getVentaPublica(folio, whatsapp = "") {
     }`
   );
 }
+
+export async function iniciarChatPublico(payload) {
+  return apiFetch("/api/chat/public/iniciar", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getChatPublico(token) {
+  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}`);
+}
+
+export async function sendChatPublicoMensaje(token, mensaje) {
+  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}/mensajes`, {
+    method: "POST",
+    body: JSON.stringify({ mensaje }),
+  });
+}
