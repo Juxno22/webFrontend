@@ -1,3 +1,5 @@
+import { buildCanonicalProductPath } from "@/app/lib/productSeoUrl.js";
+
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXT_PUBLIC_PUBLIC_URL ||
@@ -121,7 +123,7 @@ export default async function sitemap() {
   const productPages = productos
     .filter((producto) => producto.codigo_publico)
     .map((producto) => ({
-      url: siteUrl(`/producto/${encodeURIComponent(producto.codigo_publico)}`),
+      url: siteUrl(buildCanonicalProductPath(producto,producto.codigo_publico)),
       lastModified: safeDate(producto.updated_at || producto.created_at),
       changeFrequency: producto.destacado || producto.nuevo_web ? "weekly" : "monthly",
       priority: producto.destacado ? 0.85 : producto.nuevo_web ? 0.8 : 0.65,

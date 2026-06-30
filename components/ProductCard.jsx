@@ -7,37 +7,14 @@ import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { addToSalesCart, openSalesCartDrawer } from "../app/lib/salesCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { getProductSaleInfo } from "../app/lib/productSale";
-
-function isValidCode(value) {
-  if (!value) return false;
-
-  const clean = String(value).trim().toUpperCase();
-
-  return ![
-    "#N/A",
-    "N/A",
-    "NA",
-    "ND",
-    "N.D.",
-    "SIN CODIGO",
-    "SIN CÓDIGO",
-    "NULL",
-    "0",
-  ].includes(clean);
-}
-
-function getProductCode(producto) {
-  if (isValidCode(producto.codigo_andyfers)) return producto.codigo_andyfers;
-  if (isValidCode(producto.codigo_importacion)) return producto.codigo_importacion;
-
-  return null;
-}
+import { buildProductDetailUrl, getPublicProductCode } from "@/app/lib/productSeoUrl";
 
 export default function ProductCard({ producto }) {
   const router = useRouter();
-  const codigoDetalle = getProductCode(producto);
+  const codigoDetalle = getPublicProductCode(producto);
   const codigoVisible = codigoDetalle || "Sin código";
   const saleInfo = getProductSaleInfo(producto);
+  const productDetailUrl = buildProductDetailUrl(producto);
 
   function handleAdd() {
     router.push(buildQuoteChatUrl(codigoDetalle));
@@ -59,8 +36,7 @@ export default function ProductCard({ producto }) {
 
   function openProductDetail() {
     if (!codigoDetalle) return;
-
-    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+    router.push(productDetailUrl);
   }
 
   function handleProductMediaKeyDown(event) {
@@ -127,7 +103,7 @@ export default function ProductCard({ producto }) {
         <div className="product-actions product-actions-three">
           {codigoDetalle ? (
             <Link
-              href={`/producto/${encodeURIComponent(codigoDetalle)}`}
+              href={productDetailUrl}
               className="btn-card-secondary"
             >
               Ver detalle

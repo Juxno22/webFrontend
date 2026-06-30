@@ -1,6 +1,12 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import ProductDetailClient from "../../../components/ProductDetailClient";
 import { getProducto } from "../../lib/api";
+import {
+  buildCanonicalProductPath,
+  getPublicProductCode,
+  hasProductSeoParams,
+} from "../../lib/productSeoUrl";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -21,10 +27,7 @@ function cleanText(value, fallback = "") {
 }
 
 function getProductCode(producto, fallback = "") {
-  return cleanText(
-    producto?.codigo_andyfers || producto?.codigo_importacion || fallback,
-    fallback
-  );
+  return cleanText(getPublicProductCode(producto, fallback), fallback);
 }
 
 function getProductImage(producto) {
@@ -59,7 +62,7 @@ function ProductJsonLd({ producto, codigo }) {
   const codigoVisible = getProductCode(producto, codigo);
   const description = buildProductDescription(producto, codigoVisible);
   const image = getProductImage(producto);
-  const canonical = siteUrl(`/producto/${encodeURIComponent(codigoVisible)}`);
+  const canonical = siteUrl(buildCanonicalProductPath(producto, codigoVisible));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -96,7 +99,7 @@ export async function generateMetadata({ params }) {
     const codigoVisible = getProductCode(producto, codigo);
     const description = buildProductDescription(producto, codigoVisible);
     const image = getProductImage(producto);
-    const canonical = `/producto/${encodeURIComponent(codigoVisible)}`;
+    const canonical = buildCanonicalProductPath(producto, codigoVisible);
     const title = `${codigoVisible} | ${cleanText(producto.familia || producto.categoria, "Producto")}`;
 
     return {
@@ -143,8 +146,9 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function ProductoPage({ params }) {
+export default async function ProductoPage({ params, searchParams }) {
   const { codigo } = await params;
+  const resolvedSearchParams = await searchParams;
 
   let producto = null;
   let error = "";
@@ -172,6 +176,17 @@ export default async function ProductoPage({ params }) {
         </section>
       </main>
     );
+  }
+
+  const canonicalPath = buildCanonicalProductPath(producto, codigo);
+  const canonicalBasePath = canonicalPath.split("?")[0];
+  const currentBasePath = `/producto/${encodeURIComponent(codigo)}`;
+
+  if (
+    canonicalBasePath !== currentBasePath ||
+    (!hasProductSeoParams(resolvedSearchParams) && canonicalPath.includes("?"))
+  ) {
+    redirect(canonicalPath);
   }
 
   return (

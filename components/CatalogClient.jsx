@@ -22,6 +22,7 @@ import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
 import { getProductSaleInfo } from "@/app/lib/productSale";
+import { buildProductDetailUrl, getPublicProductCode } from "@/app/lib/productSeoUrl";
 
 const defaultFilters = {
   q: "",
@@ -51,31 +52,6 @@ function getFiltersFromSearchParams(searchParams) {
     page: Number(searchParams.get("page") || 1),
     limit: 15,
   };
-}
-
-function isValidCode(value) {
-  if (!value) return false;
-
-  const clean = String(value).trim().toUpperCase();
-
-  return ![
-    "#N/A",
-    "N/A",
-    "NA",
-    "ND",
-    "N.D.",
-    "SIN CODIGO",
-    "SIN CÓDIGO",
-    "NULL",
-    "0",
-  ].includes(clean);
-}
-
-function getProductCode(producto) {
-  if (isValidCode(producto.codigo_andyfers)) return producto.codigo_andyfers;
-  if (isValidCode(producto.codigo_importacion)) return producto.codigo_importacion;
-
-  return null;
 }
 
 function shouldTrackCatalogSearch(filters = {}) {
@@ -290,7 +266,7 @@ export default function CatalogClient() {
   };
 
   function addProductToSalesCart(producto) {
-    const codigoVisible = getProductCode(producto) || "Producto";
+    const codigoVisible = getPublicProductCode(producto) || "Producto";
 
     addToSalesCart(producto);
 
@@ -305,18 +281,22 @@ export default function CatalogClient() {
     openSalesCartDrawer();
   }
 
-  function openProductDetail(codigoDetalle) {
+  function openProductDetail(producto) {
+    const codigoDetalle = getPublicProductCode(producto);
+
     if (!codigoDetalle) return;
 
-    router.push(`/producto/${encodeURIComponent(codigoDetalle)}`);
+    router.push(buildProductDetailUrl(producto, appliedFilters));
   }
 
-  function handleProductMediaKeyDown(event, codigoDetalle) {
+  function handleProductMediaKeyDown(event, producto) {
+    const codigoDetalle = getPublicProductCode(producto);
+
     if (!codigoDetalle) return;
 
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      openProductDetail(codigoDetalle);
+      openProductDetail(producto);
     }
   }
 
@@ -447,9 +427,10 @@ export default function CatalogClient() {
         <>
           <div className="catalog-product-grid">
             {productos.map((producto) => {
-              const codigoDetalle = getProductCode(producto);
+              const codigoDetalle = getPublicProductCode(producto);
               const codigoVisible = codigoDetalle || "Sin código";
               const saleInfo = getProductSaleInfo(producto);
+              const productDetailUrl = buildProductDetailUrl(producto, appliedFilters);
 
               return (
                 <article className="catalog-product-card" key={producto.id}>
@@ -461,9 +442,9 @@ export default function CatalogClient() {
                     aria-label={
                       codigoDetalle ? `Ver detalle de ${codigoVisible}` : undefined
                     }
-                    onClick={() => openProductDetail(codigoDetalle)}
+                    onClick={() => openProductDetail(producto)}
                     onKeyDown={(event) =>
-                      handleProductMediaKeyDown(event, codigoDetalle)
+                      handleProductMediaKeyDown(event, producto)
                     }
                   >
                     <span className="catalog-product-code">{codigoVisible}</span>
@@ -496,7 +477,7 @@ export default function CatalogClient() {
                     <div className="catalog-product-actions product-actions-three">
                       {codigoDetalle ? (
                         <Link
-                          href={`/producto/${encodeURIComponent(codigoDetalle)}`}
+                          href={productDetailUrl}
                           className="btn-card-secondary"
                         >
                           Ver detalle
