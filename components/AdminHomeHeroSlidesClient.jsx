@@ -21,6 +21,7 @@ import {
   getAdminHomeHeroSlides,
   getAdminUser,
   updateAdminHomeHeroSlide,
+  uploadAdminSiteMedia,
 } from "@/app/lib/adminApi";
 
 const emptyForm = {
@@ -104,6 +105,7 @@ export default function AdminHomeHeroSlidesClient() {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingFlyer, setUploadingFlyer] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -150,6 +152,41 @@ export default function AdminHomeHeroSlidesClient() {
       ...current,
       [name]: value,
     }));
+  }
+
+  async function handleFlyerUpload(event) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+      setUploadingFlyer(true);
+      setError("");
+      setMessage("");
+
+      const response = await uploadAdminSiteMedia(file, {
+        target: "home-hero",
+        key: form.id ? `flyer-${form.id}` : `flyer-${Date.now()}`,
+        field: "secure_url",
+      });
+
+      const data = response.data || {};
+
+      setForm((current) => ({
+        ...current,
+        secure_url: data.secure_url || current.secure_url,
+        thumbnail_url: data.thumbnail_url || current.thumbnail_url,
+        cloudinary_public_id:
+          data.cloudinary_public_id || current.cloudinary_public_id,
+      }));
+
+      setMessage("Flyer cargado correctamente. Ahora guarda los cambios.");
+    } catch (err) {
+      setError(err.message || "No se pudo subir el flyer.");
+    } finally {
+      setUploadingFlyer(false);
+      event.target.value = "";
+    }
   }
 
   function startCreate() {
@@ -356,12 +393,44 @@ export default function AdminHomeHeroSlidesClient() {
                 </label>
               </div>
 
+              <div className="admin-flyer-upload-box">
+                <div>
+                  <ImagePlus size={24} />
+                  <strong>Cargar flyer</strong>
+                  <span>
+                    Sube una imagen PNG, JPG o WebP. La URL de Cloudinary se llenará sola.
+                  </span>
+                </div>
+
+                <label className="admin-flyer-upload-button">
+                  {uploadingFlyer ? (
+                    <>
+                      <Loader2 size={17} className="spin-icon" />
+                      Subiendo...
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus size={17} />
+                      Seleccionar imagen
+                    </>
+                  )}
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFlyerUpload}
+                    disabled={uploadingFlyer || saving}
+                    hidden
+                  />
+                </label>
+              </div>
+
               <label className="admin-field">
                 Secure URL de Cloudinary *
                 <input
                   value={form.secure_url}
                   onChange={(event) => updateField("secure_url", event.target.value)}
-                  placeholder="https://res.cloudinary.com/.../flayer.png"
+                  placeholder="Se llena automáticamente al cargar imagen"
                   required
                 />
               </label>

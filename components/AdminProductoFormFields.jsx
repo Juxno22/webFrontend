@@ -22,6 +22,9 @@ export const emptyProductForm = {
   visible_catalogo: 1,
   activo_web: 1,
   activo: 1,
+  stock: "",
+  precio: "",
+  precio_publico: "",
 };
 
 const TIPOS_MARCA_PRODUCTO = [
@@ -55,6 +58,9 @@ export function normalizeProductoToForm(producto = {}) {
     visible_catalogo: Number(producto.visible_catalogo) === 1 ? 1 : 0,
     activo_web: Number(producto.activo_web) === 1 ? 1 : 0,
     activo: Number(producto.activo) === 1 ? 1 : 0,
+    stock: producto.stock ?? "",
+    precio: producto.precio ?? "",
+    precio_publico: producto.precio_publico ?? "",
   };
 }
 
@@ -82,6 +88,10 @@ export function buildProductoPayload(form = {}) {
     visible_catalogo: Number(form.visible_catalogo) === 1 ? 1 : 0,
     activo_web: Number(form.activo_web) === 1 ? 1 : 0,
     activo: Number(form.activo) === 1 ? 1 : 0,
+    stock: form.stock === "" ? null : Number(form.stock),
+    precio: form.precio === "" ? null : Number(form.precio),
+    precio_publico:
+      form.precio_publico === "" ? null : Number(form.precio_publico),
   };
 }
 
@@ -171,6 +181,49 @@ export default function AdminProductoFormFields({
             placeholder="Opcional"
           />
         </label>
+
+        <div className="admin-form-grid three-cols admin-product-price-grid">
+          <label>
+            Stock ecommerce
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={form.stock}
+              onChange={(event) => updateForm("stock", event.target.value)}
+              placeholder="Ej. 12"
+            />
+          </label>
+
+          <label>
+            Precio interno
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={form.precio}
+              onChange={(event) => updateForm("precio", event.target.value)}
+              placeholder="Ej. 850.00"
+            />
+          </label>
+
+          <label>
+            Precio público web
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={form.precio_publico}
+              onChange={(event) => updateForm("precio_publico", event.target.value)}
+              placeholder="Ej. 999.00"
+            />
+          </label>
+        </div>
+
+        <div className="admin-field-note">
+          Estos valores actualizan el inventario ecommerce del producto. Si el stock es
+          mayor a 0 y tiene precio público, queda disponible para venta web.
+        </div>
 
         <label>
           Unidad medida

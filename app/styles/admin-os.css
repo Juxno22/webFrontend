@@ -3496,7 +3496,6 @@
   color: #ffffff !important;
 }
 
-/* Notificaciones chat admin */
 .admin-os-priority-card,
 .admin-os-nav a,
 .admin-os-top-secondary {
@@ -3571,6 +3570,114 @@
 
 .has-chat-pulse {
   animation: adminChatPulse 1.15s ease-in-out 2;
+}
+
+.admin-os-main .admin-field,
+.admin-os-main .admin-home-hero-form .admin-field,
+.admin-os-main .admin-product-edit-form-os label,
+.admin-os-main .admin-product-create-os label {
+  color: #eef4ff !important;
+  font-weight: 900;
+}
+
+.admin-os-main .admin-field input,
+.admin-os-main .admin-field select,
+.admin-os-main .admin-field textarea,
+.admin-os-main .admin-home-hero-form input,
+.admin-os-main .admin-home-hero-form select,
+.admin-os-main .admin-home-hero-form textarea,
+.admin-os-main .admin-product-edit-form-os input,
+.admin-os-main .admin-product-edit-form-os select,
+.admin-os-main .admin-product-edit-form-os textarea {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  caret-color: #ffffff;
+}
+
+.admin-os-main .admin-field input::placeholder,
+.admin-os-main .admin-field textarea::placeholder,
+.admin-os-main .admin-home-hero-form input::placeholder,
+.admin-os-main .admin-home-hero-form textarea::placeholder,
+.admin-os-main .admin-product-edit-form-os input::placeholder,
+.admin-os-main .admin-product-edit-form-os textarea::placeholder {
+  color: rgba(226, 232, 240, 0.58) !important;
+}
+
+.admin-os-main .admin-field select option,
+.admin-os-main .admin-home-hero-form select option,
+.admin-os-main .admin-product-edit-form-os select option {
+  color: #111827;
+  background: #ffffff;
+}
+
+.admin-os-main .admin-field-note {
+  color: #b7c4d8 !important;
+}
+
+.admin-flyer-upload-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  background:
+    radial-gradient(circle at top left, rgba(255, 25, 47, 0.13), transparent 16rem),
+    rgba(255, 255, 255, 0.045);
+}
+
+.admin-flyer-upload-box > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  row-gap: 3px;
+  align-items: center;
+  min-width: 0;
+}
+
+.admin-flyer-upload-box svg {
+  color: #ff192f;
+}
+
+.admin-flyer-upload-box strong {
+  color: #ffffff;
+  font-size: 0.98rem;
+}
+
+.admin-flyer-upload-box span {
+  grid-column: 2;
+  color: #b7c4d8;
+  line-height: 1.35;
+  font-size: 0.82rem;
+}
+
+.admin-flyer-upload-button {
+  flex: 0 0 auto;
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 15px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff !important;
+  background: #ff192f;
+  font-size: 0.84rem;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 16px 35px rgba(255, 25, 47, 0.26);
+}
+
+@media (max-width: 720px) {
+  .admin-flyer-upload-box {
+    display: grid;
+  }
+
+  .admin-flyer-upload-button {
+    width: 100%;
+  }
 }
 
 @keyframes adminChatPulse {
