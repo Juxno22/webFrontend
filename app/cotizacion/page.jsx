@@ -1,11 +1,29 @@
-import QuoteCartClient from "../../components/QuoteCartClient";
+import { Suspense } from "react";
+import "@/app/styles/public-chat.css";
+import PublicChatStartClient from "@/components/PublicChatStartClient";
 
 export const metadata = {
-  title: "Mi cotización | Andyfers",
+  title: "Chat de cotización | Andyfers",
   description:
-    "Revisa los productos agregados y prepara tu solicitud de cotización Andyfers.",
+    "Chatea con un asesor comercial, para resolver dudas y solicitar cotizaciones.",
 };
 
+function LoadingChatStart() {
+  return (
+    <main className="public-chat-page">
+      <section className="public-chat-shell">
+        <article className="public-chat-card">
+          <p>Cargando chat...</p>
+        </article>
+      </section>
+    </main>
+  );
+}
+
 export default function CotizacionPage() {
-  return <QuoteCartClient />;
+  return (
+    <Suspense fallback={<LoadingChatStart />}>
+      <PublicChatStartClient />
+    </Suspense>
+  );
 }

@@ -7,11 +7,9 @@ import {
   ChevronDown,
   Menu,
   Search,
-  ShoppingBag,
   ShoppingCart,
   X,
 } from "lucide-react";
-import { getQuoteCartCount } from "../app/lib/quoteCart";
 import {
   getSalesCartCount,
   openSalesCartDrawer,
@@ -69,7 +67,6 @@ const lineasMenu = [
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const [count, setCount] = useState(0);
   const [salesCount, setSalesCount] = useState(0);
   const [lineasOpen, setLineasOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,21 +82,18 @@ export default function Header() {
   const isOrder = pathname.startsWith("/pedido");
 
   useEffect(() => {
-    function refreshCounts() {
-      setCount(getQuoteCartCount());
+    function refreshSalesCount() {
       setSalesCount(getSalesCartCount());
     }
 
-    refreshCounts();
+    refreshSalesCount();
 
-    window.addEventListener("andyfers_quote_cart_updated", refreshCounts);
-    window.addEventListener("andyfers_sales_cart_updated", refreshCounts);
-    window.addEventListener("storage", refreshCounts);
+    window.addEventListener("andyfers_sales_cart_updated", refreshSalesCount);
+    window.addEventListener("storage", refreshSalesCount);
 
     return () => {
-      window.removeEventListener("andyfers_quote_cart_updated", refreshCounts);
-      window.removeEventListener("andyfers_sales_cart_updated", refreshCounts);
-      window.removeEventListener("storage", refreshCounts);
+      window.removeEventListener("andyfers_sales_cart_updated", refreshSalesCount);
+      window.removeEventListener("storage", refreshSalesCount);
     };
   }, []);
 
@@ -222,7 +216,7 @@ export default function Header() {
           </Link>
 
           <Link href="/cotizacion" className={navClass(isQuote)} onClick={closeNow}>
-            Cotización
+            Chat
           </Link>
 
           <Link href="/pedido" className={navClass(isOrder)} onClick={closeNow}>
@@ -294,7 +288,7 @@ export default function Header() {
             </Link>
 
             <Link href="/cotizacion" onClick={closeNow}>
-              Mi cotización
+              Chat de cotización
             </Link>
 
             <Link href="/pedido" onClick={closeNow}>

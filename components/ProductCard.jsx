@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, Gauge, Boxes, ShoppingCart } from "lucide-react";
-import { addToQuoteCart } from "../app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { addToSalesCart, openSalesCartDrawer } from "../app/lib/salesCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { getProductSaleInfo } from "../app/lib/productSale";
@@ -40,16 +40,8 @@ export default function ProductCard({ producto }) {
   const saleInfo = getProductSaleInfo(producto);
 
   function handleAdd() {
-    addToQuoteCart(producto);
-
-    window.dispatchEvent(
-      new CustomEvent("andyfers_toast", {
-        detail: {
-          message: `${codigoVisible} agregado a cotización`,
-        },
-      })
-    );
-  }
+    router.push(buildQuoteChatUrl(codigoDetalle));
+  };
 
   function handleAddToSalesCart() {
     addToSalesCart(producto);

@@ -6,7 +6,7 @@ import { trackAnalyticsBeacon } from "@/app/lib/analytics";
 import {
   ArrowRight,
   Clock,
-  ClipboardList,
+  MessageCircle,
   Mail,
   MapPin,
   Phone,
@@ -92,9 +92,8 @@ export default function ContactClient({
 Nombre: ${form.nombre || "-"}
 WhatsApp: ${form.whatsapp || "-"}
 Ciudad: ${form.ciudad || "-"}
-Mensaje: ${
-      form.mensaje || "Quiero información sobre productos y cotización."
-    }`;
+Mensaje: ${form.mensaje || "Quiero información sobre productos y cotización."
+      }`;
 
     if (whatsappChannel?.url) {
       return appendTextToWhatsappUrl(whatsappChannel.url, text);
@@ -157,11 +156,11 @@ Mensaje: ${
 
         <div className="container contact-hero-grid">
           <div>
-            <h1>{hero?.titulo || "Ventas te ayuda a validar tu cotización."}</h1>
+            <h1>{hero?.titulo || "Ventas te atiende por chat de cotización."}</h1>
 
             <p>
               {hero?.contenido ||
-                "La página te permite buscar productos y enviar solicitudes. El equipo de ventas confirma compatibilidad, existencia y precio final antes de continuar con el pedido."}
+                "Busca productos en el catálogo y escríbenos por chat. El equipo de ventas confirma compatibilidad, existencia y precio final antes de continuar con el pedido."}
             </p>
 
             <div className="contact-hero-actions">
@@ -171,8 +170,8 @@ Mensaje: ${
               </Link>
 
               <Link href="/cotizacion" className="btn-secondary contact-secondary">
-                Mi cotización
-                <ClipboardList size={18} />
+                Chat de cotización
+                <MessageCircle size={18} />
               </Link>
             </div>
           </div>
@@ -214,7 +213,7 @@ Mensaje: ${
 
             <p>
               {formText?.contenido ||
-                "Este formulario no guarda datos en la base. Solo prepara un mensaje para abrir WhatsApp con la información del cliente."}
+                "Este formulario no guarda datos. Solo prepara un mensaje para abrir WhatsApp con la información del cliente."}
             </p>
 
             <form className="contact-form" onSubmit={handleSubmit}>
@@ -311,7 +310,7 @@ Mensaje: ${
             <span>{ctaFinal?.etiqueta || "Andyfers Smart Catalog"}</span>
             <h2>
               {ctaFinal?.titulo ||
-                "También puedes armar una cotización desde el catálogo."}
+                "También puedes pedir ayuda comercial desde el chat."}
             </h2>
           </div>
 
@@ -322,7 +321,7 @@ Mensaje: ${
             </Link>
 
             <Link href="/cotizacion" className="btn-secondary contact-secondary">
-              Ver mi cotización
+              Abrir chat
             </Link>
           </div>
         </div>

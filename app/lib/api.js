@@ -11,9 +11,16 @@ export async function apiFetch(path, options = {}) {
     cache: "no-store",
   });
   const data = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new Error(data?.error || "Error al conectar con la API");
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      data?.mensaje ||
+      "Error al conectar con la API"
+    );
   }
+
   return data;
 }
 
@@ -71,6 +78,32 @@ export async function crearCotizacion(payload) {
 
 export async function getCotizacionPublica(folio) {
   return apiFetch(`/api/cotizaciones/${encodeURIComponent(folio)}/publica`);
+}
+
+export async function iniciarChatPublico(payload) {
+  return apiFetch("/api/chat/public/iniciar", {
+    method: "POST",
+    body: JSON.stringify({
+      nombre: payload.nombre,
+      whatsapp: payload.whatsapp,
+      mensaje: payload.mensaje,
+    }),
+  });
+}
+
+export async function getChatPublico(token, params = {}) {
+  const query = buildQuery(params);
+
+  return apiFetch(
+    `/api/chat/public/${encodeURIComponent(token)}${query ? `?${query}` : ""}`
+  );
+}
+
+export async function sendChatPublicoMensaje(token, mensaje) {
+  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}/mensajes`, {
+    method: "POST",
+    body: JSON.stringify({ mensaje }),
+  });
 }
 
 export async function getVehiculoAnios() {
@@ -171,32 +204,4 @@ export async function getVentaPublica(folio, whatsapp = "") {
     `/api/ventas/${encodeURIComponent(folio)}/publica${query ? `?${query}` : ""
     }`
   );
-}
-
-export async function iniciarChatPublico(payload) {
-  return apiFetch("/api/chat/public/iniciar", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-export async function getChatPublico(token, params = {}) {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && String(value).trim() !== "") {
-      searchParams.set(key, String(value).trim());
-    }
-  });
-
-  const query = searchParams.toString();
-
-  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}${query ? `?${query}` : ""}`);
-}
-
-export async function sendChatPublicoMensaje(token, mensaje) {
-  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}/mensajes`, {
-    method: "POST",
-    body: JSON.stringify({ mensaje }),
-  });
 }

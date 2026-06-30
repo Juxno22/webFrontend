@@ -45,12 +45,48 @@ function clearStoredChat() {
   window.localStorage.removeItem(CHAT_STORAGE_KEY);
 }
 
+function cleanProductCode(value) {
+  const clean = String(value || "").trim();
+
+  if (!clean) return "";
+
+  const invalidCodes = new Set([
+    "#N/A",
+    "N/A",
+    "NA",
+    "ND",
+    "N.D.",
+    "SIN CODIGO",
+    "SIN CÓDIGO",
+    "NULL",
+    "0",
+  ]);
+
+  if (invalidCodes.has(clean.toUpperCase())) return "";
+
+  return clean.slice(0, 120);
+}
+
+function buildInitialMessage(message, productoCodigo) {
+  const cleanMessage = String(message || "").trim();
+
+  if (!productoCodigo) return cleanMessage;
+
+  return `Código de producto: ${productoCodigo}\n\n${cleanMessage}`;
+}
+
 export default function PublicChatStartClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const forceNew =
     searchParams.get("nuevo") === "1" || searchParams.get("reset") === "1";
+
+  const productoCodigo = cleanProductCode(
+    searchParams.get("producto_codigo") ||
+    searchParams.get("codigo_producto") ||
+    searchParams.get("codigo")
+  );
 
   const [nombre, setNombre] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -76,6 +112,10 @@ export default function PublicChatStartClient() {
 
         if (stored?.nombre) setNombre(stored.nombre);
         if (stored?.whatsapp) setWhatsapp(stored.whatsapp);
+
+        if (productoCodigo) {
+          return;
+        }
 
         if (!stored?.token) return;
 
@@ -104,7 +144,7 @@ export default function PublicChatStartClient() {
     return () => {
       cancelled = true;
     };
-  }, [forceNew, router]);
+  }, [forceNew, productoCodigo, router]);
 
   async function iniciarChat(event) {
     event.preventDefault();
@@ -118,6 +158,8 @@ export default function PublicChatStartClient() {
       return;
     }
 
+    const mensajeFinal = buildInitialMessage(cleanMensaje, productoCodigo);
+
     try {
       setLoading(true);
       setError("");
@@ -125,7 +167,9 @@ export default function PublicChatStartClient() {
       const response = await iniciarChatPublico({
         nombre: cleanNombre,
         whatsapp: cleanWhatsapp,
-        mensaje: cleanMensaje,
+        mensaje: mensajeFinal,
+        producto_codigo: productoCodigo || null,
+        tipo_intencion: productoCodigo ? "EXISTENCIA_PRECIO" : "COTIZACION",
       });
 
       const token = response.data?.public_token;
@@ -180,15 +224,22 @@ export default function PublicChatStartClient() {
           <div className="public-chat-icon">
             <MessageCircle size={34} />
           </div>
-
-          <span>Chat de cotización</span>
-
-          <h1>Escríbenos para cotizar</h1>
-
+          <h1>Chat de cotizació</h1>
           <p>
             Déjanos tus datos y tu mensaje. Un asesor de Andyfers te responderá
             desde este mismo chat.
           </p>
+
+          {productoCodigo && (
+            <div className="public-chat-product-context">
+              <span>Producto seleccionado</span>
+              <strong>{productoCodigo}</strong>
+              <p>
+                Solo enviaremos este código al asesor para que valide existencia,
+                compatibilidad y precio.
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="public-chat-alert">
@@ -225,7 +276,7 @@ export default function PublicChatStartClient() {
               <textarea
                 value={mensaje}
                 onChange={(event) => setMensaje(event.target.value)}
-                placeholder="Cuéntanos qué producto necesitas, para qué vehículo o qué duda tienes..."
+                placeholder={productoCodigo ? "Escribe qué necesitas validar de este producto..." : "Cuéntanos qué producto necesitas, para qué vehículo o qué duda tienes..."}
                 rows={4}
                 required
               />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Boxes, ChevronLeft, ChevronRight, Gauge, Layers3, Plus, SearchCheck, Wrench } from "lucide-react";
-import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 
 function cleanText(value, fallback = "") {
   if (value === null || value === undefined) return fallback;
@@ -56,15 +56,7 @@ function ProductCard({ producto }) {
   const imageUrl = producto.imagen_thumbnail_url || producto.imagen_url;
 
   function handleAddToQuote() {
-    addToQuoteCart(producto);
-
-    window.dispatchEvent(
-      new CustomEvent("andyfers_toast", {
-        detail: {
-          message: `${codigoVisible} agregado a cotización`,
-        },
-      })
-    );
+    window.location.href = buildQuoteChatUrl(producto);
   }
 
   return (
@@ -199,7 +191,7 @@ export default function CatalogSeoLandingClient({ tipo, data, slug }) {
               Ver en catálogo
             </Link>
             <Link href="/cotizacion" className="seo-btn secondary hero-action">
-              Ir a cotización
+              Chatear para cotizar
             </Link>
           </div>
         </div>

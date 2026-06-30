@@ -9,7 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import ProductMediaImage from "@/components/ProductMediaImage";
-import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
 import { useRouter } from "next/navigation";
 
@@ -69,18 +69,8 @@ export default function HomeFeaturedProductsSection({
   const ctaUrl = section?.cta_url || "/catalogo";
 
   function addProduct(producto) {
-    const code = getProductCode(producto) || "Producto";
-
-    addToQuoteCart(producto);
-
-    window.dispatchEvent(
-      new CustomEvent("andyfers_toast", {
-        detail: {
-          message: `${code} agregado a cotización`,
-        },
-      })
-    );
-  }
+    router.push(buildQuoteChatUrl(producto));
+  };
 
   function addProductToSalesCart(producto) {
     const code = getProductCode(producto) || "Producto";

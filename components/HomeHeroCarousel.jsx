@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ClipboardList, Search } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { getHomeHeroSlides } from "@/app/lib/api";
 
 const fallbackSlides = [
@@ -127,8 +127,8 @@ export default function HomeHeroCarousel({
             </Link>
 
             <Link href="/cotizacion" className="andy-hero-btn cotizacion">
-              Mi cotización
-              <ClipboardList size={18} />
+              Chat de cotización
+              <MessageCircle size={18} />
             </Link>
           </div>
         </div>

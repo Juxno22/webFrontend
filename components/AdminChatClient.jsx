@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AlertTriangle,
   ArrowRight,
   CheckCircle2,
   Clock3,
+  Copy,
+  ExternalLink,
   Loader2,
   MessageCircle,
+  Phone,
   RefreshCw,
   Search,
   Send,
@@ -120,9 +123,18 @@ function getConversationTitle(conversation = {}) {
 }
 
 function getReferenceLabel(conversation = {}) {
-  if (conversation.producto_codigo) return `Producto ${conversation.producto_codigo}`;
-  if (conversation.cotizacion_folio) return `Cotización ${conversation.cotizacion_folio}`;
-  if (conversation.pedido_folio) return `Pedido ${conversation.pedido_folio}`;
+  if (conversation.producto_codigo) {
+    return `Producto ${conversation.producto_codigo}`;
+  }
+
+  if (conversation.cotizacion_folio) {
+    return `Cotización ${conversation.cotizacion_folio}`;
+  }
+
+  if (conversation.pedido_folio) {
+    return `Pedido ${conversation.pedido_folio}`;
+  }
+
   return "Consulta comercial";
 }
 
@@ -139,17 +151,61 @@ function mergeMessages(current = [], incoming = []) {
   ];
 }
 
+function buildWhatsAppHref(whatsapp) {
+  const digits = String(whatsapp || "").replace(/\D/g, "");
+
+  if (!digits) return "";
+
+  const normalized = digits.length === 10 ? `52${digits}` : digits;
+
+  return `https://wa.me/${normalized}`;
+}
+
+function buildPublicChatUrl(token) {
+  if (!token) return "";
+
+  if (typeof window === "undefined") {
+    return `/cotizacion/${encodeURIComponent(token)}`;
+  }
+
+  return `${window.location.origin}/cotizacion/${encodeURIComponent(token)}`;
+}
+
+function getQuickReplies(conversation = {}) {
+  const nombre = conversation?.cliente_nombre || "buen día";
+  const producto = conversation?.producto_codigo;
+
+  const replies = [
+    `Hola ${nombre}, gracias por escribirnos. Ya estamos revisando tu solicitud de cotización.`,
+    "Para validarlo correctamente, ¿me puedes confirmar modelo, año y motor del vehículo?",
+    "Permíteme revisar existencia, compatibilidad y precio final para darte una respuesta correcta.",
+    "Con gusto. Te confirmo la información y te respondo por este mismo chat.",
+  ];
+
+  if (producto) {
+    replies.unshift(
+      `Hola ${nombre}, gracias por escribirnos. Ya recibimos el código ${producto}. Permíteme validar existencia, compatibilidad y precio.`
+    );
+  }
+
+  return replies;
+}
+
 export default function AdminChatClient() {
   const { checking } = useAdminAuth();
   const searchParams = useSearchParams();
 
   const messagesEndRef = useRef(null);
   const lastMessageIdRef = useRef(0);
+  const selectedIdRef = useRef("");
+
+  const requestedId = searchParams.get("id");
+  const requestedFolio = searchParams.get("folio");
 
   const [filters, setFilters] = useState({
     q: "",
     estado: "",
-    limit: 40,
+    limit: 50,
   });
 
   const [summary, setSummary] = useState(null);
@@ -163,14 +219,23 @@ export default function AdminChatClient() {
   const [sending, setSending] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
   const [creatingFromQuote, setCreatingFromQuote] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const [messageText, setMessageText] = useState("");
   const [error, setError] = useState("");
 
-  const requestedId = searchParams.get("id");
-  const requestedFolio = searchParams.get("folio");
-
   const activeConversation = selected?.conversation || null;
+  const isClosed = activeConversation?.estado === "CERRADO";
+  const whatsappHref = buildWhatsAppHref(activeConversation?.cliente_whatsapp);
+
+  const quickReplies = useMemo(
+    () => getQuickReplies(activeConversation),
+    [activeConversation]
+  );
+
+  useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
 
   const loadConversations = useCallback(
     async ({ keepSelected = true, silent = false } = {}) => {
@@ -185,11 +250,22 @@ export default function AdminChatClient() {
         setConversations(list);
         setSummary(response.summary || null);
 
+        const currentSelectedId = selectedIdRef.current;
+        const selectedStillExists = list.some(
+          (item) => String(item.id) === String(currentSelectedId)
+        );
+
         if (!keepSelected && list.length > 0) {
           setSelectedId(String(list[0].id));
+          return;
         }
 
-        if (!selectedId && list.length > 0 && !requestedId && !requestedFolio) {
+        if (!currentSelectedId && list.length > 0 && !requestedId) {
+          setSelectedId(String(list[0].id));
+          return;
+        }
+
+        if (currentSelectedId && !selectedStillExists && list.length > 0) {
           setSelectedId(String(list[0].id));
         }
       } catch (err) {
@@ -198,7 +274,7 @@ export default function AdminChatClient() {
         setLoadingList(false);
       }
     },
-    [filters, selectedId, requestedId, requestedFolio]
+    [filters, requestedId]
   );
 
   const loadConversationDetail = useCallback(
@@ -255,7 +331,7 @@ export default function AdminChatClient() {
 
           if (id) {
             setSelectedId(String(id));
-            await loadConversations({ silent: true });
+            await loadConversations({ keepSelected: true, silent: true });
           }
         } catch (err) {
           setError(err.message || "No se pudo abrir el chat de la cotización.");
@@ -268,7 +344,7 @@ export default function AdminChatClient() {
 
       if (requestedId) {
         setSelectedId(String(requestedId));
-        await loadConversations({ silent: true });
+        await loadConversations({ keepSelected: true });
         return;
       }
 
@@ -289,29 +365,46 @@ export default function AdminChatClient() {
   useEffect(() => {
     if (checking) return;
 
-    const conversationInterval = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       if (!document.hidden) {
-        loadConversations({ silent: true });
+        loadConversations({ keepSelected: true, silent: true });
       }
-    }, 12000);
+    }, 8000);
 
-    return () => window.clearInterval(conversationInterval);
+    return () => window.clearInterval(interval);
   }, [checking, loadConversations]);
 
   useEffect(() => {
-    if (checking || !selectedId) return;
+    if (checking || !selectedId || isClosed) return;
 
-    const detailInterval = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       if (!document.hidden) {
         loadConversationDetail(selectedId, {
           incremental: true,
           silent: true,
         });
       }
-    }, 4000);
+    }, 3500);
 
-    return () => window.clearInterval(detailInterval);
-  }, [checking, selectedId, loadConversationDetail]);
+    return () => window.clearInterval(interval);
+  }, [checking, selectedId, isClosed, loadConversationDetail]);
+
+  useEffect(() => {
+    function refreshOnFocus() {
+      loadConversations({ keepSelected: true, silent: true });
+
+      if (selectedIdRef.current) {
+        loadConversationDetail(selectedIdRef.current, {
+          incremental: true,
+          silent: true,
+        });
+      }
+    }
+
+    window.addEventListener("focus", refreshOnFocus);
+
+    return () => window.removeEventListener("focus", refreshOnFocus);
+  }, [loadConversations, loadConversationDetail]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -332,12 +425,20 @@ export default function AdminChatClient() {
     await loadConversations({ keepSelected: true });
   }
 
+  async function refreshAll() {
+    await loadConversations({ keepSelected: true });
+
+    if (selectedIdRef.current) {
+      await loadConversationDetail(selectedIdRef.current);
+    }
+  }
+
   async function handleSendMessage(event) {
     event.preventDefault();
 
     const clean = messageText.trim();
 
-    if (!activeConversation?.id || !clean) return;
+    if (!activeConversation?.id || !clean || isClosed) return;
 
     try {
       setSending(true);
@@ -352,7 +453,7 @@ export default function AdminChatClient() {
         silent: true,
       });
 
-      await loadConversations({ silent: true });
+      await loadConversations({ keepSelected: true, silent: true });
     } catch (err) {
       setError(err.message || "No se pudo enviar el mensaje.");
     } finally {
@@ -370,7 +471,7 @@ export default function AdminChatClient() {
       await updateAdminChatEstado(activeConversation.id, estado);
 
       await loadConversationDetail(activeConversation.id);
-      await loadConversations({ silent: true });
+      await loadConversations({ keepSelected: true, silent: true });
     } catch (err) {
       setError(err.message || "No se pudo cambiar el estado.");
     } finally {
@@ -378,17 +479,49 @@ export default function AdminChatClient() {
     }
   }
 
+  function handleMessageKeyDown(event) {
+    if (event.key !== "Enter") return;
+    if (event.shiftKey) return;
+
+    event.preventDefault();
+
+    if (!sending && messageText.trim()) {
+      handleSendMessage(event);
+    }
+  }
+
+  function useQuickReply(reply) {
+    setMessageText(reply);
+  }
+
+  async function copyPublicLink() {
+    const url = buildPublicChatUrl(activeConversation?.public_token);
+
+    if (!url) return;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+
+      window.setTimeout(() => {
+        setCopiedLink(false);
+      }, 1800);
+    } catch {
+      setError("No se pudo copiar la liga pública del chat.");
+    }
+  }
+
   if (checking) return null;
 
   return (
-    <section className="admin-workspace admin-chat-os">
-      <div className="admin-page-hero">
+    <section className="admin-workspace admin-chat-os admin-chat-whatsapp">
+      <div className="admin-page-hero admin-chat-hero">
         <div>
           <span>Atención comercial</span>
-          <h1>Chat clientes</h1>
+          <h1>Chat de cotizaciones</h1>
           <p>
-            Bandeja tipo WhatsApp para resolver dudas antes de comprar, validar
-            compatibilidad, cotizar productos y dar seguimiento comercial.
+            Bandeja tipo WhatsApp para responder clientes, validar productos y
+            cerrar conversaciones comerciales.
           </p>
         </div>
 
@@ -400,16 +533,13 @@ export default function AdminChatClient() {
 
           <Link href="/admin/cotizaciones" className="admin-secondary-button">
             <MessageCircle size={18} />
-            Cotizaciones
+            Historial cotizaciones
           </Link>
 
           <button
             type="button"
             className="admin-refresh-button"
-            onClick={() => {
-              loadConversations();
-              if (selectedId) loadConversationDetail(selectedId);
-            }}
+            onClick={refreshAll}
             disabled={loadingList || loadingDetail}
           >
             {loadingList || loadingDetail ? (
@@ -436,72 +566,76 @@ export default function AdminChatClient() {
         </div>
       )}
 
-      <section className="admin-kpi-grid admin-chat-kpi-grid">
-        <article className="admin-kpi-card">
-          <MessageCircle size={22} />
-          <span>Total chats</span>
-          <strong>{formatNumber(summary?.total)}</strong>
-          <small>Conversaciones creadas</small>
-        </article>
-
-        <article className="admin-kpi-card">
-          <Clock3 size={22} />
-          <span>Abiertos</span>
-          <strong>{formatNumber(summary?.abiertos)}</strong>
-          <small>Esperando atención</small>
-        </article>
-
-        <article className="admin-kpi-card">
-          <UserRound size={22} />
-          <span>Atendiendo</span>
-          <strong>{formatNumber(summary?.atendiendo)}</strong>
-          <small>Seguimiento activo</small>
-        </article>
-
-        <article className="admin-kpi-card">
-          <AlertTriangle size={22} />
-          <span>No leídos</span>
-          <strong>{formatNumber(summary?.no_leidos_admin)}</strong>
-          <small>Mensajes del cliente</small>
-        </article>
-
-        <article className="admin-kpi-card">
-          <CheckCircle2 size={22} />
-          <span>Cerrados</span>
-          <strong>{formatNumber(summary?.cerrados)}</strong>
-          <small>Conversaciones finalizadas</small>
-        </article>
-      </section>
-
       <div className="admin-chat-layout">
         <aside className="admin-chat-sidebar">
+          <div className="admin-chat-sidebar-head">
+            <div>
+              <span>Conversaciones</span>
+              <strong>{formatNumber(summary?.total)} chats</strong>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => loadConversations({ keepSelected: true })}
+              disabled={loadingList}
+              aria-label="Actualizar conversaciones"
+            >
+              {loadingList ? (
+                <Loader2 size={17} className="admin-spin" />
+              ) : (
+                <RefreshCw size={17} />
+              )}
+            </button>
+          </div>
+
+          <div className="admin-chat-mini-summary">
+            <div>
+              <strong>{formatNumber(summary?.abiertos)}</strong>
+              <span>Abiertos</span>
+            </div>
+
+            <div>
+              <strong>{formatNumber(summary?.atendiendo)}</strong>
+              <span>Atendiendo</span>
+            </div>
+
+            <div>
+              <strong>{formatNumber(summary?.no_leidos_admin)}</strong>
+              <span>No leídos</span>
+            </div>
+          </div>
+
           <form className="admin-chat-filters" onSubmit={submitFilters}>
             <label>
-              Buscar conversación
+              Buscar
               <div>
                 <Search size={16} />
                 <input
                   type="search"
                   value={filters.q}
                   onChange={(event) => updateFilter("q", event.target.value)}
-                  placeholder="Cliente, producto, WhatsApp..."
+                  placeholder="Cliente, WhatsApp, producto..."
                 />
               </div>
             </label>
 
-            <label>
-              Estado
-              <select
-                value={filters.estado}
-                onChange={(event) => updateFilter("estado", event.target.value)}
-              >
-                {ESTADOS_CHAT.map((item) => (
-                  <option key={item.value || "todos"} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="admin-chat-status-tabs">
+              {ESTADOS_CHAT.map((item) => (
+                <button
+                  type="button"
+                  key={item.value || "TODOS"}
+                  className={filters.estado === item.value ? "is-active" : ""}
+                  onClick={() => {
+                    updateFilter("estado", item.value);
+                    window.setTimeout(() => {
+                      loadConversations({ keepSelected: true });
+                    }, 0);
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
 
             <button className="admin-primary-button" type="submit">
               Filtrar
@@ -517,6 +651,7 @@ export default function AdminChatClient() {
             ) : conversations.length > 0 ? (
               conversations.map((conversation) => {
                 const active = String(conversation.id) === String(selectedId);
+                const unread = Number(conversation.unread_admin || 0);
 
                 return (
                   <button
@@ -524,7 +659,7 @@ export default function AdminChatClient() {
                     key={conversation.id}
                     className={`admin-chat-conversation ${
                       active ? "is-active" : ""
-                    }`}
+                    } ${unread > 0 ? "has-unread" : ""}`}
                     onClick={() => setSelectedId(String(conversation.id))}
                   >
                     <div className="admin-chat-avatar">
@@ -542,21 +677,21 @@ export default function AdminChatClient() {
                         </mark>
                       </div>
 
-                      <p>{conversation.ultimo_mensaje || "Sin mensajes todavía."}</p>
+                      <p>
+                        {conversation.ultimo_mensaje ||
+                          "Sin mensajes todavía."}
+                      </p>
 
                       <span>
-                        {getIntencionLabel(conversation.tipo_intencion)} ·{" "}
                         {getReferenceLabel(conversation)} ·{" "}
-                        {formatDate(
+                        {formatTime(
                           conversation.last_message_at ||
                             conversation.created_at
                         )}
                       </span>
                     </div>
 
-                    {Number(conversation.unread_admin) > 0 && (
-                      <b>{formatNumber(conversation.unread_admin)}</b>
-                    )}
+                    {unread > 0 && <b>{formatNumber(unread)}</b>}
                   </button>
                 );
               })
@@ -593,6 +728,29 @@ export default function AdminChatClient() {
                     {getEstadoLabel(activeConversation.estado)}
                   </mark>
 
+                  {whatsappHref && (
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="admin-secondary-button"
+                    >
+                      <Phone size={15} />
+                      WhatsApp
+                    </a>
+                  )}
+
+                  {activeConversation.public_token && (
+                    <button
+                      type="button"
+                      className="admin-secondary-button"
+                      onClick={copyPublicLink}
+                    >
+                      <Copy size={15} />
+                      {copiedLink ? "Copiado" : "Copiar liga"}
+                    </button>
+                  )}
+
                   {activeConversation.cotizacion_folio && (
                     <Link
                       href={`/admin/cotizaciones/${encodeURIComponent(
@@ -601,18 +759,6 @@ export default function AdminChatClient() {
                       className="admin-secondary-button"
                     >
                       Ver cotización
-                      <ArrowRight size={15} />
-                    </Link>
-                  )}
-
-                  {activeConversation.pedido_folio && (
-                    <Link
-                      href={`/admin/ventas?q=${encodeURIComponent(
-                        activeConversation.pedido_folio
-                      )}`}
-                      className="admin-secondary-button"
-                    >
-                      Ver pedido
                       <ArrowRight size={15} />
                     </Link>
                   )}
@@ -636,7 +782,8 @@ export default function AdminChatClient() {
                   className="admin-secondary-button"
                   onClick={() => handleChangeStatus("ATENDIENDO")}
                   disabled={
-                    changingStatus || activeConversation.estado === "ATENDIENDO"
+                    changingStatus ||
+                    activeConversation.estado === "ATENDIENDO"
                   }
                 >
                   Atendiendo
@@ -681,16 +828,16 @@ export default function AdminChatClient() {
                 <div ref={messagesEndRef} />
               </section>
 
-              {activeConversation.estado === "CERRADO" ? (
+              {isClosed ? (
                 <div className="admin-chat-closed">
-                  Conversación cerrada. Puedes reabrirla cambiando el estado a
-                  abierto.
+                  Conversación cerrada. Puedes reabrirla cambiando el estado.
                 </div>
               ) : (
                 <form className="admin-chat-compose" onSubmit={handleSendMessage}>
                   <textarea
                     value={messageText}
                     onChange={(event) => setMessageText(event.target.value)}
+                    onKeyDown={handleMessageKeyDown}
                     placeholder="Escribe una respuesta para el cliente..."
                     rows={3}
                   />
@@ -734,6 +881,23 @@ export default function AdminChatClient() {
                 <p>{activeConversation.cliente_whatsapp || "Sin WhatsApp"}</p>
               </div>
 
+              {activeConversation.producto_codigo && (
+                <div className="admin-chat-product-focus">
+                  <span>Producto solicitado</span>
+                  <strong>{activeConversation.producto_codigo}</strong>
+
+                  <Link
+                    href={`/catalogo?q=${encodeURIComponent(
+                      activeConversation.producto_codigo
+                    )}`}
+                    target="_blank"
+                  >
+                    Buscar en catálogo
+                    <ExternalLink size={15} />
+                  </Link>
+                </div>
+              )}
+
               <div className="admin-chat-meta-list">
                 <div>
                   <span>Motivo</span>
@@ -768,7 +932,35 @@ export default function AdminChatClient() {
                 </div>
               </div>
 
+              {!isClosed && (
+                <div className="admin-chat-quick-replies">
+                  <span>Respuestas rápidas</span>
+
+                  {quickReplies.map((reply) => (
+                    <button
+                      type="button"
+                      key={reply}
+                      onClick={() => useQuickReply(reply)}
+                    >
+                      {reply}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="admin-chat-meta-actions">
+                {whatsappHref && (
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="admin-secondary-button"
+                  >
+                    <Phone size={15} />
+                    Abrir WhatsApp
+                  </a>
+                )}
+
                 {activeConversation.cotizacion_folio && (
                   <Link
                     href={`/admin/cotizaciones/${encodeURIComponent(
@@ -777,18 +969,6 @@ export default function AdminChatClient() {
                     className="admin-secondary-button"
                   >
                     Ver cotización
-                  </Link>
-                )}
-
-                {activeConversation.producto_codigo && (
-                  <Link
-                    href={`/catalogo?q=${encodeURIComponent(
-                      activeConversation.producto_codigo
-                    )}`}
-                    target="_blank"
-                    className="admin-secondary-button"
-                  >
-                    Ver producto público
                   </Link>
                 )}
               </div>

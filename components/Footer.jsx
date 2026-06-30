@@ -65,7 +65,7 @@ export default function Footer() {
 
           <p>
             {footerText?.contenido ||
-              "Catálogo inteligente de refacciones automotrices con asistencia para encontrar productos compatibles y solicitar cotización."}
+              "Catálogo inteligente de refacciones automotrices con asistencia para encontrar productos compatibles y atender cotizaciones por chat."}
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export default function Footer() {
           <h4>Navegación</h4>
           <Link href="/">Inicio</Link>
           <Link href="/catalogo">Catálogo</Link>
-          <Link href="/cotizacion">Mi cotización</Link>
+          <Link href="/cotizacion">Chat de cotización</Link>
           <Link href="/contacto">Contacto</Link>
         </div>
 

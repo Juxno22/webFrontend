@@ -148,7 +148,7 @@ export default async function HomePage() {
               <span>{finalCta?.etiqueta || "¿Ya sabes qué pieza buscas?"}</span>
               <h2>
                 {finalCta?.titulo ||
-                  "Encuéntrala en el catálogo o arma tu cotización."}
+                  "Encuéntrala en el catálogo o pide apoyo por chat."}
               </h2>
             </div>
 
@@ -161,7 +161,7 @@ export default async function HomePage() {
               </Link>
 
               <Link href="/cotizacion" className="andy-hero-btn cotizacion">
-                Mi cotización
+                Chat de cotización
               </Link>
             </div>
           </div>

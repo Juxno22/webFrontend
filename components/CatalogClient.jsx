@@ -17,7 +17,7 @@ import {
   getProductos,
 } from "../app/lib/api";
 import Link from "next/link";
-import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
@@ -286,18 +286,8 @@ export default function CatalogClient() {
   }
 
   function addProduct(producto) {
-    const codigoVisible = getProductCode(producto) || "Producto";
-
-    addToQuoteCart(producto);
-
-    window.dispatchEvent(
-      new CustomEvent("andyfers_toast", {
-        detail: {
-          message: `${codigoVisible} agregado a cotización`,
-        },
-      })
-    );
-  }
+    router.push(buildQuoteChatUrl(producto));
+  };
 
   function addProductToSalesCart(producto) {
     const codigoVisible = getProductCode(producto) || "Producto";

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Boxes, Gauge, Plus, ShoppingCart } from "lucide-react";
-import { addToQuoteCart } from "@/app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
 import ProductMediaImage from "@/components/ProductMediaImage";
 import { useRouter } from "next/navigation";
@@ -62,19 +62,9 @@ export default function HomeNewProductsClient({
   const ctaText = section?.cta_texto || "Ver catálogo completo";
   const ctaUrl = section?.cta_url || "/catalogo";
 
-  function addProduct(producto) {
-    const code = getProductCode(producto) || "Producto";
-
-    addToQuoteCart(producto);
-
-    window.dispatchEvent(
-      new CustomEvent("andyfers_toast", {
-        detail: {
-          message: `${code} agregado a cotización`,
-        },
-      })
-    );
-  }
+  function addProduct(producto){
+    router.push(buildQuoteChatUrl(producto));
+  };
 
   function addProductToSalesCart(producto) {
     const code = getProductCode(producto) || "Producto";

@@ -15,7 +15,7 @@ import {
     ShoppingCart,
     Wrench,
 } from "lucide-react";
-import { addToQuoteCart } from "../app/lib/quoteCart";
+import { buildQuoteChatUrl } from "@/app/lib/chatQuoteProduct";
 import { trackAnalyticsEvent } from "@/app/lib/analytics";
 import ProductMediaImage, { getProductGallery } from "@/components/ProductMediaImage";
 import { addToSalesCart, openSalesCartDrawer } from "@/app/lib/salesCart";
@@ -191,16 +191,8 @@ export default function ProductDetailClient({ producto }) {
     }, []);
 
     function handleAddToQuote() {
-        addToQuoteCart(producto);
-
-        window.dispatchEvent(
-            new CustomEvent("andyfers_toast", {
-                detail: {
-                    message: `${codigoVisible} agregado a cotización`,
-                },
-            })
-        );
-    }
+        window.location.href = buildQuoteChatUrl(producto);
+    };
 
     function handleAddToSalesCart() {
         addToSalesCart(producto);
@@ -253,7 +245,7 @@ export default function ProductDetailClient({ producto }) {
                         <div className="detail-actions">
                             <button className="btn-primary" onClick={handleAddToQuote}>
                                 <Plus size={18} />
-                                Agregar a cotización
+                                Cotizar por chat
                             </button>
 
                             <button
@@ -266,9 +258,9 @@ export default function ProductDetailClient({ producto }) {
                                 Agregar al carrito
                             </button>
 
-                            <Link href="/cotizacion" className="btn-secondary detail-secondary">
+                            <Link href={buildQuoteChatUrl(producto)} className="btn-secondary detail-secondary">
                                 <ClipboardList size={18} />
-                                Ver mi cotización
+                                Abrir chat
                             </Link>
                         </div>
                     </div>
@@ -517,7 +509,7 @@ export default function ProductDetailClient({ producto }) {
 
                             <button className="btn-primary full" onClick={handleAddToQuote}>
                                 <Plus size={18} />
-                                Agregar a cotización
+                                Cotizar por chat
                             </button>
                         </div>
                     </aside>

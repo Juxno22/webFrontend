@@ -1,17 +1,56 @@
 import { trackAnalyticsEvent } from "./analytics";
 
-const STORAGE_KEY = "DEBdlt4GA8ANmbqTgO0xALKcVvN6LU";
-const MAX_CART_ITEMS = 50;
+const OLD_STORAGE_KEY = "DEBdlt4GA8ANmbqTgO0xALKcVvN6LU";
 
-function safeParseJson(value, fallback = []) {
-  try {
-    return value ? JSON.parse(value) : fallback;
-  } catch {
-    return fallback;
-  }
+const INVALID_PRODUCT_CODES = new Set([
+  "#N/A",
+  "N/A",
+  "NA",
+  "ND",
+  "N.D.",
+  "SIN CODIGO",
+  "SIN CÓDIGO",
+  "NULL",
+  "0",
+]);
+
+function cleanProductCode(value) {
+  const clean = String(value || "").trim();
+
+  if (!clean) return "";
+
+  if (INVALID_PRODUCT_CODES.has(clean.toUpperCase())) return "";
+
+  return clean;
 }
 
-function dispatchCartToast(message) {
+function getProductCode(producto = {}) {
+  return (
+    cleanProductCode(producto.codigo_andyfers) ||
+    cleanProductCode(producto.codigo_publico) ||
+    cleanProductCode(producto.codigo_importacion) ||
+    cleanProductCode(producto.product_key) ||
+    cleanProductCode(producto.codigo) ||
+    ""
+  );
+}
+
+function buildChatUrl(producto = {}) {
+  const code = getProductCode(producto);
+
+  if (!code) return "/cotizacion";
+
+  return `/cotizacion?producto_codigo=${encodeURIComponent(code)}`;
+}
+
+function clearOldQuoteCartStorage() {
+  if (typeof window === "undefined") return;
+
+  window.localStorage.removeItem(OLD_STORAGE_KEY);
+  window.dispatchEvent(new CustomEvent("andyfers_quote_cart_updated"));
+}
+
+function dispatchToast(message) {
   if (typeof window === "undefined") return;
 
   window.dispatchEvent(
@@ -21,133 +60,65 @@ function dispatchCartToast(message) {
   );
 }
 
-function trackQuoteCartAdd(producto, cantidad = 1) {
+function trackChatQuoteIntent(producto) {
   if (typeof window === "undefined" || !producto) return;
 
-  trackAnalyticsEvent("PRODUCTO_AGREGADO_CARRITO", {
+  trackAnalyticsEvent("PRODUCTO_AGREGADO_COTIZACION", {
     producto_id: producto.id || producto.producto_id || null,
     codigo_andyfers: producto.codigo_andyfers || null,
     codigo_importacion: producto.codigo_importacion || null,
     categoria_nombre: producto.categoria || null,
     familia: producto.familia || null,
-    cantidad,
+    cantidad: 1,
     metadata: {
       descripcion: producto.descripcion || "",
       armadora: producto.armadora || "",
+      flujo: "CHAT_COTIZACION",
       product_key:
-        producto.codigo_andyfers ||
-        producto.codigo_importacion ||
+        getProductCode(producto) ||
         String(producto.id || producto.producto_id || ""),
     },
   });
 }
 
-export function getQuoteCart() {
-  if (typeof window === "undefined") return [];
-
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  const parsed = safeParseJson(raw, []);
-
-  return Array.isArray(parsed) ? parsed : [];
-}
-
-export function saveQuoteCart(items) {
-  if (typeof window === "undefined") return;
-
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-
-  window.dispatchEvent(new CustomEvent("andyfers_quote_cart_updated"));
-}
-
 export function addToQuoteCart(producto) {
-  const current = getQuoteCart();
+  clearOldQuoteCartStorage();
+  trackChatQuoteIntent(producto);
 
-  const productKey =
-    producto.codigo_andyfers ||
-    producto.codigo_importacion ||
-    String(producto.id);
-
-  const existingIndex = current.findIndex(
-    (item) => item.product_key === productKey
-  );
-
-  if (existingIndex >= 0) {
-    current[existingIndex].cantidad += 1;
-    saveQuoteCart(current);
-    trackQuoteCartAdd(producto, 1);
-    return current;
+  if (typeof window !== "undefined") {
+    dispatchToast("Abriendo chat de cotización...");
+    window.location.href = buildChatUrl(producto);
   }
 
-  if (current.length >= MAX_CART_ITEMS) {
-    dispatchCartToast(`Máximo ${MAX_CART_ITEMS} productos por cotización.`);
-    return current;
-  }
-
-  const nextItem = {
-    product_key: productKey,
-    producto_id: producto.id,
-    codigo_andyfers: producto.codigo_andyfers,
-    codigo_importacion: producto.codigo_importacion,
-    descripcion: producto.descripcion,
-    familia: producto.familia,
-    armadora: producto.armadora,
-    categoria: producto.categoria,
-    imagen_thumbnail_url: producto.imagen_thumbnail_url || producto.imagen_principal?.thumbnail_url || null,
-    imagen_url: producto.imagen_url || producto.imagen_principal?.secure_url || null,
-    imagen_principal: producto.imagen_principal || null,
-    galeria: producto.galeria || [],
-    multimedia: producto.multimedia || [],
-    total_imagenes: producto.total_imagenes || 0,
-    cantidad: 1,
-  };
-
-  const updated = [...current, nextItem];
-
-  saveQuoteCart(updated);
-  trackQuoteCartAdd(producto, 1);
-
-  return updated;
+  return [];
 }
 
-export function updateQuoteItemQuantity(productKey, cantidad) {
-  const nextQuantity = Number(cantidad);
-
-  if (!Number.isFinite(nextQuantity) || nextQuantity < 1) {
-    return getQuoteCart();
-  }
-
-  const updated = getQuoteCart().map((item) => {
-    if (item.product_key !== productKey) return item;
-
-    return {
-      ...item,
-      cantidad: nextQuantity,
-    };
-  });
-
-  saveQuoteCart(updated);
-
-  return updated;
+export function getQuoteCart() {
+  clearOldQuoteCartStorage();
+  return [];
 }
 
-export function removeQuoteItem(productKey) {
-  const updated = getQuoteCart().filter(
-    (item) => item.product_key !== productKey
-  );
+export function saveQuoteCart() {
+  clearOldQuoteCartStorage();
+  return [];
+}
 
-  saveQuoteCart(updated);
+export function updateQuoteItemQuantity() {
+  clearOldQuoteCartStorage();
+  return [];
+}
 
-  return updated;
+export function removeQuoteItem() {
+  clearOldQuoteCartStorage();
+  return [];
 }
 
 export function clearQuoteCart() {
-  saveQuoteCart([]);
+  clearOldQuoteCartStorage();
   return [];
 }
 
 export function getQuoteCartCount() {
-  return getQuoteCart().reduce(
-    (total, item) => total + Number(item.cantidad || 0),
-    0
-  );
+  clearOldQuoteCartStorage();
+  return 0;
 }
