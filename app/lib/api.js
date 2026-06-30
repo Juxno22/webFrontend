@@ -180,8 +180,18 @@ export async function iniciarChatPublico(payload) {
   });
 }
 
-export async function getChatPublico(token) {
-  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}`);
+export async function getChatPublico(token, params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return apiFetch(`/api/chat/public/${encodeURIComponent(token)}${query ? `?${query}` : ""}`);
 }
 
 export async function sendChatPublicoMensaje(token, mensaje) {

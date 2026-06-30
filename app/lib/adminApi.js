@@ -547,8 +547,18 @@ export async function getAdminChatConversaciones(params = {}) {
   return adminFetch(`/api/admin/chat/conversaciones${query ? `?${query}` : ""}`);
 }
 
-export async function getAdminChatConversacion(id) {
-  return adminFetch(`/api/admin/chat/conversaciones/${id}`);
+export async function getAdminChatConversacion(id, params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      searchParams.set(key, String(value).trim());
+    }
+  });
+
+  const query = searchParams.toString();
+
+  return adminFetch(`/api/admin/chat/conversaciones/${id}${query ? `?${query}` : ""}`);
 }
 
 export async function createAdminChatFromCotizacion(folio) {
