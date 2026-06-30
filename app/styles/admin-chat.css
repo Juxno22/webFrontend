@@ -795,6 +795,97 @@
   box-shadow: 0 0 0 3px rgba(255, 25, 47, 0.12);
 }
 
+.admin-chat-whatsapp .admin-chat-sidebar {
+  min-height: 0;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  padding: 12px !important;
+  border-bottom: 1px solid var(--admin-line);
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary div {
+  height: auto !important;
+  min-height: 70px !important;
+  max-height: 78px !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding: 10px !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary strong {
+  line-height: 1 !important;
+  font-size: 1.05rem !important;
+}
+
+.admin-chat-whatsapp .admin-chat-mini-summary span {
+  margin-top: 6px !important;
+  line-height: 1.15 !important;
+  font-size: 0.72rem !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 18px !important;
+  border-bottom: 1px solid var(--admin-line);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.admin-chat-whatsapp .admin-chat-status-actions .admin-secondary-button {
+  width: auto !important;
+  min-height: 36px !important;
+  padding: 0 13px !important;
+  border-radius: 999px !important;
+  font-size: 0.78rem !important;
+  white-space: nowrap !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-actions .admin-secondary-button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+}
+
+.admin-chat-whatsapp .admin-chat-status-tabs button {
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+@media (max-width: 640px) {
+  .admin-chat-whatsapp .admin-chat-mini-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .admin-chat-whatsapp .admin-chat-mini-summary div {
+    min-height: 62px !important;
+    padding: 8px !important;
+  }
+
+  .admin-chat-whatsapp .admin-chat-mini-summary span {
+    font-size: 0.65rem !important;
+  }
+}
+
 @media (max-width: 1480px) {
   .admin-chat-whatsapp .admin-chat-layout {
     grid-template-columns: 340px minmax(0, 1fr);

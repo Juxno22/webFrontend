@@ -186,7 +186,7 @@ export default function PublicChatStartClient() {
         conversation_id: conversation?.id || null,
       });
 
-      router.push(`/cotizacion/${encodeURIComponent(token)}`);
+      window.location.href = `/cotizacion/${encodeURIComponent(token)}`;
     } catch (err) {
       setError(err.message || "No se pudo abrir el chat.");
     } finally {
