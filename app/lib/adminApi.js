@@ -645,23 +645,42 @@ export async function sendAdminChatMensaje(id, mensaje) {
   );
 }
 
-export async function updateAdminChatEstado(id, estado) {
-  if (!id) {
-    throw new Error("Falta el ID de la conversación.");
-  }
-
-  const allowed = new Set(["ABIERTO", "ATENDIENDO", "CERRADO"]);
-  const cleanEstado = String(estado || "").trim().toUpperCase();
-
-  if (!allowed.has(cleanEstado)) {
-    throw new Error("Estado de chat inválido.");
-  }
+export async function updateAdminChatEstado(id, payload) {
+  const body =
+    typeof payload === "string"
+      ? { estado: payload }
+      : {
+        estado: payload?.estado,
+        cierre_motivo: payload?.cierre_motivo,
+        cierre_nota: payload?.cierre_nota,
+        reabierto_motivo: payload?.reabierto_motivo,
+      };
 
   return adminFetch(
     `/api/admin/chat/conversaciones/${encodeURIComponent(id)}/estado`,
     {
       method: "PATCH",
-      body: JSON.stringify({ estado: cleanEstado }),
+      body: JSON.stringify(body),
+    }
+  );
+}
+
+export async function updateAdminChatPrioridad(id, prioridad) {
+  return adminFetch(
+    `/api/admin/chat/conversaciones/${encodeURIComponent(id)}/prioridad`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ prioridad }),
+    }
+  );
+}
+
+export async function updateAdminChatNotaInterna(id, notaInterna) {
+  return adminFetch(
+    `/api/admin/chat/conversaciones/${encodeURIComponent(id)}/nota-interna`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ nota_interna: notaInterna }),
     }
   );
 }

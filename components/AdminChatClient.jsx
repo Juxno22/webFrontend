@@ -26,6 +26,8 @@ import {
   getAdminChatConversaciones,
   sendAdminChatMensaje,
   updateAdminChatEstado,
+  updateAdminChatNotaInterna,
+  updateAdminChatPrioridad,
 } from "@/app/lib/adminApi";
 import { useAdminAuth } from "@/app/hooks/useAdminAuth";
 
@@ -35,6 +37,45 @@ const ESTADOS_CHAT = [
   { value: "ATENDIENDO", label: "Atendiendo" },
   { value: "CERRADO", label: "Cerrados" },
 ];
+
+const PRIORIDADES_CHAT = [
+  { value: "BAJA", label: "Baja" },
+  { value: "MEDIA", label: "Media" },
+  { value: "ALTA", label: "Alta" },
+  { value: "URGENTE", label: "Urgente" },
+];
+
+const CIERRE_MOTIVOS_CHAT = [
+  { value: "COTIZACION_ENVIADA", label: "Cotización enviada" },
+  { value: "CLIENTE_NO_RESPONDIO", label: "Cliente no respondió" },
+  { value: "PRODUCTO_NO_DISPONIBLE", label: "Producto no disponible" },
+  { value: "DUDA_RESUELTA", label: "Duda resuelta" },
+  { value: "VENTA_CANALIZADA", label: "Venta canalizada" },
+  { value: "OTRO", label: "Otro" },
+];
+
+const REAPERTURA_MOTIVOS_CHAT = [
+  { value: "Cliente volvió a escribir", label: "Cliente volvió a escribir" },
+  { value: "Seguimiento pendiente", label: "Seguimiento pendiente" },
+  { value: "Error de cierre", label: "Error de cierre" },
+  { value: "Reapertura manual", label: "Reapertura manual" },
+];
+
+function getPriorityLabel(value) {
+  return (
+    PRIORIDADES_CHAT.find((item) => item.value === value)?.label ||
+    value ||
+    "Media"
+  );
+}
+
+function getCloseReasonLabel(value) {
+  return (
+    CIERRE_MOTIVOS_CHAT.find((item) => item.value === value)?.label ||
+    value ||
+    "—"
+  );
+}
 
 function formatDate(value) {
   if (!value) return "—";
@@ -228,10 +269,30 @@ export default function AdminChatClient() {
   const isClosed = activeConversation?.estado === "CERRADO";
   const whatsappHref = buildWhatsAppHref(activeConversation?.cliente_whatsapp);
 
+  const [closeDraft, setCloseDraft] = useState({
+    open: false,
+    motivo: "COTIZACION_ENVIADA",
+    nota: "",
+  });
+
+  const [reopenDraft, setReopenDraft] = useState({
+    open: false,
+    estado: "ABIERTO",
+    motivo: "Cliente volvió a escribir",
+  });
+
+  const [internalNote, setInternalNote] = useState("");
+  const [savingPriority, setSavingPriority] = useState(false);
+  const [savingNote, setSavingNote] = useState(false);
+
   const quickReplies = useMemo(
     () => getQuickReplies(activeConversation),
     [activeConversation]
   );
+
+  useEffect(() => {
+    setInternalNote(activeConversation?.nota_interna || "");
+  }, [activeConversation?.id, activeConversation?.nota_interna]);
 
   useEffect(() => {
     selectedIdRef.current = selectedId;
@@ -472,11 +533,29 @@ export default function AdminChatClient() {
   async function handleChangeStatus(estado) {
     if (!activeConversation?.id) return;
 
+    if (estado === "CERRADO") {
+      setCloseDraft({
+        open: true,
+        motivo: "COTIZACION_ENVIADA",
+        nota: "",
+      });
+      return;
+    }
+
+    if (activeConversation.estado === "CERRADO" && estado !== "CERRADO") {
+      setReopenDraft({
+        open: true,
+        estado,
+        motivo: "Cliente volvió a escribir",
+      });
+      return;
+    }
+
     try {
       setChangingStatus(true);
       setError("");
 
-      await updateAdminChatEstado(activeConversation.id, estado);
+      await updateAdminChatEstado(activeConversation.id, { estado });
 
       await loadConversationDetail(activeConversation.id);
       await loadConversations({ keepSelected: true, silent: true });
@@ -484,6 +563,99 @@ export default function AdminChatClient() {
       setError(err.message || "No se pudo cambiar el estado.");
     } finally {
       setChangingStatus(false);
+    }
+  }
+
+  async function confirmCloseConversation() {
+    if (!activeConversation?.id || !closeDraft.motivo) return;
+
+    try {
+      setChangingStatus(true);
+      setError("");
+
+      await updateAdminChatEstado(activeConversation.id, {
+        estado: "CERRADO",
+        cierre_motivo: closeDraft.motivo,
+        cierre_nota: closeDraft.nota,
+      });
+
+      setCloseDraft({
+        open: false,
+        motivo: "COTIZACION_ENVIADA",
+        nota: "",
+      });
+
+      await loadConversationDetail(activeConversation.id);
+      await loadConversations({ keepSelected: true, silent: true });
+    } catch (err) {
+      setError(err.message || "No se pudo cerrar la conversación.");
+    } finally {
+      setChangingStatus(false);
+    }
+  }
+
+  async function confirmReopenConversation() {
+    if (!activeConversation?.id) return;
+
+    try {
+      setChangingStatus(true);
+      setError("");
+
+      await updateAdminChatEstado(activeConversation.id, {
+        estado: reopenDraft.estado,
+        reabierto_motivo: reopenDraft.motivo,
+      });
+
+      setReopenDraft({
+        open: false,
+        estado: "ABIERTO",
+        motivo: "Cliente volvió a escribir",
+      });
+
+      await loadConversationDetail(activeConversation.id);
+      await loadConversations({ keepSelected: true, silent: true });
+    } catch (err) {
+      setError(err.message || "No se pudo reabrir la conversación.");
+    } finally {
+      setChangingStatus(false);
+    }
+  }
+
+  async function handlePriorityChange(event) {
+    if (!activeConversation?.id) return;
+
+    const prioridad = event.target.value;
+
+    try {
+      setSavingPriority(true);
+      setError("");
+
+      await updateAdminChatPrioridad(activeConversation.id, prioridad);
+
+      await loadConversationDetail(activeConversation.id);
+      await loadConversations({ keepSelected: true, silent: true });
+    } catch (err) {
+      setError(err.message || "No se pudo actualizar la prioridad.");
+    } finally {
+      setSavingPriority(false);
+    }
+  }
+
+  async function saveInternalNote() {
+    if (!activeConversation?.id) return;
+
+    try {
+      setSavingNote(true);
+      setError("");
+
+      await updateAdminChatNotaInterna(activeConversation.id, internalNote);
+
+      await loadConversationDetail(activeConversation.id);
+      await loadConversations({ keepSelected: true, silent: true });
+    } catch (err) {
+      setError(err.message || "No se pudo guardar la nota interna.");
+    } finally {
+      setSavingNote(false);
     }
   }
 
@@ -804,6 +976,129 @@ export default function AdminChatClient() {
                 </button>
               </section>
 
+              {closeDraft.open && (
+                <section className="admin-chat-operational-panel">
+                  <div>
+                    <span>Cerrar conversación</span>
+                    <strong>Selecciona motivo de cierre</strong>
+                  </div>
+
+                  <label>
+                    Motivo
+                    <select
+                      value={closeDraft.motivo}
+                      onChange={(event) =>
+                        setCloseDraft((current) => ({
+                          ...current,
+                          motivo: event.target.value,
+                        }))
+                      }
+                    >
+                      {CIERRE_MOTIVOS_CHAT.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Nota de cierre
+                    <textarea
+                      value={closeDraft.nota}
+                      onChange={(event) =>
+                        setCloseDraft((current) => ({
+                          ...current,
+                          nota: event.target.value,
+                        }))
+                      }
+                      placeholder="Ej. Se envió cotización por WhatsApp, pendiente confirmación del cliente..."
+                      rows={3}
+                    />
+                  </label>
+
+                  <div className="admin-chat-operational-actions">
+                    <button
+                      type="button"
+                      className="admin-secondary-button"
+                      onClick={() =>
+                        setCloseDraft({
+                          open: false,
+                          motivo: "COTIZACION_ENVIADA",
+                          nota: "",
+                        })
+                      }
+                      disabled={changingStatus}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      type="button"
+                      className="admin-secondary-button danger"
+                      onClick={confirmCloseConversation}
+                      disabled={changingStatus}
+                    >
+                      Cerrar conversación
+                    </button>
+                  </div>
+                </section>
+              )}
+
+              {reopenDraft.open && (
+                <section className="admin-chat-operational-panel">
+                  <div>
+                    <span>Reabrir conversación</span>
+                    <strong>Indica motivo de reapertura</strong>
+                  </div>
+
+                  <label>
+                    Motivo
+                    <select
+                      value={reopenDraft.motivo}
+                      onChange={(event) =>
+                        setReopenDraft((current) => ({
+                          ...current,
+                          motivo: event.target.value,
+                        }))
+                      }
+                    >
+                      {REAPERTURA_MOTIVOS_CHAT.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <div className="admin-chat-operational-actions">
+                    <button
+                      type="button"
+                      className="admin-secondary-button"
+                      onClick={() =>
+                        setReopenDraft({
+                          open: false,
+                          estado: "ABIERTO",
+                          motivo: "Cliente volvió a escribir",
+                        })
+                      }
+                      disabled={changingStatus}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      type="button"
+                      className="admin-primary-button"
+                      onClick={confirmReopenConversation}
+                      disabled={changingStatus}
+                    >
+                      Reabrir conversación
+                    </button>
+                  </div>
+                </section>
+              )}
+
               <section className="admin-chat-messages">
                 {messages.length > 0 ? (
                   messages.map((message) => (
@@ -919,6 +1214,11 @@ export default function AdminChatClient() {
                 </div>
 
                 <div>
+                  <span>Prioridad</span>
+                  <strong>{getPriorityLabel(activeConversation.prioridad)}</strong>
+                </div>
+
+                <div>
                   <span>Canal</span>
                   <strong>{activeConversation.canal || "PUBLICO"}</strong>
                 </div>
@@ -933,6 +1233,56 @@ export default function AdminChatClient() {
                   </strong>
                 </div>
               </div>
+
+              <div className="admin-chat-priority-box">
+                <span>Prioridad operativa</span>
+
+                <select
+                  value={activeConversation.prioridad || "MEDIA"}
+                  onChange={handlePriorityChange}
+                  disabled={savingPriority}
+                >
+                  {PRIORIDADES_CHAT.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="admin-chat-internal-note">
+                <span>Nota interna</span>
+
+                <textarea
+                  value={internalNote}
+                  onChange={(event) => setInternalNote(event.target.value)}
+                  placeholder="Nota solo visible para el admin..."
+                  rows={5}
+                />
+
+                <button
+                  type="button"
+                  className="admin-secondary-button"
+                  onClick={saveInternalNote}
+                  disabled={savingNote}
+                >
+                  {savingNote ? "Guardando..." : "Guardar nota"}
+                </button>
+              </div>
+
+              {activeConversation.estado === "CERRADO" && (
+                <div className="admin-chat-close-info">
+                  <span>Cierre</span>
+
+                  <strong>
+                    {getCloseReasonLabel(activeConversation.cierre_motivo)}
+                  </strong>
+
+                  {activeConversation.cierre_nota && (
+                    <p>{activeConversation.cierre_nota}</p>
+                  )}
+                </div>
+              )}
 
               {!isClosed && (
                 <div className="admin-chat-quick-replies">
