@@ -5,7 +5,7 @@ export const metadata = {
   title: "Chat Andyfers",
 };
 
-export default async function PublicChatTokenPage({ params }) {
+export default async function CotizacionChatTokenPage({ params }) {
   const { token } = await params;
 
   return <PublicChatClient token={token} />;

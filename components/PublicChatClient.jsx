@@ -12,6 +12,28 @@ import {
 } from "lucide-react";
 import { getChatPublico, sendChatPublicoMensaje } from "@/app/lib/api";
 
+const CHAT_STORAGE_KEY = "andyfers_cotizacion_chat";
+
+function saveStoredChat(token, conversation) {
+  if (typeof window === "undefined" || !token || !conversation) return;
+
+  window.localStorage.setItem(
+    CHAT_STORAGE_KEY,
+    JSON.stringify({
+      token,
+      nombre: conversation.cliente_nombre || "",
+      whatsapp: conversation.cliente_whatsapp || "",
+      conversation_id: conversation.id || null,
+      updated_at: new Date().toISOString(),
+    })
+  );
+}
+
+function clearStoredChat() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(CHAT_STORAGE_KEY);
+}
+
 function formatDate(value) {
   if (!value) return "—";
 
@@ -96,6 +118,12 @@ export default function PublicChatClient({ token }) {
 
         setConversation(nextConversation);
 
+        if (nextConversation?.estado === "CERRADO") {
+          clearStoredChat();
+        } else if (nextConversation) {
+          saveStoredChat(token, nextConversation);
+        }
+
         if (incremental) {
           if (incomingMessages.length > 0) {
             setMessages((current) => {
@@ -109,6 +137,7 @@ export default function PublicChatClient({ token }) {
           lastMessageIdRef.current = getLastMessageId(incomingMessages);
         }
       } catch (err) {
+        clearStoredChat();
         setError(err.message || "No se pudo cargar el chat.");
       } finally {
         setLoading(false);
@@ -124,13 +153,13 @@ export default function PublicChatClient({ token }) {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      if (!document.hidden) {
+      if (!document.hidden && !isClosed) {
         loadChat({ incremental: true, silent: true });
       }
     }, 5000);
 
     return () => window.clearInterval(interval);
-  }, [loadChat]);
+  }, [isClosed, loadChat]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -178,7 +207,7 @@ export default function PublicChatClient({ token }) {
     return (
       <main className="public-chat-page">
         <section className="public-chat-shell">
-          <Link href="/chat" className="public-chat-back">
+          <Link href="/cotizacion" className="public-chat-back">
             <ArrowLeft size={18} />
             Volver
           </Link>
@@ -208,10 +237,10 @@ export default function PublicChatClient({ token }) {
             </div>
 
             <div>
-              <span>Chat Andyfers</span>
-              <h1>{conversation?.cliente_nombre || "Conversación"}</h1>
+              <span>Chat de cotización</span>
+              <h1>Andyfers</h1>
               <p>
-                {conversation?.cliente_whatsapp || "Sin WhatsApp"} ·{" "}
+                {conversation?.cliente_nombre || "Cliente"} ·{" "}
                 {getEstadoLabel(conversation?.estado)}
               </p>
             </div>
@@ -265,8 +294,10 @@ export default function PublicChatClient({ token }) {
 
           {isClosed ? (
             <div className="public-chat-closed">
-              Esta conversación está cerrada. Para una nueva duda, inicia otro
-              chat.
+              Esta conversación está cerrada.{" "}
+              <Link href="/cotizacion?nuevo=1">
+                Inicia un nuevo chat de cotización.
+              </Link>
             </div>
           ) : (
             <form className="public-chat-compose" onSubmit={sendMessage}>

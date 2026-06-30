@@ -1,27 +1,25 @@
 import { Suspense } from "react";
-import "@/app/styles/public-chat.css";
-import PublicChatStartClient from "@/components/PublicChatStartClient";
+import "@/app/styles/admin-chat.css";
+import AdminChatClient from "@/components/AdminChatClient";
 
 export const metadata = {
-  title: "Chat comercial | Andyfers",
+  title: "Chat cotizaciones | Panel Andyfers",
 };
 
-function LoadingChatStart() {
+function LoadingAdminChat() {
   return (
-    <main className="public-chat-page">
-      <section className="public-chat-shell">
-        <article className="public-chat-card">
-          <p>Cargando chat...</p>
-        </article>
-      </section>
-    </main>
+    <section className="admin-workspace admin-chat-os">
+      <div className="admin-chat-empty">
+        <strong>Cargando chat de cotizaciones...</strong>
+      </div>
+    </section>
   );
 }
 
-export default function ChatStartPage() {
+export default function AdminChatPage() {
   return (
-    <Suspense fallback={<LoadingChatStart />}>
-      <PublicChatStartClient />
+    <Suspense fallback={<LoadingAdminChat />}>
+      <AdminChatClient />
     </Suspense>
   );
 }
