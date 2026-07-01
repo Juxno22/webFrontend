@@ -24,8 +24,24 @@ function getItemCode(item = {}) {
   return item.codigo_andyfers || item.codigo_importacion || item.product_key;
 }
 
+function getCheckoutMode() {
+  const mode = String(
+    process.env.NEXT_PUBLIC_MP_CHECKOUT_MODE || "production"
+  ).toLowerCase();
+
+  return mode === "sandbox" ? "sandbox" : "production";
+}
+
 function getCheckoutUrl(mercadoPago = {}) {
-  return mercadoPago.init_point || mercadoPago.sandbox_init_point;
+  if (mercadoPago.checkout_url) {
+    return mercadoPago.checkout_url;
+  }
+
+  if (getCheckoutMode() === "production") {
+    return mercadoPago.init_point;
+  }
+
+  return mercadoPago.sandbox_init_point || mercadoPago.init_point;
 }
 
 export default function CheckoutClient() {
